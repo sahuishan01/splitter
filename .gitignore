@@ -1,0 +1,6 @@
+/target
+splitter.db
+splitter.db-wal
+splitter.db-shm
+.env
+*.log

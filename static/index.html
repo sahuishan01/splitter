@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Splitter - Expense Splitting & Debt Settlement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0d1117;
+      --bg-surface: #161b22;
+      --bg-card: #21262d;
+      --bg-overlay: rgba(13, 17, 23, 0.85);
+      --border-subtle: #30363d;
+      --border-muted: #484f58;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --text-dim: #6e7681;
+      --accent-primary: #58a6ff;
+      --accent-hover: #79c0ff;
+      --success: #3fb950;
+      --danger: #f85149;
+      --warning: #d29922;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-mono: 'Space Mono', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Offline Bar */
+    #offline-banner {
+      display: none;
+      background: var(--warning);
+      color: #000;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    #offline-banner.active {
+      display: flex;
+    }
+
+    /* Header */
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #58a6ff, #bc8cff);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      background: var(--bg-card);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .role-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #388bfd26;
+      color: var(--accent-primary);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .role-tag.admin {
+      background: #f8514926;
+      color: var(--danger);
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease-in-out;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      color: #0d1117;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border-color: var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-muted);
+      background: #282e37;
+    }
+
+    .btn-danger {
+      background: rgba(248, 81, 73, 0.15);
+      color: var(--danger);
+      border-color: rgba(248, 81, 73, 0.4);
+    }
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 0.78rem;
+    }
+
+    /* Container & Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Auth Form */
+    .auth-container {
+      max-width: 420px;
+      margin: 40px auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .auth-tab.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color 0.15s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+
+    .form-help {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Grid layout */
+    .grid-cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Groups list */
+    .group-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .group-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+      position: relative;
+    }
+
+    .group-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+    }
+
+    .group-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .group-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      min-height: 20px;
+    }
+
+    .group-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 10px;
+    }
+
+    /* Expense and Balance Styles */
+    .balance-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .balance-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .debt-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      background: #1c2128;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
+
+    .debt-desc {
+      font-size: 0.9rem;
+    }
+
+    .debt-highlight {
+      font-weight: 700;
+      color: var(--accent-primary);
+    }
+
+    .expense-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .expense-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 14px;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .expense-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .expense-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .expense-amount {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .cents-positive {
+      color: var(--success);
+    }
+
+    .cents-negative {
+      color: var(--danger);
+    }
+
+    .cents-neutral {
+      color: var(--text-muted);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-muted);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-top: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Offline Queue Banner -->
+  <div id="offline-banner">
+    <span>⚠️ You are offline. Changes are saved locally and will sync automatically when connected.</span>
+    <button class="btn btn-secondary btn-sm" onclick="syncOfflineQueue()">Sync Now (<span id="queue-count">0</span>)</button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand" onclick="navigateTo('groups')">
+      <div class="brand-logo">÷</div>
+      <div class="brand-title">Splitter</div>
+    </div>
+    <div class="header-nav">
+      <div id="user-header-info" class="user-badge hidden">
+        <span id="user-display-name">User</span>
+        <span id="user-role-badge" class="role-tag">Member</span>
+      </div>
+      <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')">Admin Panel</button>
+      <button id="logout-btn" class="btn btn-danger btn-sm hidden" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Auth View -->
+    <div id="view-auth" class="auth-container">
+      <div class="auth-tabs">
+        <div id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+        <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div id="display-name-group" class="form-group hidden">
+          <label class="form-label" for="auth-name">Your Full Name</label>
+          <input type="text" id="auth-name" class="form-input" placeholder="e.g. Alice Cooper" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" class="form-input" placeholder="name@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="auth-password">Password</label>
+          <input type="password" id="auth-password" class="form-input" placeholder="Minimum 6 characters" required />
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
+          Log In
+        </button>
+        <div id="auth-error" class="form-help cents-negative" style="margin-top: 12px; text-align: center;"></div>
+      </form>
+    </div>
+
+    <!-- Groups View -->
+    <div id="view-groups" class="hidden">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Your Expense Groups</h2>
+          <p class="form-help">Split expenses with roommates, trips, and projects</p>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('modal-create-group')">+ Create Group</button>
+      </div>
+
+      <div id="groups-list" class="group-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Group Detail View -->
+    <div id="view-group-detail" class="hidden">
+      <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')" style="margin-bottom: 8px;">← Back to Groups</button>
+          <h1 id="group-title" style="font-size: 1.6rem; font-weight: 700;">Group Name</h1>
+          <p id="group-desc" style="color: var(--text-muted); font-size: 0.9rem;">Description</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary" onclick="openModal('modal-add-member')">+ Add Member</button>
+          <button class="btn btn-primary" onclick="openAddExpenseModal()">+ Add Expense</button>
+        </div>
+      </div>
+
+      <!-- Balances and Debt Simplification Cards -->
+      <div class="grid-cols-2">
+        <!-- Your Balance Card -->
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom: 12px;">Group Balances</h3>
+          <div id="member-balances-list" class="balance-card">
+            <!-- Member balances rendered here -->
+          </div>
+        </div>
+
+        <!-- Debt Simplification & Settle Up Card -->
+        <div class="card">
+          <div class="card-header" style="margin-bottom: 8px;">
+            <h3 class="card-title">Simplified Settlements</h3>
+            <span class="role-tag">Min-Cash-Flow</span>
+          </div>
+          <p class="form-help" style="margin-bottom: 12px;">Optimized direct transactions to settle all debts with minimal payments.</p>
+          <div id="simplified-debts-list">
+            <!-- Simplified debts rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Expense History -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom: 16px;">Expense History</h3>
+        <div id="expenses-list" class="expense-list">
+          <!-- Expenses rendered here -->
+        </div>
+      </div>
+
+      <!-- Settlement History -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom: 16px;">Settlement Payments</h3>
+        <div id="settlements-list">
+          <!-- Settlements rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin View -->
+    <div id="view-admin" class="hidden">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Admin Dashboard</h2>
+          <p class="form-help">Manage registered users, roles, and view platform metrics</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')">← Exit Admin</button>
+      </div>
+
+      <!-- Stats Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="stat-card">
+          <div class="stat-label">Total Users</div>
+          <div id="admin-stat-users" class="stat-val">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Groups</div>
+          <div id="admin-stat-groups" class="stat-val">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Expenses</div>
+          <div id="admin-stat-expenses" class="stat-val">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Volume</div>
+          <div id="admin-stat-volume" class="stat-val">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Settlements</div>
+          <div id="admin-stat-settlements" class="stat-val">0</div>
+        </div>
+      </div>
+
+      <!-- User Management Table -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom: 14px;">Platform Users</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal: Create Group -->
+  <div id="modal-create-group" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modal-create-group')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 16px;">Create New Group</h3>
+      <form onsubmit="handleCreateGroup(event)">
+        <div class="form-group">
+          <label class="form-label">Group Name</label>
+          <input type="text" id="new-group-name" class="form-input" placeholder="e.g. Summer Vacation, Flat 402" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (Optional)</label>
+          <input type="text" id="new-group-desc" class="form-input" placeholder="e.g. Trip expenses and groceries" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Default Currency</label>
+          <select id="new-group-currency" class="form-select">
+            <option value="USD">USD ($)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Create Group</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Member -->
+  <div id="modal-add-member" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modal-add-member')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 16px;">Add Member to Group</h3>
+      <form onsubmit="handleAddMember(event)">
+        <div class="form-group">
+          <label class="form-label">Member Email</label>
+          <input type="email" id="add-member-email" class="form-input" placeholder="user@example.com" required />
+          <p class="form-help">The user must already be registered on the platform.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select id="add-member-role" class="form-select">
+            <option value="member">Member</option>
+            <option value="admin">Group Admin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Add Member</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Expense -->
+  <div id="modal-add-expense" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modal-add-expense')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 16px;">Add New Expense</h3>
+      <form onsubmit="handleAddExpense(event)">
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Dinner, Groceries, Hotel" required />
+        </div>
+        <div class="grid-cols-2">
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input type="number" step="0.01" min="0.01" id="expense-amount" class="form-input" placeholder="0.00" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="expense-category" class="form-select">
+              <option value="Food & Dining">Food & Dining</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Housing & Utilities">Housing & Utilities</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Paid By</label>
+          <select id="expense-payer" class="form-select">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Split Among (Equal Split)</label>
+          <div id="expense-participants-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 140px; overflow-y: auto; padding: 4px;">
+            <!-- Checkboxes populated dynamically -->
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Expense</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Record Settlement -->
+  <div id="modal-settle" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modal-settle')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 16px;">Record Payment / Settlement</h3>
+      <form onsubmit="handleRecordSettlement(event)">
+        <input type="hidden" id="settle-payer-id" />
+        <input type="hidden" id="settle-payee-id" />
+        <div class="form-group">
+          <label class="form-label">Payer (Who paid?)</label>
+          <input type="text" id="settle-payer-name" class="form-input" readonly />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payee (Who received?)</label>
+          <input type="text" id="settle-payee-name" class="form-input" readonly />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount</label>
+          <input type="number" step="0.01" min="0.01" id="settle-amount" class="form-input" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Confirm Settlement</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentUser = null;
+    let token = localStorage.getItem('splitter_token');
+    let currentGroupId = null;
+    let currentGroupDetail = null;
+    let authMode = 'login';
+
+    const API_BASE = '/api';
+
+    // Helpers
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function formatMoney(cents, currency = 'USD') {
+      const syms = { USD: '$', INR: '₹', EUR: '€', GBP: '£' };
+      const sym = syms[currency] || (currency + ' ');
+      const val = (Math.abs(cents) / 100).toFixed(2);
+      return (cents < 0 ? '-' : '') + sym + val;
+    }
+
+    // Offline Queue
+    function getOfflineQueue() {
+      try {
+        return JSON.parse(localStorage.getItem('splitter_offline_queue') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveOfflineQueue(queue) {
+      localStorage.setItem('splitter_offline_queue', JSON.stringify(queue));
+      updateQueueUI();
+    }
+
+    function enqueueMutation(action, groupId, payload) {
+      const queue = getOfflineQueue();
+      const idempotencyKey = uuidv4();
+      queue.push({
+        idempotency_key: idempotencyKey,
+        action: action,
+        group_id: groupId,
+        payload: payload,
+        queued_at: new Date().toISOString()
+      });
+      saveOfflineQueue(queue);
+      return idempotencyKey;
+    }
+
+    function updateQueueUI() {
+      const queue = getOfflineQueue();
+      const countEl = document.getElementById('queue-count');
+      const banner = document.getElementById('offline-banner');
+      if (countEl) countEl.textContent = queue.length;
+      if (!navigator.onLine || queue.length > 0) {
+        banner.classList.add('active');
+      } else {
+        banner.classList.remove('active');
+      }
+    }
+
+    async function syncOfflineQueue() {
+      const queue = getOfflineQueue();
+      if (queue.length === 0) {
+        updateQueueUI();
+        return;
+      }
+
+      try {
+        const res = await apiFetch('/sync/batch', {
+          method: 'POST',
+          body: JSON.stringify({ mutations: queue })
+        });
+        // Clear successfully processed
+        localStorage.removeItem('splitter_offline_queue');
+        updateQueueUI();
+        if (currentGroupId) {
+          loadGroupDetails(currentGroupId);
+        }
+      } catch (e) {
+        console.error('Offline sync failed:', e);
+      }
+    }
+
+    window.addEventListener('online', () => {
+      updateQueueUI();
+      syncOfflineQueue();
+    });
+    window.addEventListener('offline', updateQueueUI);
+
+    // API fetch wrapper
+    async function apiFetch(endpoint, options = {}) {
+      const headers = options.headers || {};
+      headers['Content-Type'] = 'application/json';
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+          ...options,
+          headers
+        });
+
+        if (res.status === 401) {
+          logout();
+          throw new Error('Session expired. Please log in again.');
+        }
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Server request failed');
+        }
+        return data;
+      } catch (err) {
+        // If offline and mutating, we handle via queue
+        if (!navigator.onLine) {
+          throw new Error('OFFLINE');
+        }
+        throw err;
+      }
+    }
+
+    // Navigation
+    function navigateTo(view) {
+      document.getElementById('view-auth').classList.add('hidden');
+      document.getElementById('view-groups').classList.add('hidden');
+      document.getElementById('view-group-detail').classList.add('hidden');
+      document.getElementById('view-admin').classList.add('hidden');
+
+      if (!currentUser) {
+        document.getElementById('view-auth').classList.remove('hidden');
+        return;
+      }
+
+      if (view === 'groups') {
+        document.getElementById('view-groups').classList.remove('hidden');
+        loadGroups();
+      } else if (view === 'group-detail') {
+        document.getElementById('view-group-detail').classList.remove('hidden');
+      } else if (view === 'admin') {
+        document.getElementById('view-admin').classList.remove('hidden');
+        loadAdminData();
+      }
+    }
+
+    function switchAuthTab(tab) {
+      authMode = tab;
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      document.getElementById('display-name-group').classList.toggle('hidden', tab === 'login');
+      document.getElementById('auth-submit-btn').textContent = tab === 'login' ? 'Log In' : 'Create Account';
+      document.getElementById('auth-error').textContent = '';
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const errorEl = document.getElementById('auth-error');
+      errorEl.textContent = '';
+
+      try {
+        let res;
+        if (authMode === 'login') {
+          res = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+          });
+        } else {
+          const displayName = document.getElementById('auth-name').value;
+          res = await apiFetch('/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({ email, password, display_name: displayName })
+          });
+        }
+
+        token = res.token;
+        localStorage.setItem('splitter_token', token);
+        currentUser = res.user;
+        renderUserHeader();
+        navigateTo('groups');
+      } catch (err) {
+        errorEl.textContent = err.message;
+      }
+    }
+
+    function renderUserHeader() {
+      if (!currentUser) {
+        document.getElementById('user-header-info').classList.add('hidden');
+        document.getElementById('admin-nav-btn').classList.add('hidden');
+        document.getElementById('logout-btn').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('user-header-info').classList.remove('hidden');
+      document.getElementById('logout-btn').classList.remove('hidden');
+      document.getElementById('user-display-name').textContent = currentUser.display_name;
+
+      const roleBadge = document.getElementById('user-role-badge');
+      if (currentUser.is_admin) {
+        roleBadge.textContent = 'Admin';
+        roleBadge.className = 'role-tag admin';
+        document.getElementById('admin-nav-btn').classList.remove('hidden');
+      } else {
+        roleBadge.textContent = 'Member';
+        roleBadge.className = 'role-tag';
+        document.getElementById('admin-nav-btn').classList.add('hidden');
+      }
+    }
+
+    function logout() {
+      token = null;
+      currentUser = null;
+      localStorage.removeItem('splitter_token');
+      renderUserHeader();
+      navigateTo('auth');
+    }
+
+    // Groups logic
+    async function loadGroups() {
+      try {
+        const groups = await apiFetch('/groups');
+        const container = document.getElementById('groups-list');
+        container.innerHTML = '';
+
+        if (groups.length === 0) {
+          container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No groups yet. Click "+ Create Group" to start splitting expenses!</div>`;
+          return;
+        }
+
+        groups.forEach(g => {
+          const card = document.createElement('div');
+          card.className = 'group-card';
+          card.onclick = () => openGroup(g.id);
+          card.innerHTML = `
+            <div class="group-name">${escapeHtml(g.name)}</div>
+            <div class="group-desc">${escapeHtml(g.description || 'No description')}</div>
+            <div class="group-meta">
+              <span>👥 ${g.member_count} member${g.member_count > 1 ? 's' : ''}</span>
+              <span class="role-tag">${g.user_role}</span>
+              <span>${g.default_currency}</span>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error('Failed to load groups:', err);
+      }
+    }
+
+    async function handleCreateGroup(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-group-name').value;
+      const description = document.getElementById('new-group-desc').value;
+      const default_currency = document.getElementById('new-group-currency').value;
+
+      try {
+        const group = await apiFetch('/groups', {
+          method: 'POST',
+          body: JSON.stringify({ name, description, default_currency })
+        });
+        closeModal('modal-create-group');
+        document.getElementById('new-group-name').value = '';
+        document.getElementById('new-group-desc').value = '';
+        openGroup(group.id);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Group Details Logic
+    async function openGroup(groupId) {
+      currentGroupId = groupId;
+      navigateTo('group-detail');
+      await loadGroupDetails(groupId);
+    }
+
+    async function loadGroupDetails(groupId) {
+      try {
+        const detail = await apiFetch(`/groups/${groupId}`);
+        currentGroupDetail = detail;
+
+        document.getElementById('group-title').textContent = detail.group.name;
+        document.getElementById('group-desc').textContent = detail.group.description || `${detail.members.length} members • Currency: ${detail.group.default_currency}`;
+
+        // Load Balances & Simplified Debts
+        await loadBalances(groupId, detail.group.default_currency);
+
+        // Load Expenses
+        await loadExpenses(groupId, detail.group.default_currency);
+
+        // Load Settlements
+        await loadSettlements(groupId, detail.group.default_currency);
+      } catch (err) {
+        console.error('Failed to load group detail:', err);
+      }
+    }
+
+    async function loadBalances(groupId, currency) {
+      const summary = await apiFetch(`/groups/${groupId}/balances`);
+
+      // 1. Member balances
+      const bContainer = document.getElementById('member-balances-list');
+      bContainer.innerHTML = '';
+      summary.balances.forEach(b => {
+        const isMe = b.user_id === currentUser.id;
+        const net = b.net_balance_cents;
+        let colorClass = 'cents-neutral';
+        let label = 'settled up';
+        if (net > 0) {
+          colorClass = 'cents-positive';
+          label = `is owed ${formatMoney(net, currency)}`;
+        } else if (net < 0) {
+          colorClass = 'cents-negative';
+          label = `owes ${formatMoney(Math.abs(net), currency)}`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'balance-row';
+        row.innerHTML = `
+          <div>
+            <strong>${escapeHtml(b.display_name)}</strong> ${isMe ? '<span class="role-tag">You</span>' : ''}
+          </div>
+          <div class="${colorClass}" style="font-family: var(--font-mono); font-weight: 600;">
+            ${label}
+          </div>
+        `;
+        bContainer.appendChild(row);
+      });
+
+      // 2. Simplified Debts
+      const dContainer = document.getElementById('simplified-debts-list');
+      dContainer.innerHTML = '';
+      if (summary.simplified_debts.length === 0) {
+        dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">🎉 Everyone is completely settled up!</div>`;
+      } else {
+        summary.simplified_debts.forEach(d => {
+          const isPayerMe = d.from_user_id === currentUser.id;
+          const isPayeeMe = d.to_user_id === currentUser.id;
+
+          const item = document.createElement('div');
+          item.className = 'debt-item';
+          item.innerHTML = `
+            <div class="debt-desc">
+              <span class="debt-highlight">${escapeHtml(d.from_user_name)}</span> ${isPayerMe ? '(You)' : ''}
+              owes
+              <span class="debt-highlight">${escapeHtml(d.to_user_name)}</span> ${isPayeeMe ? '(You)' : ''}
+              <strong style="margin-left: 6px; font-family: var(--font-mono);">${formatMoney(d.amount_cents, currency)}</strong>
+            </div>
+            <div>
+              ${(isPayerMe || isPayeeMe) ? `
+                <button class="btn btn-secondary btn-sm" onclick="openSettleModal('${d.from_user_id}', '${escapeHtml(d.from_user_name)}', '${d.to_user_id}', '${escapeHtml(d.to_user_name)}', ${d.amount_cents})">
+                  Settle Up
+                </button>
+              ` : ''}
+            </div>
+          `;
+          dContainer.appendChild(item);
+        });
+      }
+    }
+
+    async function loadExpenses(groupId, currency) {
+      const expenses = await apiFetch(`/groups/${groupId}/expenses`);
+      const container = document.getElementById('expenses-list');
+      container.innerHTML = '';
+
+      if (expenses.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px 0;">No expenses recorded yet.</div>`;
+        return;
+      }
+
+      expenses.forEach(exp => {
+        const row = document.createElement('div');
+        row.className = 'expense-row';
+
+        const splitsHtml = exp.splits.map(s => `
+          <span style="font-size: 0.75rem; background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">
+            ${escapeHtml(s.display_name)}: ${formatMoney(s.amount_cents, currency)}
+          </span>
+        `).join(' ');
+
+        const canDelete = exp.paid_by === currentUser.id || currentUser.is_admin;
+
+        row.innerHTML = `
+          <div>
+            <div class="expense-title">${escapeHtml(exp.description)}</div>
+            <div class="expense-sub">Paid by <strong>${escapeHtml(exp.paid_by_name)}</strong> • ${new Date(exp.expense_date).toLocaleDateString()} • <span class="role-tag">${escapeHtml(exp.category)}</span></div>
+            <div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;">${splitsHtml}</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+            <div class="expense-amount">${formatMoney(exp.amount_cents, currency)}</div>
+            ${canDelete ? `
+              <button class="btn btn-danger btn-sm" onclick="deleteExpense('${exp.id}')">Delete</button>
+            ` : ''}
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    async function loadSettlements(groupId, currency) {
+      const settlements = await apiFetch(`/groups/${groupId}/settlements`);
+      const container = document.getElementById('settlements-list');
+      container.innerHTML = '';
+
+      if (settlements.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 12px 0;">No settlement payments recorded yet.</div>`;
+        return;
+      }
+
+      settlements.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'balance-row';
+        item.style.marginBottom = '6px';
+        item.innerHTML = `
+          <div>
+            <strong>${escapeHtml(s.payer_name)}</strong> paid <strong>${escapeHtml(s.payee_name)}</strong>
+            <span style="color: var(--text-dim); font-size: 0.78rem; margin-left: 8px;">${new Date(s.settled_at).toLocaleDateString()}</span>
+          </div>
+          <div class="cents-positive" style="font-family: var(--font-mono); font-weight: 700;">
+            ${formatMoney(s.amount_cents, currency)}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Add Expense Modal
+    function openAddExpenseModal() {
+      if (!currentGroupDetail) return;
+      const payerSelect = document.getElementById('expense-payer');
+      payerSelect.innerHTML = '';
+
+      const partsList = document.getElementById('expense-participants-list');
+      partsList.innerHTML = '';
+
+      currentGroupDetail.members.forEach(m => {
+        // Payer option
+        const opt = document.createElement('option');
+        opt.value = m.user_id;
+        opt.textContent = m.display_name + (m.user_id === currentUser.id ? ' (You)' : '');
+        if (m.user_id === currentUser.id) opt.selected = true;
+        payerSelect.appendChild(opt);
+
+        // Participant checkbox
+        const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '8px';
+        label.style.fontSize = '0.85rem';
+        label.style.cursor = 'pointer';
+        label.innerHTML = `
+          <input type="checkbox" name="expense_participant" value="${m.user_id}" checked />
+          <span>${escapeHtml(m.display_name)}</span>
+        `;
+        partsList.appendChild(label);
+      });
+
+      document.getElementById('expense-desc').value = '';
+      document.getElementById('expense-amount').value = '';
+      openModal('modal-add-expense');
+    }
+
+    async function handleAddExpense(e) {
+      e.preventDefault();
+      const desc = document.getElementById('expense-desc').value;
+      const amtVal = parseFloat(document.getElementById('expense-amount').value);
+      const category = document.getElementById('expense-category').value;
+      const paid_by = document.getElementById('expense-payer').value;
+
+      const checkedParts = Array.from(document.querySelectorAll('input[name="expense_participant"]:checked')).map(el => el.value);
+      if (checkedParts.length === 0) {
+        alert('Please select at least one person to split the expense with.');
+        return;
+      }
+
+      const amount_cents = Math.round(amtVal * 100);
+      const payload = {
+        description: desc,
+        amount_cents: amount_cents,
+        paid_by: paid_by,
+        split_type: 'EQUAL',
+        category: category,
+        participants: checkedParts
+      };
+
+      try {
+        if (!navigator.onLine) {
+          enqueueMutation('create_expense', currentGroupId, payload);
+          closeModal('modal-add-expense');
+          alert('Saved to offline queue! Will sync when connection is restored.');
+          return;
+        }
+
+        const idempotencyKey = uuidv4();
+        payload.idempotency_key = idempotencyKey;
+
+        await apiFetch(`/groups/${currentGroupId}/expenses`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        closeModal('modal-add-expense');
+        loadGroupDetails(currentGroupId);
+      } catch (err) {
+        if (err.message === 'OFFLINE') {
+          enqueueMutation('create_expense', currentGroupId, payload);
+          closeModal('modal-add-expense');
+          alert('Network issue detected. Saved to offline queue!');
+        } else {
+          alert(err.message);
+        }
+      }
+    }
+
+    async function deleteExpense(expId) {
+      if (!confirm('Are you sure you want to delete this expense?')) return;
+      try {
+        await apiFetch(`/groups/${currentGroupId}/expenses/${expId}`, {
+          method: 'DELETE'
+        });
+        loadGroupDetails(currentGroupId);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Member Management
+    async function handleAddMember(e) {
+      e.preventDefault();
+      const email = document.getElementById('add-member-email').value;
+      const role = document.getElementById('add-member-role').value;
+
+      try {
+        await apiFetch(`/groups/${currentGroupId}/members`, {
+          method: 'POST',
+          body: JSON.stringify({ email, role })
+        });
+        closeModal('modal-add-member');
+        document.getElementById('add-member-email').value = '';
+        loadGroupDetails(currentGroupId);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Settlement Modal
+    function openSettleModal(payerId, payerName, payeeId, payeeName, amountCents) {
+      document.getElementById('settle-payer-id').value = payerId;
+      document.getElementById('settle-payer-name').value = payerName;
+      document.getElementById('settle-payee-id').value = payeeId;
+      document.getElementById('settle-payee-name').value = payeeName;
+      document.getElementById('settle-amount').value = (amountCents / 100).toFixed(2);
+      openModal('modal-settle');
+    }
+
+    async function handleRecordSettlement(e) {
+      e.preventDefault();
+      const payerId = document.getElementById('settle-payer-id').value;
+      const payeeId = document.getElementById('settle-payee-id').value;
+      const amtVal = parseFloat(document.getElementById('settle-amount').value);
+      const amount_cents = Math.round(amtVal * 100);
+
+      const payload = {
+        payer_id: payerId,
+        payee_id: payeeId,
+        amount_cents: amount_cents
+      };
+
+      try {
+        if (!navigator.onLine) {
+          enqueueMutation('record_settlement', currentGroupId, payload);
+          closeModal('modal-settle');
+          alert('Settlement saved to offline queue!');
+          return;
+        }
+
+        const idempotencyKey = uuidv4();
+        payload.idempotency_key = idempotencyKey;
+
+        await apiFetch(`/groups/${currentGroupId}/settlements`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        closeModal('modal-settle');
+        loadGroupDetails(currentGroupId);
+      } catch (err) {
+        if (err.message === 'OFFLINE') {
+          enqueueMutation('record_settlement', currentGroupId, payload);
+          closeModal('modal-settle');
+          alert('Network issue detected. Saved to offline queue!');
+        } else {
+          alert(err.message);
+        }
+      }
+    }
+
+    // Admin Dashboard Logic
+    async function loadAdminData() {
+      try {
+        const stats = await apiFetch('/admin/stats');
+        document.getElementById('admin-stat-users').textContent = stats.total_users;
+        document.getElementById('admin-stat-groups').textContent = stats.total_groups;
+        document.getElementById('admin-stat-expenses').textContent = stats.total_expenses;
+        document.getElementById('admin-stat-volume').textContent = formatMoney(stats.total_volume_cents, 'USD');
+        document.getElementById('admin-stat-settlements').textContent = stats.total_settlements;
+
+        const users = await apiFetch('/admin/users');
+        const tbody = document.getElementById('admin-users-table');
+        tbody.innerHTML = '';
+
+        users.forEach(u => {
+          const tr = document.createElement('tr');
+          const isSelf = u.id === currentUser.id;
+          tr.innerHTML = `
+            <td><strong>${escapeHtml(u.display_name)}</strong></td>
+            <td>${escapeHtml(u.email)}</td>
+            <td>
+              <span class="role-tag ${u.is_admin ? 'admin' : ''}">${u.is_admin ? 'Admin' : 'Member'}</span>
+            </td>
+            <td>
+              <span style="color: ${u.is_active ? 'var(--success)' : 'var(--danger)'}; font-weight: 600;">
+                ${u.is_active ? 'Active' : 'Disabled'}
+              </span>
+            </td>
+            <td style="color: var(--text-dim); font-family: var(--font-mono); font-size: 0.78rem;">
+              ${new Date(u.created_at).toLocaleDateString()}
+            </td>
+            <td>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="toggleUserRole('${u.id}', ${!u.is_admin})">
+                  ${u.is_admin ? 'Demote' : 'Promote'}
+                </button>
+                ${!isSelf ? `
+                  <button class="btn btn-danger btn-sm" onclick="toggleUserStatus('${u.id}', ${!u.is_active})">
+                    ${u.is_active ? 'Disable' : 'Enable'}
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Failed to load admin data:', err);
+      }
+    }
+
+    async function toggleUserRole(userId, newIsAdmin) {
+      try {
+        await apiFetch(`/admin/users/${userId}/role`, {
+          method: 'PATCH',
+          body: JSON.stringify({ is_admin: newIsAdmin })
+        });
+        loadAdminData();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function toggleUserStatus(userId, newIsActive) {
+      try {
+        await apiFetch(`/admin/users/${userId}/status`, {
+          method: 'PATCH',
+          body: JSON.stringify({ is_active: newIsActive })
+        });
+        loadAdminData();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Init
+    async function init() {
+      updateQueueUI();
+      if (token) {
+        try {
+          currentUser = await apiFetch('/auth/me');
+          renderUserHeader();
+          navigateTo('groups');
+        } catch (e) {
+          logout();
+        }
+      } else {
+        navigateTo('auth');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
