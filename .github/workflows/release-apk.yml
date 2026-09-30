@@ -1,0 +1,121 @@
+name: Release Android APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Setup release signing keystore
+        working-directory: android
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY || secrets.UPLOAD_KEYSTORE_B64 }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS || secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          if [ -n "$SIGNING_KEY" ]; then
+            echo "Using secret-based signing key..."
+            echo "$SIGNING_KEY" | tr -d '\r\n ' | base64 -d > app/release.keystore
+            cat > keystore.properties <<EOF
+          storeFile=release.keystore
+          storePassword=${SIGNING_STORE_PASSWORD:-password123}
+          keyAlias=${SIGNING_KEY_ALIAS:-splitter}
+          keyPassword=${SIGNING_KEY_PASSWORD:-password123}
+          EOF
+          else
+            echo "No signing secret provided; generating self-signed release keystore for CI..."
+            keytool -genkey -v -keystore app/release.keystore \
+              -alias splitter \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass splitterpass123 -keypass splitterpass123 \
+              -dname "CN=Splitter, OU=Mobile, O=AlgoSculptor, L=Remote, S=Server, C=US"
+            cat > keystore.properties <<EOF
+          storeFile=release.keystore
+          storePassword=splitterpass123
+          keyAlias=splitter
+          keyPassword=splitterpass123
+          EOF
+          fi
+
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "main" ]; then
+            VERSION="0.1.0"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Rename APK
+        working-directory: android
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/splitter-v${{ steps.version.outputs.version }}-release.apk"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: Splitter v${{ steps.version.outputs.version }}
+          fail_on_unmatched_files: true
+          body: |
+            ## Splitter Android App v${{ steps.version.outputs.version }}
+
+            Mobile client configured for [splitter.algosculptor.com](https://splitter.algosculptor.com) with background offline queuing.
+
+            ### Features:
+            - **URL Endpoint**: Connected directly to `https://splitter.algosculptor.com`
+            - **Offline Queue**: Room + WorkManager queue for expense creations and debt settlements
+            - **Idempotency Protection**: Safe network retries without duplicate transactions
+
+            ### Installation:
+            Download the release APK below and install on your device.
+          files: |
+            android/dist/splitter-v${{ steps.version.outputs.version }}-release.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: splitter-apk
+          path: android/dist/*.apk

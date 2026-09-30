@@ -2,6 +2,7 @@ package com.splitter.sync
 
 import android.content.Context
 import androidx.work.*
+import com.splitter.app.BuildConfig
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -12,20 +13,20 @@ import java.util.concurrent.TimeUnit
 
 class SyncQueueWorker(
     appContext: Context,
-    workerParams: WorkerParameters,
-    private val queueDao: SyncQueueDao,
-    private val okHttpClient: OkHttpClient,
-    private val serverBaseUrl: String,
-    private val getAuthToken: suspend () -> String?
+    workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
+        val queueDao = SplitterDatabase.getInstance(applicationContext).syncQueueDao()
         val pending = queueDao.getPendingMutations()
         if (pending.isEmpty()) {
             return Result.success()
         }
 
-        val token = getAuthToken() ?: return Result.retry()
+        val sharedPrefs = applicationContext.getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
+        val token = sharedPrefs.getString("jwt_token", null)
+
+        val serverBaseUrl = BuildConfig.API_BASE_URL
 
         // Construct JSON batch payload
         val batchJson = JSONObject()
@@ -43,17 +44,23 @@ class SyncQueueWorker(
         }
         batchJson.put("mutations", mutationsArray)
 
-        val request = Request.Builder()
-            .url("$serverBaseUrl/api/sync/batch")
-            .addHeader("Authorization", "Bearer $token")
-            .addHeader("Content-Type", "application/json")
-            .post(batchJson.toString().toRequestBody("application/json".toMediaType()))
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
             .build()
 
+        val reqBuilder = Request.Builder()
+            .url("$serverBaseUrl/api/sync/batch")
+            .addHeader("Content-Type", "application/json")
+            .post(batchJson.toString().toRequestBody("application/json".toMediaType()))
+
+        if (!token.isNullOrEmpty()) {
+            reqBuilder.addHeader("Authorization", "Bearer $token")
+        }
+
         return try {
-            val response = okHttpClient.newCall(request).execute()
+            val response = okHttpClient.newCall(reqBuilder.build()).execute()
             if (!response.isSuccessful) {
-                // Revert status to PENDING for retry
                 for (item in pending) {
                     queueDao.markFailed(item.id, "HTTP Error ${response.code}")
                 }

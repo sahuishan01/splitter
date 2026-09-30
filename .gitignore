@@ -4,3 +4,14 @@ splitter.db-wal
 splitter.db-shm
 .env
 *.log
+
+# Android & Gradle
+.gradle/
+build/
+app/build/
+*.keystore
+*.jks
+keystore.properties
+local.properties
+*.apk
+*.aab
