@@ -1,7 +1,7 @@
 # Graph Report - splitter  (2026-09-30)
 
 ## Corpus Check
-- 34 files · ~13,440 words
+- 34 files · ~13,447 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `55aa8cc2`
+- Built from commit: `3734724e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -113,7 +113,7 @@ Cohesion: 0.83
 Nodes (3): gradlew script, die(), warn()
 
 ## Knowledge Gaps
-- **5 isolated node(s):** `splitter`, `APPLIED`, `FAILED`, `PENDING`, `SYNCING`
+- **5 isolated node(s):** `APPLIED`, `FAILED`, `PENDING`, `SYNCING`, `splitter`
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -130,7 +130,7 @@ _Questions this graph is uniquely positioned to answer:_
   _`check_group_membership()` has 7 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `create_expense()` (e.g. with `check_group_membership()` and `batch_sync()`) actually correct?**
   _`create_expense()` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `splitter`, `APPLIED`, `FAILED` to the rest of the system?**
+- **What connects `APPLIED`, `FAILED`, `PENDING` to the rest of the system?**
   _5 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `SyncQueueDao` be split into smaller, more focused modules?**
   _Cohesion score 0.10507246376811594 - nodes in this community are weakly interconnected._

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Splitter" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Splitter" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">#0D1117</item>
         <item name="android:navigationBarColor">#0D1117</item>
+        <item name="android:windowBackground">#0D1117</item>
+        <item name="colorPrimary">#58A6FF</item>
+        <item name="colorSecondary">#3FB950</item>
     </style>
 </resources>

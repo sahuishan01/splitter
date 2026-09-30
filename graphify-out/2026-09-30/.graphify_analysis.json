@@ -1,0 +1,351 @@
+{
+  "communities": {
+    "0": [
+      "android_app_src_main_java_com_splitter_sync_offlinequeuerepository",
+      "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_kt_flow",
+      "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_offlinequeuerepository",
+      "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_offlinequeuerepository_observependingqueuesize",
+      "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_offlinequeuerepository_queuecreateexpense",
+      "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_offlinequeuerepository_queuerecordsettlement",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity_mutationstatus",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity_mutationstatus_applied",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity_mutationstatus_failed",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity_mutationstatus_pending",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity_mutationstatus_syncing",
+      "android_app_src_main_java_com_splitter_sync_queuedmutationentity_queuedmutationentity",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_kt_flow",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_clearcompleted",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_delete",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_enqueue",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_getpendingmutations",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_markfailed",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_observependingcount",
+      "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_updatestatus",
+      "android_app_src_main_java_com_splitter_sync_syncqueueworker",
+      "android_app_src_main_java_com_splitter_sync_syncqueueworker_kt_result",
+      "android_app_src_main_java_com_splitter_sync_syncqueueworker_syncqueueworker",
+      "android_app_src_main_java_com_splitter_sync_syncqueueworker_syncqueueworker_dowork",
+      "android_app_src_main_java_com_splitter_sync_syncqueueworker_syncqueueworker_scheduleimmediatesync",
+      "context",
+      "coroutineworker"
+    ],
+    "1": [
+      "from",
+      "src_models",
+      "src_models_expense",
+      "src_models_expensedetail",
+      "src_models_expensesplit",
+      "src_models_expensesplitdetail",
+      "src_models_group",
+      "src_models_groupbalancesummary",
+      "src_models_groupmemberrow",
+      "src_models_idempotencyrecord",
+      "src_models_memberbalance",
+      "src_models_rs_option",
+      "src_models_rs_self",
+      "src_models_rs_string",
+      "src_models_rs_vec",
+      "src_models_settlement",
+      "src_models_settlementdetail",
+      "src_models_simplifieddebt",
+      "src_models_user",
+      "src_models_userresponse",
+      "src_models_userresponse_from",
+      "src_services_settlement",
+      "src_services_settlement_rs_vec",
+      "src_services_settlement_simplify_debts",
+      "src_services_settlement_test_three_person_transitive_simplification",
+      "src_services_settlement_test_two_person_debt"
+    ],
+    "2": [
+      "src_routes_groups",
+      "src_routes_groups_add_member",
+      "src_routes_groups_addmemberrequest",
+      "src_routes_groups_check_group_membership",
+      "src_routes_groups_create_group",
+      "src_routes_groups_creategrouprequest",
+      "src_routes_groups_get_group",
+      "src_routes_groups_groupdetail",
+      "src_routes_groups_groupmemberdetail",
+      "src_routes_groups_groupsummary",
+      "src_routes_groups_list_groups",
+      "src_routes_groups_remove_member",
+      "src_routes_groups_rs_json",
+      "src_routes_groups_rs_option",
+      "src_routes_groups_rs_path",
+      "src_routes_groups_rs_result",
+      "src_routes_groups_rs_sqlitepool",
+      "src_routes_groups_rs_state",
+      "src_routes_groups_rs_string",
+      "src_routes_groups_rs_value",
+      "src_routes_groups_rs_vec"
+    ],
+    "3": [
+      "error",
+      "intoresponse",
+      "parts",
+      "rejection",
+      "response",
+      "s",
+      "src_auth_jwt",
+      "src_auth_jwt_adminuser_from_request_parts",
+      "src_auth_jwt_authuser_from_request_parts",
+      "src_auth_jwt_claims",
+      "src_auth_jwt_get_jwt_secret",
+      "src_auth_jwt_issue_token",
+      "src_auth_jwt_rs_result",
+      "src_auth_jwt_rs_self",
+      "src_auth_jwt_rs_string",
+      "src_auth_jwt_verify_token",
+      "src_error",
+      "src_error_apperror",
+      "src_error_apperror_into_response",
+      "src_error_rs_string"
+    ],
+    "4": [
+      "src_auth_jwt_authuser",
+      "src_routes_expenses",
+      "src_routes_expenses_create_expense",
+      "src_routes_expenses_create_settlement",
+      "src_routes_expenses_createexpenserequest",
+      "src_routes_expenses_createsettlementrequest",
+      "src_routes_expenses_delete_expense",
+      "src_routes_expenses_get_group_balances",
+      "src_routes_expenses_list_expenses",
+      "src_routes_expenses_list_settlements",
+      "src_routes_expenses_rs_json",
+      "src_routes_expenses_rs_option",
+      "src_routes_expenses_rs_path",
+      "src_routes_expenses_rs_result",
+      "src_routes_expenses_rs_sqlitepool",
+      "src_routes_expenses_rs_state",
+      "src_routes_expenses_rs_string",
+      "src_routes_expenses_rs_value",
+      "src_routes_expenses_rs_vec",
+      "src_routes_expenses_splitinput"
+    ],
+    "5": [
+      "query",
+      "src_routes_sync",
+      "src_routes_sync_batch_sync",
+      "src_routes_sync_batchsyncrequest",
+      "src_routes_sync_batchsyncresponse",
+      "src_routes_sync_get_changes",
+      "src_routes_sync_groupchangesresponse",
+      "src_routes_sync_mutationresult",
+      "src_routes_sync_queuedmutation",
+      "src_routes_sync_rs_json",
+      "src_routes_sync_rs_option",
+      "src_routes_sync_rs_result",
+      "src_routes_sync_rs_sqlitepool",
+      "src_routes_sync_rs_state",
+      "src_routes_sync_rs_string",
+      "src_routes_sync_rs_value",
+      "src_routes_sync_rs_vec",
+      "src_routes_sync_syncchangesquery"
+    ],
+    "6": [
+      "src_auth_mod",
+      "src_auth_password",
+      "src_auth_password_hash_password",
+      "src_auth_password_rs_result",
+      "src_auth_password_rs_string",
+      "src_auth_password_verify_password",
+      "src_routes_auth",
+      "src_routes_auth_authresponse",
+      "src_routes_auth_login",
+      "src_routes_auth_loginrequest",
+      "src_routes_auth_me",
+      "src_routes_auth_register",
+      "src_routes_auth_registerrequest",
+      "src_routes_auth_rs_json",
+      "src_routes_auth_rs_result",
+      "src_routes_auth_rs_sqlitepool",
+      "src_routes_auth_rs_state",
+      "src_routes_auth_rs_string"
+    ],
+    "7": [
+      "fromrequestparts",
+      "src_auth_jwt_adminuser",
+      "src_routes_admin",
+      "src_routes_admin_adminstats",
+      "src_routes_admin_get_admin_stats",
+      "src_routes_admin_list_users",
+      "src_routes_admin_rs_json",
+      "src_routes_admin_rs_path",
+      "src_routes_admin_rs_result",
+      "src_routes_admin_rs_sqlitepool",
+      "src_routes_admin_rs_state",
+      "src_routes_admin_rs_string",
+      "src_routes_admin_rs_vec",
+      "src_routes_admin_update_user_role",
+      "src_routes_admin_update_user_status",
+      "src_routes_admin_updaterolerequest",
+      "src_routes_admin_updatestatusrequest"
+    ],
+    "8": [
+      "client",
+      "router",
+      "src_db",
+      "src_db_init_pool",
+      "src_db_rs_result",
+      "src_db_rs_sqlitepool",
+      "src_lib",
+      "src_lib_create_app",
+      "src_lib_rs_sqlitepool",
+      "tempdir",
+      "tests_api_tests",
+      "tests_api_tests_rs_string",
+      "tests_api_tests_setup_test_app",
+      "tests_api_tests_test_full_expense_splitting_flow",
+      "tests_api_tests_testcontext"
+    ],
+    "9": [
+      "src_main",
+      "src_main_bootstrap_admin_if_configured",
+      "src_main_main",
+      "src_main_rs_result",
+      "src_main_rs_sqlitepool"
+    ],
+    "10": [
+      "pkg_splitter"
+    ],
+    "11": [
+      "src_routes_mod"
+    ],
+    "12": [
+      "src_services_mod"
+    ]
+  },
+  "cohesion": {
+    "0": 0.08275862068965517,
+    "1": 0.16,
+    "2": 0.28095238095238095,
+    "3": 0.16842105263157894,
+    "4": 0.34210526315789475,
+    "5": 0.22875816993464052,
+    "6": 0.21568627450980393,
+    "7": 0.27205882352941174,
+    "8": 0.17142857142857143,
+    "9": 0.7,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_error_apperror",
+      "label": "AppError",
+      "degree": 29
+    },
+    {
+      "id": "src_auth_jwt_authuser",
+      "label": "AuthUser",
+      "degree": 19
+    },
+    {
+      "id": "src_routes_groups_check_group_membership",
+      "label": "check_group_membership()",
+      "degree": 15
+    },
+    {
+      "id": "src_routes_expenses_create_expense",
+      "label": "create_expense()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_expenses_list_expenses",
+      "label": "list_expenses()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_expenses_create_settlement",
+      "label": "create_settlement()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_expenses_list_settlements",
+      "label": "list_settlements()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_sync_get_changes",
+      "label": "get_changes()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_expenses_get_group_balances",
+      "label": "get_group_balances()",
+      "degree": 12
+    },
+    {
+      "id": "src_routes_groups_add_member",
+      "label": "add_member()",
+      "degree": 12
+    }
+  ],
+  "surprises": [
+    {
+      "source": "setup_test_app()",
+      "target": "init_pool()",
+      "source_files": [
+        "tests/api_tests.rs",
+        "src/db.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "setup_test_app()",
+      "target": "create_app()",
+      "source_files": [
+        "tests/api_tests.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "login()",
+      "target": "issue_token()",
+      "source_files": [
+        "src/routes/auth.rs",
+        "src/auth/jwt.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "register()",
+      "target": "issue_token()",
+      "source_files": [
+        "src/routes/auth.rs",
+        "src/auth/jwt.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "login()",
+      "target": "verify_password()",
+      "source_files": [
+        "src/routes/auth.rs",
+        "src/auth/password.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; peripheral node `verify_password()` unexpectedly reaches hub `login()`"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

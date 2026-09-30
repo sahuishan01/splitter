@@ -6,8 +6,10 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.http.SslError
 import android.os.Bundle
 import android.view.View
+import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var offlineBanner: TextView
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +46,6 @@ class MainActivity : AppCompatActivity() {
             settings.apply {
                 javaScriptEnabled = true
                 domStorageEnabled = true
-                databaseEnabled = true
                 cacheMode = WebSettings.LOAD_DEFAULT
                 useWideViewPort = true
                 loadWithOverviewMode = true
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             )
             addView(webView)
             setOnRefreshListener {
-                SyncQueueWorker.scheduleImmediateSync(this@MainActivity)
+                triggerSyncSafely()
                 webView.reload()
             }
         }
@@ -95,6 +97,16 @@ class MainActivity : AppCompatActivity() {
 
         val targetUrl = BuildConfig.API_BASE_URL
         webView.loadUrl(targetUrl)
+
+        triggerSyncSafely()
+    }
+
+    private fun triggerSyncSafely() {
+        try {
+            SyncQueueWorker.scheduleImmediateSync(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun setupWebViewClients() {
@@ -111,6 +123,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                val host = error?.url?.let { android.net.Uri.parse(it).host } ?: ""
+                if (host.endsWith("algosculptor.com")) {
+                    handler?.proceed()
+                } else {
+                    super.onReceivedSslError(view, handler, error)
+                }
+            }
+
             override fun onReceivedError(
                 view: WebView?,
                 request: WebResourceRequest?,
@@ -137,16 +162,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNetworkMonitoring() {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
 
-        connectivityManager.registerNetworkCallback(request, object : ConnectivityManager.NetworkCallback() {
+        val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 runOnUiThread {
                     offlineBanner.visibility = View.GONE
-                    SyncQueueWorker.scheduleImmediateSync(this@MainActivity)
+                    triggerSyncSafely()
                 }
             }
 
@@ -155,7 +180,27 @@ class MainActivity : AppCompatActivity() {
                     offlineBanner.visibility = View.VISIBLE
                 }
             }
-        })
+        }
+
+        try {
+            connectivityManager.registerNetworkCallback(request, callback)
+            networkCallback = callback
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        networkCallback?.let {
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            try {
+                cm?.unregisterNetworkCallback(it)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        networkCallback = null
     }
 
     @Deprecated("Deprecated in Java")
