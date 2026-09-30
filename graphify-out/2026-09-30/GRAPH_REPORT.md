@@ -1,7 +1,7 @@
 # Graph Report - splitter  (2026-09-30)
 
 ## Corpus Check
-- 34 files · ~13,547 words
+- 34 files · ~14,917 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,27 +10,27 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f5f8638e`
+- Built from commit: `c43db9dd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- SyncQueueDao
-- models.rs
+- MainActivity.kt
 - AppError
-- jwt.rs
+- models.rs
+- SyncQueueDao
 - AuthUser
 - get_changes
 - login
 - update_user_role
 - setup_test_app
+- jwt.rs
+- SplitterDatabase
+- SyncQueueWorker
 - bootstrap_admin_if_configured
-- splitter
-- MainActivity.kt
-- SplitterDatabase.kt
 - gradlew
 - Result
-- SyncQueueWorker
+- splitter
 
 ## God Nodes (most connected - your core abstractions)
 1. `AppError` - 29 edges
@@ -49,11 +49,11 @@
   tests/api_tests.rs → src/db.rs
 - `setup_test_app()` --calls--> `create_app()`  [INFERRED]
   tests/api_tests.rs → src/lib.rs
-- `get_group_balances()` --calls--> `simplify_debts()`  [INFERRED]
-  src/routes/expenses.rs → src/services/settlement.rs
 - `create_expense()` --calls--> `check_group_membership()`  [INFERRED]
   src/routes/expenses.rs → src/routes/groups.rs
 - `create_settlement()` --calls--> `check_group_membership()`  [INFERRED]
+  src/routes/expenses.rs → src/routes/groups.rs
+- `delete_expense()` --calls--> `check_group_membership()`  [INFERRED]
   src/routes/expenses.rs → src/routes/groups.rs
 
 ## Import Cycles
@@ -61,21 +61,21 @@
 
 ## Communities (21 total, 2 thin omitted)
 
-### Community 0 - "SyncQueueDao"
-Cohesion: 0.11
-Nodes (11): Flow, OfflineQueueRepository, MutationStatus, APPLIED, FAILED, PENDING, SYNCING, QueuedMutationEntity (+3 more)
+### Community 0 - "MainActivity.kt"
+Cohesion: 0.15
+Nodes (15): MainActivity, ConnectivityManager, WebChromeClient, WebViewClient, AppCompatActivity, Bundle, Network, ProgressBar (+7 more)
 
-### Community 1 - "models.rs"
-Cohesion: 0.16
-Nodes (23): From, Expense, ExpenseDetail, ExpenseSplit, ExpenseSplitDetail, Group, GroupBalanceSummary, GroupMemberRow (+15 more)
-
-### Community 2 - "AppError"
+### Community 1 - "AppError"
 Cohesion: 0.19
 Nodes (25): Error, IntoResponse, Response, AppError, String, add_member(), AddMemberRequest, check_group_membership() (+17 more)
 
-### Community 3 - "jwt.rs"
-Cohesion: 0.29
-Nodes (10): Parts, Rejection, S, Claims, get_jwt_secret(), issue_token(), Result, Self (+2 more)
+### Community 2 - "models.rs"
+Cohesion: 0.16
+Nodes (23): From, Expense, ExpenseDetail, ExpenseSplit, ExpenseSplitDetail, Group, GroupBalanceSummary, GroupMemberRow (+15 more)
+
+### Community 3 - "SyncQueueDao"
+Cohesion: 0.11
+Nodes (11): Flow, OfflineQueueRepository, MutationStatus, APPLIED, FAILED, PENDING, SYNCING, QueuedMutationEntity (+3 more)
 
 ### Community 4 - "AuthUser"
 Cohesion: 0.34
@@ -97,25 +97,25 @@ Nodes (16): FromRequestParts, AdminUser, AdminStats, get_admin_stats(), list_use
 Cohesion: 0.17
 Nodes (12): Client, Router, init_pool(), Result, SqlitePool, create_app(), SqlitePool, TempDir (+4 more)
 
-### Community 9 - "bootstrap_admin_if_configured"
-Cohesion: 0.70
-Nodes (4): bootstrap_admin_if_configured(), main(), Result, SqlitePool
+### Community 9 - "jwt.rs"
+Cohesion: 0.29
+Nodes (10): Parts, Rejection, S, Claims, get_jwt_secret(), issue_token(), Result, Self (+2 more)
 
-### Community 13 - "MainActivity.kt"
-Cohesion: 0.15
-Nodes (15): MainActivity, ConnectivityManager, WebChromeClient, WebViewClient, AppCompatActivity, Bundle, Network, ProgressBar (+7 more)
-
-### Community 14 - "SplitterDatabase.kt"
+### Community 10 - "SplitterDatabase"
 Cohesion: 0.24
 Nodes (6): SplitterApplication, Context, SplitterDatabase, Application, RoomDatabase, SyncQueueDao
 
-### Community 15 - "gradlew"
-Cohesion: 0.83
-Nodes (3): gradlew script, die(), warn()
-
-### Community 20 - "SyncQueueWorker"
+### Community 11 - "SyncQueueWorker"
 Cohesion: 0.33
 Nodes (4): Context, SyncQueueWorker, CoroutineWorker, Result
+
+### Community 12 - "bootstrap_admin_if_configured"
+Cohesion: 0.70
+Nodes (4): bootstrap_admin_if_configured(), main(), Result, SqlitePool
+
+### Community 13 - "gradlew"
+Cohesion: 0.83
+Nodes (3): gradlew script, die(), warn()
 
 ## Knowledge Gaps
 - **5 isolated node(s):** `splitter`, `APPLIED`, `FAILED`, `PENDING`, `SYNCING`
@@ -125,9 +125,9 @@ Nodes (4): Context, SyncQueueWorker, CoroutineWorker, Result
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `AppError` connect `AppError` to `jwt.rs`, `AuthUser`, `get_changes`, `login`, `update_user_role`?**
+- **Why does `AppError` connect `AppError` to `AuthUser`, `get_changes`, `login`, `update_user_role`, `jwt.rs`?**
   _High betweenness centrality (0.142) - this node is a cross-community bridge._
-- **Why does `AuthUser` connect `AuthUser` to `AppError`, `jwt.rs`, `get_changes`, `login`, `update_user_role`?**
+- **Why does `AuthUser` connect `AuthUser` to `AppError`, `get_changes`, `login`, `update_user_role`, `jwt.rs`?**
   _High betweenness centrality (0.049) - this node is a cross-community bridge._
 - **Why does `get_changes()` connect `get_changes` to `AppError`, `AuthUser`?**
   _High betweenness centrality (0.036) - this node is a cross-community bridge._

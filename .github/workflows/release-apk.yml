@@ -39,34 +39,23 @@ jobs:
       - name: Setup release signing keystore
         working-directory: android
         env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY || secrets.UPLOAD_KEYSTORE_B64 }}
-          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || secrets.SIGNING_STORE_PASSWORD }}
-          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS || secrets.SIGNING_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || secrets.SIGNING_KEY_PASSWORD }}
+          UPLOAD_KEYSTORE_B64: ${{ secrets.UPLOAD_KEYSTORE_B64 || secrets.SIGNING_KEY }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || secrets.SIGNING_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || secrets.SIGNING_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ vars.KEY_ALIAS || secrets.KEY_ALIAS || secrets.SIGNING_KEY_ALIAS }}
         run: |
-          if [ -n "$SIGNING_KEY" ]; then
-            echo "Using secret-based signing key..."
-            echo "$SIGNING_KEY" | tr -d '\r\n ' | base64 -d > app/release.keystore
-            cat > keystore.properties <<EOF
-          storeFile=release.keystore
-          storePassword=${SIGNING_STORE_PASSWORD:-password123}
-          keyAlias=${SIGNING_KEY_ALIAS:-splitter}
-          keyPassword=${SIGNING_KEY_PASSWORD:-password123}
-          EOF
-          else
-            echo "No signing secret provided; generating self-signed release keystore for CI..."
-            keytool -genkey -v -keystore app/release.keystore \
-              -alias splitter \
-              -keyalg RSA -keysize 2048 -validity 10000 \
-              -storepass splitterpass123 -keypass splitterpass123 \
-              -dname "CN=Splitter, OU=Mobile, O=AlgoSculptor, L=Remote, S=Server, C=US"
-            cat > keystore.properties <<EOF
-          storeFile=release.keystore
-          storePassword=splitterpass123
-          keyAlias=splitter
-          keyPassword=splitterpass123
-          EOF
+          if [ -z "$UPLOAD_KEYSTORE_B64" ]; then
+            echo "::error::UPLOAD_KEYSTORE_B64 secret is not configured; refusing to build release with ephemeral keys to prevent signature conflicts." >&2
+            exit 1
           fi
+          echo "Restoring persistent release keystore from secrets..."
+          echo "$UPLOAD_KEYSTORE_B64" | tr -d '\r\n ' | base64 -d > app/upload.keystore
+          cat > keystore.properties <<EOF
+storeFile=upload.keystore
+storePassword=$KEYSTORE_PASSWORD
+keyAlias=${KEY_ALIAS:-splitter-upload}
+keyPassword=${KEY_PASSWORD:-$KEYSTORE_PASSWORD}
+EOF
 
       - name: Build release APK
         working-directory: android

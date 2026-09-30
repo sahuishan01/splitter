@@ -25,19 +25,24 @@ android {
         applicationId = "com.splitter.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 4
-        versionName = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.1.3"
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 5
+        versionName = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.1.4"
 
         buildConfigField("String", "API_BASE_URL", "\"https://splitter.algosculptor.com\"")
     }
 
     signingConfigs {
         create("release") {
-            if (releaseStoreFile != null && file(releaseStoreFile).exists()) {
-                storeFile = file(releaseStoreFile)
+            val resolvedStoreFile = if (releaseStoreFile != null) {
+                val candidate = file(releaseStoreFile)
+                if (candidate.exists()) candidate else rootProject.file(releaseStoreFile)
+            } else null
+
+            if (resolvedStoreFile != null && resolvedStoreFile.exists()) {
+                storeFile = resolvedStoreFile
                 storePassword = signingProp("storePassword", "KEYSTORE_PASSWORD")
-                keyAlias = signingProp("keyAlias", "KEY_ALIAS")
-                keyPassword = signingProp("keyPassword", "KEY_PASSWORD")
+                keyAlias = signingProp("keyAlias", "KEY_ALIAS") ?: "splitter-upload"
+                keyPassword = signingProp("keyPassword", "KEY_PASSWORD") ?: storePassword
             } else {
                 val debugKeystore = file("${System.getProperty("user.home")}/.android/debug.keystore")
                 if (debugKeystore.exists()) {
