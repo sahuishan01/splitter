@@ -10,6 +10,7 @@ use crate::{
     auth::AuthUser,
     error::AppError,
     models::{Group, GroupMemberRow, User},
+    services::activity::log_activity,
 };
 
 #[derive(Debug, Deserialize)]
@@ -114,6 +115,27 @@ pub async fn create_group(
     .bind(&now)
     .execute(&mut *tx)
     .await?;
+
+    let actor_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&mut *tx)
+        .await?;
+
+    let summary = format!("{} created group '{}'", actor_name.0, name);
+    let details = serde_json::json!({
+        "group_id": group_id,
+        "default_currency": currency
+    });
+    let _ = log_activity(
+        &mut *tx,
+        &group_id,
+        &auth.0.sub,
+        "CREATE_GROUP",
+        Some(&group_id),
+        &summary,
+        Some(&details),
+    )
+    .await;
 
     tx.commit().await?;
 
@@ -255,6 +277,29 @@ pub async fn add_member(
     .execute(&pool)
     .await?;
 
+    let actor_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&pool)
+        .await?;
+
+    let summary = format!("{} added {} ({}) as {}", actor_name.0, target_user.display_name, target_user.email, role);
+    let details = serde_json::json!({
+        "member_id": member_id,
+        "user_id": target_user.id,
+        "user_name": target_user.display_name,
+        "role": role,
+    });
+    let _ = log_activity(
+        &pool,
+        &group_id,
+        &auth.0.sub,
+        "ADD_MEMBER",
+        Some(&target_user.id),
+        &summary,
+        Some(&details),
+    )
+    .await;
+
     Ok(Json(GroupMemberDetail {
         id: member_id,
         user_id: target_user.id,
@@ -277,6 +322,12 @@ pub async fn remove_member(
         return Err(AppError::Forbidden("Only group admins can remove other members".to_string()));
     }
 
+    let removed_user_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&user_id)
+        .fetch_optional(&pool)
+        .await?
+        .unwrap_or(("Member".to_string(),));
+
     let res = sqlx::query("DELETE FROM group_members WHERE group_id = ? AND user_id = ?")
         .bind(&group_id)
         .bind(&user_id)
@@ -286,6 +337,24 @@ pub async fn remove_member(
     if res.rows_affected() == 0 {
         return Err(AppError::NotFound("Member not found in group".to_string()));
     }
+
+    let actor_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&pool)
+        .await?;
+
+    let summary = format!("{} removed {} from the group", actor_name.0, removed_user_name.0);
+    let details = serde_json::json!({ "user_id": user_id });
+    let _ = log_activity(
+        &pool,
+        &group_id,
+        &auth.0.sub,
+        "REMOVE_MEMBER",
+        Some(&user_id),
+        &summary,
+        Some(&details),
+    )
+    .await;
 
     Ok(Json(serde_json::json!({ "message": "Member removed successfully" })))
 }

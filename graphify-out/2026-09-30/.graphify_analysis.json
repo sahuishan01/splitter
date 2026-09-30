@@ -7,16 +7,16 @@
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_oncreate",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_ondestroy",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l188",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l188_onavailable",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l188_onlost",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l189",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l189_onavailable",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l189_onlost",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l131",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l131_onprogresschanged",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l143",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l143_onpagefinished",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l143_onreceivederror",
-      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l143_onreceivedsslerror",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l132",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l132_onprogresschanged",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l144",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l144_onpagefinished",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l144_onreceivederror",
+      "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l144_onreceivedsslerror",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_triggersyncsafely",
       "appcompatactivity",
       "bundle",
@@ -325,11 +325,6 @@
       "degree": 15
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
-      "label": "MainActivity",
-      "degree": 13
-    },
-    {
       "id": "src_routes_expenses_create_expense",
       "label": "create_expense()",
       "degree": 13
@@ -352,6 +347,11 @@
     {
       "id": "src_routes_sync_get_changes",
       "label": "get_changes()",
+      "degree": 13
+    },
+    {
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
+      "label": "MainActivity",
       "degree": 13
     },
     {

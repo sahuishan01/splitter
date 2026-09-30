@@ -60,6 +60,7 @@ pub struct Expense {
     pub id: String,
     pub group_id: String,
     pub paid_by: String,
+    pub created_by: Option<String>,
     pub description: String,
     pub amount_cents: i64,
     pub currency: String,
@@ -86,6 +87,8 @@ pub struct ExpenseDetail {
     pub group_id: String,
     pub paid_by: String,
     pub paid_by_name: String,
+    pub created_by: String,
+    pub created_by_name: String,
     pub description: String,
     pub amount_cents: i64,
     pub currency: String,
@@ -163,5 +166,30 @@ pub struct IdempotencyRecord {
     pub action: String,
     pub status_code: i64,
     pub response_body: String,
+    pub created_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, Clone)]
+pub struct ActivityLog {
+    pub id: String,
+    pub group_id: String,
+    pub user_id: String,
+    pub action: String,
+    pub target_id: Option<String>,
+    pub summary: String,
+    pub details: Option<String>,
+    pub created_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ActivityLogDetail {
+    pub id: String,
+    pub group_id: String,
+    pub user_id: String,
+    pub user_name: String,
+    pub action: String,
+    pub target_id: Option<String>,
+    pub summary: String,
+    pub details: Option<String>,
     pub created_at: String,
 }

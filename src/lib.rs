@@ -6,7 +6,7 @@ pub mod routes;
 pub mod services;
 
 use axum::{
-    routing::{delete, get, patch, post},
+    routing::{delete, get, patch, post, put},
     Router,
 };
 use sqlx::SqlitePool;
@@ -37,11 +37,17 @@ pub fn create_app(pool: SqlitePool) -> Router {
         .route("/groups/:id", get(routes::groups::get_group))
         .route("/groups/:id/members", post(routes::groups::add_member))
         .route("/groups/:id/members/:user_id", delete(routes::groups::remove_member))
-        // Expenses & Balances & Settlements
+        // Expenses & Balances & Settlements & Activities
         .route("/groups/:id/expenses", post(routes::expenses::create_expense).get(routes::expenses::list_expenses))
-        .route("/groups/:id/expenses/:expense_id", delete(routes::expenses::delete_expense))
+        .route(
+            "/groups/:id/expenses/:expense_id",
+            put(routes::expenses::update_expense)
+                .patch(routes::expenses::update_expense)
+                .delete(routes::expenses::delete_expense),
+        )
         .route("/groups/:id/balances", get(routes::expenses::get_group_balances))
         .route("/groups/:id/settlements", post(routes::expenses::create_settlement).get(routes::expenses::list_settlements))
+        .route("/groups/:id/activities", get(routes::expenses::list_activities))
         // Batch Offline Sync
         .route("/sync/batch", post(routes::sync::batch_sync))
         .route("/sync/changes", get(routes::sync::get_changes))

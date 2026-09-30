@@ -10,14 +10,14 @@ use crate::{
     auth::AuthUser,
     error::AppError,
     models::{
-        Expense, ExpenseDetail, ExpenseSplitDetail, Group, GroupBalanceSummary,
+        ActivityLogDetail, Expense, ExpenseDetail, ExpenseSplitDetail, Group, GroupBalanceSummary,
         GroupMemberRow, IdempotencyRecord, MemberBalance, Settlement, SettlementDetail,
     },
     routes::groups::check_group_membership,
-    services::settlement::simplify_debts,
+    services::{activity::log_activity, settlement::simplify_debts},
 };
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct SplitInput {
     pub user_id: String,
     pub amount_cents: Option<i64>,
@@ -39,12 +39,158 @@ pub struct CreateExpenseRequest {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct UpdateExpenseRequest {
+    pub description: String,
+    pub amount_cents: i64,
+    pub paid_by: Option<String>,
+    pub currency: Option<String>,
+    pub split_type: Option<String>, // EQUAL, EXACT, PERCENT
+    pub category: Option<String>,
+    pub expense_date: Option<String>,
+    pub participants: Option<Vec<String>>,
+    pub splits: Option<Vec<SplitInput>>,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct CreateSettlementRequest {
     pub payer_id: String,
     pub payee_id: String,
     pub amount_cents: i64,
     pub currency: Option<String>,
     pub idempotency_key: Option<String>,
+}
+
+fn format_money_str(cents: i64, currency: &str) -> String {
+    let sym = match currency {
+        "USD" => "$",
+        "INR" => "₹",
+        "EUR" => "€",
+        "GBP" => "£",
+        _ => "",
+    };
+    if sym.is_empty() {
+        format!("{:.2} {}", (cents as f64) / 100.0, currency)
+    } else {
+        format!("{}{:.2}", sym, (cents as f64) / 100.0)
+    }
+}
+
+async fn compute_splits(
+    pool: &SqlitePool,
+    group_id: &str,
+    split_type: &str,
+    amount_cents: i64,
+    participants: Option<Vec<String>>,
+    splits: Option<Vec<SplitInput>>,
+) -> Result<Vec<(String, i64, Option<f64>)>, AppError> {
+    let mut calculated_splits: Vec<(String, i64, Option<f64>)> = Vec::new();
+
+    match split_type {
+        "EQUAL" => {
+            let parts = if let Some(p) = participants {
+                if p.is_empty() {
+                    return Err(AppError::BadRequest("Participants list cannot be empty for EQUAL split".to_string()));
+                }
+                p
+            } else {
+                let members: Vec<(String,)> = sqlx::query_as(
+                    "SELECT user_id FROM group_members WHERE group_id = ?"
+                )
+                .bind(group_id)
+                .fetch_all(pool)
+                .await?;
+                members.into_iter().map(|m| m.0).collect()
+            };
+
+            let count = parts.len() as i64;
+            let base_amount = amount_cents / count;
+            let mut remainder = amount_cents % count;
+
+            for user_id in parts {
+                check_group_membership(pool, group_id, &user_id).await?;
+                let mut split_amt = base_amount;
+                if remainder > 0 {
+                    split_amt += 1;
+                    remainder -= 1;
+                }
+                calculated_splits.push((user_id, split_amt, None));
+            }
+        }
+        "EXACT" => {
+            let split_list = splits
+                .ok_or_else(|| AppError::BadRequest("Splits array is required for EXACT split".to_string()))?;
+
+            if split_list.is_empty() {
+                return Err(AppError::BadRequest("Splits list cannot be empty for EXACT split".to_string()));
+            }
+
+            let mut total_split = 0i64;
+            for split in split_list {
+                let amt = split
+                    .amount_cents
+                    .ok_or_else(|| AppError::BadRequest("amount_cents is required for each participant in EXACT split".to_string()))?;
+                if amt <= 0 {
+                    return Err(AppError::BadRequest("Split amount must be greater than zero".to_string()));
+                }
+                check_group_membership(pool, group_id, &split.user_id).await?;
+                total_split += amt;
+                calculated_splits.push((split.user_id, amt, None));
+            }
+
+            if total_split != amount_cents {
+                return Err(AppError::BadRequest(format!(
+                    "Sum of exact splits ({} cents) does not match total amount ({} cents)",
+                    total_split, amount_cents
+                )));
+            }
+        }
+        "PERCENT" => {
+            let split_list = splits
+                .ok_or_else(|| AppError::BadRequest("Splits array is required for PERCENT split".to_string()))?;
+
+            if split_list.is_empty() {
+                return Err(AppError::BadRequest("Splits list cannot be empty for PERCENT split".to_string()));
+            }
+
+            let mut total_pct = 0.0f64;
+            let mut allocated_cents = 0i64;
+
+            for split in &split_list {
+                let pct = split
+                    .percentage
+                    .ok_or_else(|| AppError::BadRequest("percentage is required for each participant in PERCENT split".to_string()))?;
+                if pct <= 0.0 {
+                    return Err(AppError::BadRequest("Split percentage must be greater than zero".to_string()));
+                }
+                check_group_membership(pool, group_id, &split.user_id).await?;
+                total_pct += pct;
+
+                let amt = ((amount_cents as f64) * (pct / 100.0)).round() as i64;
+                allocated_cents += amt;
+                calculated_splits.push((split.user_id.clone(), amt, Some(pct)));
+            }
+
+            if (total_pct - 100.0).abs() > 0.05 {
+                return Err(AppError::BadRequest(format!(
+                    "Sum of percentages ({:.2}%) must equal 100%",
+                    total_pct
+                )));
+            }
+
+            // Adjust rounding discrepancy on the first split
+            let diff = amount_cents - allocated_cents;
+            if diff != 0 && !calculated_splits.is_empty() {
+                calculated_splits[0].1 += diff;
+            }
+        }
+        _ => {
+            return Err(AppError::BadRequest(
+                "Invalid split_type. Allowed: EQUAL, EXACT, PERCENT".to_string(),
+            ));
+        }
+    }
+
+    Ok(calculated_splits)
 }
 
 pub async fn create_expense(
@@ -96,119 +242,28 @@ pub async fn create_expense(
     let now = chrono::Utc::now().to_rfc3339();
 
     // Calculate splits
-    let mut calculated_splits: Vec<(String, i64, Option<f64>)> = Vec::new();
-
-    match split_type.as_str() {
-        "EQUAL" => {
-            let participants = if let Some(parts) = payload.participants {
-                if parts.is_empty() {
-                    return Err(AppError::BadRequest("Participants list cannot be empty for EQUAL split".to_string()));
-                }
-                parts
-            } else {
-                // If not provided, default to all members of the group
-                let members: Vec<(String,)> = sqlx::query_as(
-                    "SELECT user_id FROM group_members WHERE group_id = ?"
-                )
-                .bind(&group_id)
-                .fetch_all(&pool)
-                .await?;
-                members.into_iter().map(|m| m.0).collect()
-            };
-
-            let count = participants.len() as i64;
-            let base_amount = payload.amount_cents / count;
-            let mut remainder = payload.amount_cents % count;
-
-            for user_id in participants {
-                check_group_membership(&pool, &group_id, &user_id).await?;
-                let mut split_amt = base_amount;
-                if remainder > 0 {
-                    split_amt += 1;
-                    remainder -= 1;
-                }
-                calculated_splits.push((user_id, split_amt, None));
-            }
-        }
-        "EXACT" => {
-            let splits = payload
-                .splits
-                .ok_or_else(|| AppError::BadRequest("Splits array is required for EXACT split".to_string()))?;
-
-            let mut total_split = 0i64;
-            for split in splits {
-                let amt = split
-                    .amount_cents
-                    .ok_or_else(|| AppError::BadRequest("amount_cents is required for each participant in EXACT split".to_string()))?;
-                if amt <= 0 {
-                    return Err(AppError::BadRequest("Split amount must be greater than zero".to_string()));
-                }
-                check_group_membership(&pool, &group_id, &split.user_id).await?;
-                total_split += amt;
-                calculated_splits.push((split.user_id, amt, None));
-            }
-
-            if total_split != payload.amount_cents {
-                return Err(AppError::BadRequest(format!(
-                    "Sum of splits ({} cents) does not match total amount ({} cents)",
-                    total_split, payload.amount_cents
-                )));
-            }
-        }
-        "PERCENT" => {
-            let splits = payload
-                .splits
-                .ok_or_else(|| AppError::BadRequest("Splits array is required for PERCENT split".to_string()))?;
-
-            let mut total_pct = 0.0f64;
-            let mut allocated_cents = 0i64;
-
-            for split in &splits {
-                let pct = split
-                    .percentage
-                    .ok_or_else(|| AppError::BadRequest("percentage is required for each participant in PERCENT split".to_string()))?;
-                if pct <= 0.0 {
-                    return Err(AppError::BadRequest("Split percentage must be greater than zero".to_string()));
-                }
-                check_group_membership(&pool, &group_id, &split.user_id).await?;
-                total_pct += pct;
-
-                let amt = ((payload.amount_cents as f64) * (pct / 100.0)).round() as i64;
-                allocated_cents += amt;
-                calculated_splits.push((split.user_id.clone(), amt, Some(pct)));
-            }
-
-            if (total_pct - 100.0).abs() > 0.01 {
-                return Err(AppError::BadRequest(format!(
-                    "Sum of percentages ({:.2}%) must equal 100%",
-                    total_pct
-                )));
-            }
-
-            // Adjust rounding discrepancy on the first split
-            let diff = payload.amount_cents - allocated_cents;
-            if diff != 0 && !calculated_splits.is_empty() {
-                calculated_splits[0].1 += diff;
-            }
-        }
-        _ => {
-            return Err(AppError::BadRequest(
-                "Invalid split_type. Allowed: EQUAL, EXACT, PERCENT".to_string(),
-            ));
-        }
-    }
+    let calculated_splits = compute_splits(
+        &pool,
+        &group_id,
+        &split_type,
+        payload.amount_cents,
+        payload.participants,
+        payload.splits,
+    )
+    .await?;
 
     let expense_id = Uuid::new_v4().to_string();
 
     let mut tx = pool.begin().await?;
 
     sqlx::query(
-        "INSERT INTO expenses (id, group_id, paid_by, description, amount_cents, currency, split_type, category, expense_date, created_at, idempotency_key)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO expenses (id, group_id, paid_by, created_by, description, amount_cents, currency, split_type, category, expense_date, created_at, idempotency_key)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     )
     .bind(&expense_id)
     .bind(&group_id)
     .bind(&paid_by)
+    .bind(&auth.0.sub)
     .bind(&payload.description)
     .bind(payload.amount_cents)
     .bind(&currency)
@@ -254,11 +309,44 @@ pub async fn create_expense(
         .fetch_one(&mut *tx)
         .await?;
 
+    let creator_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&mut *tx)
+        .await?;
+
+    // Log Activity
+    let summary = format!(
+        "{} added expense '{}' ({})",
+        creator_name.0,
+        payload.description,
+        format_money_str(payload.amount_cents, &currency)
+    );
+    let details = serde_json::json!({
+        "expense_id": expense_id,
+        "amount_cents": payload.amount_cents,
+        "currency": currency,
+        "paid_by": paid_by,
+        "paid_by_name": payer_name.0,
+        "split_type": split_type
+    });
+    log_activity(
+        &mut *tx,
+        &group_id,
+        &auth.0.sub,
+        "CREATE_EXPENSE",
+        Some(&expense_id),
+        &summary,
+        Some(&details),
+    )
+    .await?;
+
     let detail = ExpenseDetail {
         id: expense_id,
         group_id,
         paid_by,
         paid_by_name: payer_name.0,
+        created_by: auth.0.sub.clone(),
+        created_by_name: creator_name.0,
         description: payload.description,
         amount_cents: payload.amount_cents,
         currency,
@@ -289,6 +377,177 @@ pub async fn create_expense(
     Ok(Json(detail))
 }
 
+pub async fn update_expense(
+    State(pool): State<SqlitePool>,
+    auth: AuthUser,
+    Path((group_id, expense_id)): Path<(String, String)>,
+    Json(payload): Json<UpdateExpenseRequest>,
+) -> Result<Json<ExpenseDetail>, AppError> {
+    let role = check_group_membership(&pool, &group_id, &auth.0.sub).await?;
+
+    let existing: Expense = sqlx::query_as(
+        "SELECT * FROM expenses WHERE id = ? AND group_id = ?"
+    )
+    .bind(&expense_id)
+    .bind(&group_id)
+    .fetch_optional(&pool)
+    .await?
+    .ok_or_else(|| AppError::NotFound("Expense not found".to_string()))?;
+
+    // Authorization: Creator of the expense OR group admin OR system admin
+    let creator_id = existing.created_by.clone().unwrap_or_else(|| existing.paid_by.clone());
+    let can_edit = role == "admin" || auth.0.is_admin || creator_id == auth.0.sub;
+    if !can_edit {
+        return Err(AppError::Forbidden(
+            "Only the person who added this expense or a group admin can edit it".to_string(),
+        ));
+    }
+
+    if payload.description.trim().is_empty() {
+        return Err(AppError::BadRequest("Expense description cannot be empty".to_string()));
+    }
+    if payload.amount_cents <= 0 {
+        return Err(AppError::BadRequest("Expense amount must be greater than zero".to_string()));
+    }
+
+    let paid_by = payload.paid_by.unwrap_or(existing.paid_by);
+    check_group_membership(&pool, &group_id, &paid_by).await?;
+
+    let currency = payload.currency.unwrap_or_else(|| existing.currency.clone());
+    let split_type = payload
+        .split_type
+        .unwrap_or_else(|| existing.split_type.clone())
+        .to_uppercase();
+    let category = payload.category.unwrap_or_else(|| existing.category.clone());
+    let expense_date = payload.expense_date.unwrap_or_else(|| existing.expense_date.clone());
+
+    let calculated_splits = compute_splits(
+        &pool,
+        &group_id,
+        &split_type,
+        payload.amount_cents,
+        payload.participants,
+        payload.splits,
+    )
+    .await?;
+
+    let mut tx = pool.begin().await?;
+
+    sqlx::query(
+        "UPDATE expenses
+         SET paid_by = ?, description = ?, amount_cents = ?, currency = ?, split_type = ?, category = ?, expense_date = ?
+         WHERE id = ?"
+    )
+    .bind(&paid_by)
+    .bind(&payload.description)
+    .bind(payload.amount_cents)
+    .bind(&currency)
+    .bind(&split_type)
+    .bind(&category)
+    .bind(&expense_date)
+    .bind(&expense_id)
+    .execute(&mut *tx)
+    .await?;
+
+    sqlx::query("DELETE FROM expense_splits WHERE expense_id = ?")
+        .bind(&expense_id)
+        .execute(&mut *tx)
+        .await?;
+
+    let mut split_details = Vec::new();
+    for (uid, amt, pct) in calculated_splits {
+        let split_id = Uuid::new_v4().to_string();
+        sqlx::query(
+            "INSERT INTO expense_splits (id, expense_id, user_id, amount_cents, share_percentage)
+             VALUES (?, ?, ?, ?, ?)"
+        )
+        .bind(&split_id)
+        .bind(&expense_id)
+        .bind(&uid)
+        .bind(amt)
+        .bind(pct)
+        .execute(&mut *tx)
+        .await?;
+
+        let user_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+            .bind(&uid)
+            .fetch_one(&mut *tx)
+            .await?;
+
+        split_details.push(ExpenseSplitDetail {
+            user_id: uid,
+            display_name: user_name.0,
+            amount_cents: amt,
+            share_percentage: pct,
+        });
+    }
+
+    let payer_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&paid_by)
+        .fetch_one(&mut *tx)
+        .await?;
+
+    let creator_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&creator_id)
+        .fetch_one(&mut *tx)
+        .await?;
+
+    let actor_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&mut *tx)
+        .await?;
+
+    // Log Activity
+    let summary = format!(
+        "{} edited expense '{}' (now {})",
+        actor_name.0,
+        payload.description,
+        format_money_str(payload.amount_cents, &currency)
+    );
+    let details = serde_json::json!({
+        "expense_id": expense_id,
+        "old_description": existing.description,
+        "new_description": payload.description,
+        "old_amount_cents": existing.amount_cents,
+        "new_amount_cents": payload.amount_cents,
+        "old_split_type": existing.split_type,
+        "new_split_type": split_type,
+        "currency": currency,
+        "paid_by": paid_by
+    });
+    log_activity(
+        &mut *tx,
+        &group_id,
+        &auth.0.sub,
+        "UPDATE_EXPENSE",
+        Some(&expense_id),
+        &summary,
+        Some(&details),
+    )
+    .await?;
+
+    tx.commit().await?;
+
+    let detail = ExpenseDetail {
+        id: expense_id,
+        group_id,
+        paid_by,
+        paid_by_name: payer_name.0,
+        created_by: creator_id,
+        created_by_name: creator_name.0,
+        description: payload.description,
+        amount_cents: payload.amount_cents,
+        currency,
+        split_type,
+        category,
+        expense_date,
+        created_at: existing.created_at,
+        splits: split_details,
+    };
+
+    Ok(Json(detail))
+}
+
 pub async fn list_expenses(
     State(pool): State<SqlitePool>,
     auth: AuthUser,
@@ -310,6 +569,14 @@ pub async fn list_expenses(
             "SELECT display_name FROM users WHERE id = ?"
         )
         .bind(&exp.paid_by)
+        .fetch_one(&pool)
+        .await?;
+
+        let creator_id = exp.created_by.clone().unwrap_or_else(|| exp.paid_by.clone());
+        let creator_name: (String,) = sqlx::query_as(
+            "SELECT display_name FROM users WHERE id = ?"
+        )
+        .bind(&creator_id)
         .fetch_one(&pool)
         .await?;
 
@@ -338,6 +605,8 @@ pub async fn list_expenses(
             group_id: exp.group_id,
             paid_by: exp.paid_by,
             paid_by_name: payer_name.0,
+            created_by: creator_id,
+            created_by_name: creator_name.0,
             description: exp.description,
             amount_cents: exp.amount_cents,
             currency: exp.currency,
@@ -366,10 +635,42 @@ pub async fn delete_expense(
         .await?
         .ok_or_else(|| AppError::NotFound("Expense not found".to_string()))?;
 
-    // Allow deleting if group admin or the person who paid
-    if role != "admin" && expense.paid_by != auth.0.sub {
-        return Err(AppError::Forbidden("Only the payer or group admin can delete an expense".to_string()));
+    // Allow deleting if group admin, system admin, person who added it, or payer
+    let creator_id = expense.created_by.clone().unwrap_or_else(|| expense.paid_by.clone());
+    let can_delete = role == "admin" || auth.0.is_admin || creator_id == auth.0.sub || expense.paid_by == auth.0.sub;
+    if !can_delete {
+        return Err(AppError::Forbidden("Only the creator, payer, or group admin can delete an expense".to_string()));
     }
+
+    let actor_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&pool)
+        .await?;
+
+    // Log Activity
+    let summary = format!(
+        "{} deleted expense '{}' ({})",
+        actor_name.0,
+        expense.description,
+        format_money_str(expense.amount_cents, &expense.currency)
+    );
+    let details = serde_json::json!({
+        "expense_id": expense_id,
+        "description": expense.description,
+        "amount_cents": expense.amount_cents,
+        "currency": expense.currency,
+        "paid_by": expense.paid_by
+    });
+    let _ = log_activity(
+        &pool,
+        &group_id,
+        &auth.0.sub,
+        "DELETE_EXPENSE",
+        Some(&expense_id),
+        &summary,
+        Some(&details),
+    )
+    .await;
 
     sqlx::query("DELETE FROM expenses WHERE id = ?")
         .bind(&expense_id)
@@ -540,6 +841,39 @@ pub async fn create_settlement(
         .fetch_one(&mut *tx)
         .await?;
 
+    let actor_name: (String,) = sqlx::query_as("SELECT display_name FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&mut *tx)
+        .await?;
+
+    // Log Activity
+    let summary = format!(
+        "{} recorded settlement: {} paid {} ({})",
+        actor_name.0,
+        payer_name.0,
+        payee_name.0,
+        format_money_str(payload.amount_cents, &currency)
+    );
+    let details = serde_json::json!({
+        "settlement_id": settlement_id,
+        "payer_id": payload.payer_id,
+        "payer_name": payer_name.0,
+        "payee_id": payload.payee_id,
+        "payee_name": payee_name.0,
+        "amount_cents": payload.amount_cents,
+        "currency": currency
+    });
+    log_activity(
+        &mut *tx,
+        &group_id,
+        &auth.0.sub,
+        "CREATE_SETTLEMENT",
+        Some(&settlement_id),
+        &summary,
+        Some(&details),
+    )
+    .await?;
+
     let detail = SettlementDetail {
         id: settlement_id,
         group_id,
@@ -614,4 +948,46 @@ pub async fn list_settlements(
     }
 
     Ok(Json(result))
+}
+
+pub async fn list_activities(
+    State(pool): State<SqlitePool>,
+    auth: AuthUser,
+    Path(group_id): Path<String>,
+) -> Result<Json<Vec<ActivityLogDetail>>, AppError> {
+    let role = check_group_membership(&pool, &group_id, &auth.0.sub).await?;
+    if role != "admin" && !auth.0.is_admin {
+        return Err(AppError::Forbidden(
+            "Only group admins can view the activity log".to_string(),
+        ));
+    }
+
+    let rows: Vec<(String, String, String, String, String, Option<String>, String, Option<String>, String)> = sqlx::query_as(
+        "SELECT a.id, a.group_id, a.user_id, u.display_name as user_name, a.action, a.target_id, a.summary, a.details, a.created_at
+         FROM activity_logs a
+         JOIN users u ON a.user_id = u.id
+         WHERE a.group_id = ?
+         ORDER BY a.created_at DESC
+         LIMIT 200"
+    )
+    .bind(&group_id)
+    .fetch_all(&pool)
+    .await?;
+
+    let logs = rows
+        .into_iter()
+        .map(|(id, group_id, user_id, user_name, action, target_id, summary, details, created_at)| ActivityLogDetail {
+            id,
+            group_id,
+            user_id,
+            user_name,
+            action,
+            target_id,
+            summary,
+            details,
+            created_at,
+        })
+        .collect();
+
+    Ok(Json(logs))
 }

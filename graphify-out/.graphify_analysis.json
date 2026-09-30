@@ -1,6 +1,79 @@
 {
   "communities": {
     "0": [
+      "fromrequestparts",
+      "intoresponse",
+      "parts",
+      "rejection",
+      "response",
+      "s",
+      "src_auth_jwt",
+      "src_auth_jwt_adminuser_from_request_parts",
+      "src_auth_jwt_authuser",
+      "src_auth_jwt_authuser_from_request_parts",
+      "src_auth_jwt_claims",
+      "src_auth_jwt_get_jwt_secret",
+      "src_auth_jwt_issue_token",
+      "src_auth_jwt_rs_result",
+      "src_auth_jwt_rs_self",
+      "src_auth_jwt_rs_string",
+      "src_auth_jwt_verify_token",
+      "src_auth_mod",
+      "src_auth_password",
+      "src_auth_password_hash_password",
+      "src_auth_password_rs_result",
+      "src_auth_password_rs_string",
+      "src_auth_password_verify_password",
+      "src_error",
+      "src_error_apperror",
+      "src_error_apperror_into_response",
+      "src_error_rs_string",
+      "src_routes_auth",
+      "src_routes_auth_authresponse",
+      "src_routes_auth_login",
+      "src_routes_auth_loginrequest",
+      "src_routes_auth_me",
+      "src_routes_auth_register",
+      "src_routes_auth_registerrequest",
+      "src_routes_auth_rs_json",
+      "src_routes_auth_rs_result",
+      "src_routes_auth_rs_sqlitepool",
+      "src_routes_auth_rs_state",
+      "src_routes_auth_rs_string"
+    ],
+    "1": [
+      "e",
+      "error",
+      "src_routes_groups",
+      "src_routes_groups_add_member",
+      "src_routes_groups_addmemberrequest",
+      "src_routes_groups_check_group_membership",
+      "src_routes_groups_create_group",
+      "src_routes_groups_creategrouprequest",
+      "src_routes_groups_get_group",
+      "src_routes_groups_groupdetail",
+      "src_routes_groups_groupmemberdetail",
+      "src_routes_groups_groupsummary",
+      "src_routes_groups_list_groups",
+      "src_routes_groups_remove_member",
+      "src_routes_groups_rs_apperror",
+      "src_routes_groups_rs_authuser",
+      "src_routes_groups_rs_json",
+      "src_routes_groups_rs_option",
+      "src_routes_groups_rs_path",
+      "src_routes_groups_rs_result",
+      "src_routes_groups_rs_sqlitepool",
+      "src_routes_groups_rs_state",
+      "src_routes_groups_rs_string",
+      "src_routes_groups_rs_value",
+      "src_routes_groups_rs_vec",
+      "src_services_activity",
+      "src_services_activity_log_activity",
+      "src_services_activity_rs_option",
+      "src_services_activity_rs_result",
+      "src_services_activity_rs_value"
+    ],
+    "2": [
       "android_app_src_main_java_com_splitter_app_mainactivity",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_onbackpressed",
@@ -30,65 +103,35 @@
       "webresourcerequest",
       "webview"
     ],
-    "1": [
-      "error",
-      "intoresponse",
-      "response",
-      "src_error",
-      "src_error_apperror",
-      "src_error_apperror_into_response",
-      "src_error_rs_string",
-      "src_routes_groups",
-      "src_routes_groups_add_member",
-      "src_routes_groups_addmemberrequest",
-      "src_routes_groups_check_group_membership",
-      "src_routes_groups_create_group",
-      "src_routes_groups_creategrouprequest",
-      "src_routes_groups_get_group",
-      "src_routes_groups_groupdetail",
-      "src_routes_groups_groupmemberdetail",
-      "src_routes_groups_groupsummary",
-      "src_routes_groups_list_groups",
-      "src_routes_groups_remove_member",
-      "src_routes_groups_rs_json",
-      "src_routes_groups_rs_option",
-      "src_routes_groups_rs_path",
-      "src_routes_groups_rs_result",
-      "src_routes_groups_rs_sqlitepool",
-      "src_routes_groups_rs_state",
-      "src_routes_groups_rs_string",
-      "src_routes_groups_rs_value",
-      "src_routes_groups_rs_vec"
-    ],
-    "2": [
-      "from",
-      "src_models",
-      "src_models_expense",
-      "src_models_expensedetail",
-      "src_models_expensesplit",
-      "src_models_expensesplitdetail",
-      "src_models_group",
-      "src_models_groupbalancesummary",
-      "src_models_groupmemberrow",
-      "src_models_idempotencyrecord",
-      "src_models_memberbalance",
-      "src_models_rs_option",
-      "src_models_rs_self",
-      "src_models_rs_string",
-      "src_models_rs_vec",
-      "src_models_settlement",
-      "src_models_settlementdetail",
-      "src_models_simplifieddebt",
-      "src_models_user",
-      "src_models_userresponse",
-      "src_models_userresponse_from",
-      "src_services_settlement",
-      "src_services_settlement_rs_vec",
-      "src_services_settlement_simplify_debts",
-      "src_services_settlement_test_three_person_transitive_simplification",
-      "src_services_settlement_test_two_person_debt"
-    ],
     "3": [
+      "src_routes_expenses",
+      "src_routes_expenses_compute_splits",
+      "src_routes_expenses_create_expense",
+      "src_routes_expenses_create_settlement",
+      "src_routes_expenses_createexpenserequest",
+      "src_routes_expenses_createsettlementrequest",
+      "src_routes_expenses_delete_expense",
+      "src_routes_expenses_format_money_str",
+      "src_routes_expenses_get_group_balances",
+      "src_routes_expenses_list_activities",
+      "src_routes_expenses_list_expenses",
+      "src_routes_expenses_list_settlements",
+      "src_routes_expenses_rs_apperror",
+      "src_routes_expenses_rs_authuser",
+      "src_routes_expenses_rs_json",
+      "src_routes_expenses_rs_option",
+      "src_routes_expenses_rs_path",
+      "src_routes_expenses_rs_result",
+      "src_routes_expenses_rs_sqlitepool",
+      "src_routes_expenses_rs_state",
+      "src_routes_expenses_rs_string",
+      "src_routes_expenses_rs_value",
+      "src_routes_expenses_rs_vec",
+      "src_routes_expenses_splitinput",
+      "src_routes_expenses_update_expense",
+      "src_routes_expenses_updateexpenserequest"
+    ],
+    "4": [
       "android_app_src_main_java_com_splitter_sync_offlinequeuerepository",
       "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_kt_flow",
       "android_app_src_main_java_com_splitter_sync_offlinequeuerepository_offlinequeuerepository",
@@ -114,71 +157,38 @@
       "android_app_src_main_java_com_splitter_sync_syncqueuedao_syncqueuedao_updatestatus",
       "context"
     ],
-    "4": [
-      "src_auth_jwt_authuser",
-      "src_routes_expenses",
-      "src_routes_expenses_create_expense",
-      "src_routes_expenses_create_settlement",
-      "src_routes_expenses_createexpenserequest",
-      "src_routes_expenses_createsettlementrequest",
-      "src_routes_expenses_delete_expense",
-      "src_routes_expenses_get_group_balances",
-      "src_routes_expenses_list_expenses",
-      "src_routes_expenses_list_settlements",
-      "src_routes_expenses_rs_json",
-      "src_routes_expenses_rs_option",
-      "src_routes_expenses_rs_path",
-      "src_routes_expenses_rs_result",
-      "src_routes_expenses_rs_sqlitepool",
-      "src_routes_expenses_rs_state",
-      "src_routes_expenses_rs_string",
-      "src_routes_expenses_rs_value",
-      "src_routes_expenses_rs_vec",
-      "src_routes_expenses_splitinput"
-    ],
     "5": [
-      "query",
-      "src_routes_sync",
-      "src_routes_sync_batch_sync",
-      "src_routes_sync_batchsyncrequest",
-      "src_routes_sync_batchsyncresponse",
-      "src_routes_sync_get_changes",
-      "src_routes_sync_groupchangesresponse",
-      "src_routes_sync_mutationresult",
-      "src_routes_sync_queuedmutation",
-      "src_routes_sync_rs_json",
-      "src_routes_sync_rs_option",
-      "src_routes_sync_rs_result",
-      "src_routes_sync_rs_sqlitepool",
-      "src_routes_sync_rs_state",
-      "src_routes_sync_rs_string",
-      "src_routes_sync_rs_value",
-      "src_routes_sync_rs_vec",
-      "src_routes_sync_syncchangesquery"
+      "src_models",
+      "src_models_activitylog",
+      "src_models_activitylogdetail",
+      "src_models_expense",
+      "src_models_expensedetail",
+      "src_models_expensesplit",
+      "src_models_expensesplitdetail",
+      "src_models_group",
+      "src_models_groupbalancesummary",
+      "src_models_groupmemberrow",
+      "src_models_idempotencyrecord",
+      "src_models_memberbalance",
+      "src_models_rs_option",
+      "src_models_rs_string",
+      "src_models_rs_vec",
+      "src_models_settlement",
+      "src_models_settlementdetail",
+      "src_models_simplifieddebt",
+      "src_models_user",
+      "src_services_settlement",
+      "src_services_settlement_rs_vec",
+      "src_services_settlement_simplify_debts",
+      "src_services_settlement_test_three_person_transitive_simplification",
+      "src_services_settlement_test_two_person_debt"
     ],
     "6": [
-      "src_auth_mod",
-      "src_auth_password",
-      "src_auth_password_hash_password",
-      "src_auth_password_rs_result",
-      "src_auth_password_rs_string",
-      "src_auth_password_verify_password",
-      "src_routes_auth",
-      "src_routes_auth_authresponse",
-      "src_routes_auth_login",
-      "src_routes_auth_loginrequest",
-      "src_routes_auth_me",
-      "src_routes_auth_register",
-      "src_routes_auth_registerrequest",
-      "src_routes_auth_rs_json",
-      "src_routes_auth_rs_result",
-      "src_routes_auth_rs_sqlitepool",
-      "src_routes_auth_rs_state",
-      "src_routes_auth_rs_string"
-    ],
-    "7": [
-      "fromrequestparts",
+      "from",
+      "self",
       "src_auth_jwt_adminuser",
+      "src_models_userresponse",
+      "src_models_userresponse_from",
       "src_routes_admin",
       "src_routes_admin_adminstats",
       "src_routes_admin_get_admin_stats",
@@ -195,6 +205,28 @@
       "src_routes_admin_updaterolerequest",
       "src_routes_admin_updatestatusrequest"
     ],
+    "7": [
+      "query",
+      "src_routes_sync",
+      "src_routes_sync_batch_sync",
+      "src_routes_sync_batchsyncrequest",
+      "src_routes_sync_batchsyncresponse",
+      "src_routes_sync_get_changes",
+      "src_routes_sync_groupchangesresponse",
+      "src_routes_sync_mutationresult",
+      "src_routes_sync_queuedmutation",
+      "src_routes_sync_rs_apperror",
+      "src_routes_sync_rs_authuser",
+      "src_routes_sync_rs_json",
+      "src_routes_sync_rs_option",
+      "src_routes_sync_rs_result",
+      "src_routes_sync_rs_sqlitepool",
+      "src_routes_sync_rs_state",
+      "src_routes_sync_rs_string",
+      "src_routes_sync_rs_value",
+      "src_routes_sync_rs_vec",
+      "src_routes_sync_syncchangesquery"
+    ],
     "8": [
       "client",
       "router",
@@ -209,25 +241,11 @@
       "tests_api_tests",
       "tests_api_tests_rs_string",
       "tests_api_tests_setup_test_app",
+      "tests_api_tests_test_exact_percent_edit_and_activity_logs",
       "tests_api_tests_test_full_expense_splitting_flow",
       "tests_api_tests_testcontext"
     ],
     "9": [
-      "parts",
-      "rejection",
-      "s",
-      "src_auth_jwt",
-      "src_auth_jwt_adminuser_from_request_parts",
-      "src_auth_jwt_authuser_from_request_parts",
-      "src_auth_jwt_claims",
-      "src_auth_jwt_get_jwt_secret",
-      "src_auth_jwt_issue_token",
-      "src_auth_jwt_rs_result",
-      "src_auth_jwt_rs_self",
-      "src_auth_jwt_rs_string",
-      "src_auth_jwt_verify_token"
-    ],
-    "10": [
       "android_app_src_main_java_com_splitter_app_splitterapplication",
       "android_app_src_main_java_com_splitter_app_splitterapplication_splitterapplication",
       "android_app_src_main_java_com_splitter_app_splitterapplication_splitterapplication_oncreate",
@@ -240,7 +258,7 @@
       "roomdatabase",
       "syncqueuedao"
     ],
-    "11": [
+    "10": [
       "android_app_src_main_java_com_splitter_sync_syncqueueworker",
       "android_app_src_main_java_com_splitter_sync_syncqueueworker_kt_context",
       "android_app_src_main_java_com_splitter_sync_syncqueueworker_syncqueueworker",
@@ -249,34 +267,37 @@
       "coroutineworker",
       "result"
     ],
-    "12": [
+    "11": [
       "src_main",
       "src_main_bootstrap_admin_if_configured",
       "src_main_main",
       "src_main_rs_result",
       "src_main_rs_sqlitepool"
     ],
-    "13": [
+    "12": [
       "android_gradlew",
       "android_gradlew__entry",
       "android_gradlew_die",
       "android_gradlew_warn"
     ],
-    "14": [
+    "13": [
       "android_app_build_gradle",
       "android_app_build_gradle_signingprop"
     ],
-    "15": [
+    "14": [
       "android_app_src_main_java_com_splitter_sync_syncqueueworker_kt_result"
     ],
-    "16": [
+    "15": [
       "android_build_gradle"
     ],
-    "17": [
+    "16": [
       "android_settings_gradle"
     ],
-    "18": [
+    "17": [
       "pkg_splitter"
+    ],
+    "18": [
+      "src_models_rs_self"
     ],
     "19": [
       "src_routes_mod"
@@ -286,20 +307,20 @@
     ]
   },
   "cohesion": {
-    "0": 0.15343915343915343,
-    "1": 0.18783068783068782,
-    "2": 0.16,
-    "3": 0.10507246376811594,
-    "4": 0.34210526315789475,
-    "5": 0.22875816993464052,
-    "6": 0.21568627450980393,
-    "7": 0.27205882352941174,
-    "8": 0.17142857142857143,
-    "9": 0.2948717948717949,
-    "10": 0.23636363636363636,
-    "11": 0.3333333333333333,
-    "12": 0.7,
-    "13": 0.8333333333333334,
+    "0": 0.10256410256410256,
+    "1": 0.18160919540229886,
+    "2": 0.15343915343915343,
+    "3": 0.3323076923076923,
+    "4": 0.10507246376811594,
+    "5": 0.18478260869565216,
+    "6": 0.22105263157894736,
+    "7": 0.20526315789473684,
+    "8": 0.16666666666666666,
+    "9": 0.23636363636363636,
+    "10": 0.3333333333333333,
+    "11": 0.7,
+    "12": 0.8333333333333334,
+    "13": 1.0,
     "14": 1.0,
     "15": 1.0,
     "16": 1.0,
@@ -310,28 +331,33 @@
   },
   "gods": [
     {
-      "id": "src_error_apperror",
-      "label": "AppError",
-      "degree": 29
-    },
-    {
-      "id": "src_auth_jwt_authuser",
-      "label": "AuthUser",
-      "degree": 19
-    },
-    {
       "id": "src_routes_groups_check_group_membership",
       "label": "check_group_membership()",
+      "degree": 18
+    },
+    {
+      "id": "src_error_apperror",
+      "label": "AppError",
       "degree": 15
     },
     {
       "id": "src_routes_expenses_create_expense",
       "label": "create_expense()",
-      "degree": 13
+      "degree": 15
+    },
+    {
+      "id": "src_routes_expenses_update_expense",
+      "label": "update_expense()",
+      "degree": 15
     },
     {
       "id": "src_routes_expenses_create_settlement",
       "label": "create_settlement()",
+      "degree": 14
+    },
+    {
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
+      "label": "MainActivity",
       "degree": 13
     },
     {
@@ -345,19 +371,14 @@
       "degree": 13
     },
     {
+      "id": "src_routes_groups_add_member",
+      "label": "add_member()",
+      "degree": 13
+    },
+    {
       "id": "src_routes_sync_get_changes",
       "label": "get_changes()",
       "degree": 13
-    },
-    {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
-      "label": "MainActivity",
-      "degree": 13
-    },
-    {
-      "id": "src_routes_groups_add_member",
-      "label": "add_member()",
-      "degree": 12
     }
   ],
   "surprises": [
@@ -384,29 +405,29 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     },
     {
-      "source": "create_expense()",
-      "target": "check_group_membership()",
+      "source": "get_group_balances()",
+      "target": "simplify_debts()",
       "source_files": [
         "src/routes/expenses.rs",
-        "src/routes/groups.rs"
+        "src/services/settlement.rs"
       ],
       "confidence": "INFERRED",
       "relation": "calls",
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "create_settlement()",
-      "target": "check_group_membership()",
+      "source": "login()",
+      "target": "verify_password()",
       "source_files": [
-        "src/routes/expenses.rs",
-        "src/routes/groups.rs"
+        "src/routes/auth.rs",
+        "src/auth/password.rs"
       ],
       "confidence": "INFERRED",
       "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+      "why": "inferred connection - not explicitly stated in source; peripheral node `verify_password()` unexpectedly reaches hub `login()`"
     },
     {
-      "source": "delete_expense()",
+      "source": "compute_splits()",
       "target": "check_group_membership()",
       "source_files": [
         "src/routes/expenses.rs",

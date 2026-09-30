@@ -287,3 +287,222 @@ async fn test_full_expense_splitting_flow() {
     let batch_body2: Value = batch_res2.json().await.unwrap();
     assert_eq!(batch_body2["results"][0]["status"], "already_processed");
 }
+
+#[tokio::test]
+async fn test_exact_percent_edit_and_activity_logs() {
+    let ctx = setup_test_app().await;
+
+    // 1. Register Alice (Group Admin)
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "alice@example.com",
+            "password": "password123",
+            "display_name": "Alice"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let alice_token = res.json::<Value>().await.unwrap()["token"].as_str().unwrap().to_string();
+
+    // 2. Register Bob (Member)
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "bob@example.com",
+            "password": "password123",
+            "display_name": "Bob"
+        }))
+        .send()
+        .await
+        .unwrap();
+    let bob_body: Value = res.json().await.unwrap();
+    let bob_token = bob_body["token"].as_str().unwrap().to_string();
+    let bob_id = bob_body["user"]["id"].as_str().unwrap().to_string();
+
+    // 3. Register Charlie (Member)
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "charlie@example.com",
+            "password": "password123",
+            "display_name": "Charlie"
+        }))
+        .send()
+        .await
+        .unwrap();
+    let charlie_body: Value = res.json().await.unwrap();
+    let charlie_token = charlie_body["token"].as_str().unwrap().to_string();
+    let charlie_id = charlie_body["user"]["id"].as_str().unwrap().to_string();
+
+    // 4. Alice creates group
+    let res = ctx
+        .client
+        .post(format!("{}/api/groups", ctx.base_url))
+        .bearer_auth(&alice_token)
+        .json(&json!({
+            "name": "Project Trip",
+            "default_currency": "USD"
+        }))
+        .send()
+        .await
+        .unwrap();
+    let group: Value = res.json().await.unwrap();
+    let group_id = group["id"].as_str().unwrap().to_string();
+
+    // 5. Alice adds Bob and Charlie
+    ctx.client
+        .post(format!("{}/api/groups/{}/members", ctx.base_url, group_id))
+        .bearer_auth(&alice_token)
+        .json(&json!({ "user_id": bob_id, "role": "member" }))
+        .send()
+        .await
+        .unwrap();
+
+    ctx.client
+        .post(format!("{}/api/groups/{}/members", ctx.base_url, group_id))
+        .bearer_auth(&alice_token)
+        .json(&json!({ "user_id": charlie_id, "role": "member" }))
+        .send()
+        .await
+        .unwrap();
+
+    // 6. Test EXACT split: Alice creates $100 expense with Bob=$60 (6000 cents) and Charlie=$40 (4000 cents)
+    let res = ctx
+        .client
+        .post(format!("{}/api/groups/{}/expenses", ctx.base_url, group_id))
+        .bearer_auth(&alice_token)
+        .json(&json!({
+            "description": "Team Gear",
+            "amount_cents": 10000,
+            "split_type": "EXACT",
+            "splits": [
+                { "user_id": bob_id, "amount_cents": 6000 },
+                { "user_id": charlie_id, "amount_cents": 4000 }
+            ]
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let exp1: Value = res.json().await.unwrap();
+    assert_eq!(exp1["split_type"], "EXACT");
+    assert_eq!(exp1["splits"].as_array().unwrap().len(), 2);
+
+    // 7. Test PERCENT split: Bob creates $80 (8000 cents) expense with Bob 50% and Charlie 50%
+    let res = ctx
+        .client
+        .post(format!("{}/api/groups/{}/expenses", ctx.base_url, group_id))
+        .bearer_auth(&bob_token)
+        .json(&json!({
+            "description": "Lunch Buffet",
+            "amount_cents": 8000,
+            "split_type": "PERCENT",
+            "splits": [
+                { "user_id": bob_id, "percentage": 50.0 },
+                { "user_id": charlie_id, "percentage": 50.0 }
+            ]
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let exp2: Value = res.json().await.unwrap();
+    let exp2_id = exp2["id"].as_str().unwrap().to_string();
+    assert_eq!(exp2["split_type"], "PERCENT");
+
+    // 8. Test Edit Permissions:
+    // Case A: Charlie (non-creator, non-admin) tries to edit Bob's expense -> 403 Forbidden
+    let res = ctx
+        .client
+        .put(format!("{}/api/groups/{}/expenses/{}", ctx.base_url, group_id, exp2_id))
+        .bearer_auth(&charlie_token)
+        .json(&json!({
+            "description": "Hacked Lunch",
+            "amount_cents": 1000,
+            "split_type": "EQUAL",
+            "participants": [charlie_id]
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 403);
+
+    // Case B: Bob (the person who added it) edits the expense -> 200 OK
+    let res = ctx
+        .client
+        .put(format!("{}/api/groups/{}/expenses/{}", ctx.base_url, group_id, exp2_id))
+        .bearer_auth(&bob_token)
+        .json(&json!({
+            "description": "Lunch Buffet (Updated with tip)",
+            "amount_cents": 9000,
+            "split_type": "PERCENT",
+            "splits": [
+                { "user_id": bob_id, "percentage": 50.0 },
+                { "user_id": charlie_id, "percentage": 50.0 }
+            ]
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let updated_exp2: Value = res.json().await.unwrap();
+    assert_eq!(updated_exp2["description"], "Lunch Buffet (Updated with tip)");
+    assert_eq!(updated_exp2["amount_cents"], 9000);
+
+    // Case C: Alice (Group Admin) can also edit Bob's expense -> 200 OK
+    let res = ctx
+        .client
+        .put(format!("{}/api/groups/{}/expenses/{}", ctx.base_url, group_id, exp2_id))
+        .bearer_auth(&alice_token)
+        .json(&json!({
+            "description": "Lunch Buffet (Admin Adjusted)",
+            "amount_cents": 9500,
+            "split_type": "PERCENT",
+            "splits": [
+                { "user_id": bob_id, "percentage": 50.0 },
+                { "user_id": charlie_id, "percentage": 50.0 }
+            ]
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+
+    // 9. Test Activity Logs:
+    // Charlie (member) attempts to view activity logs -> 403 Forbidden
+    let res = ctx
+        .client
+        .get(format!("{}/api/groups/{}/activities", ctx.base_url, group_id))
+        .bearer_auth(&charlie_token)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 403);
+
+    // Alice (Group Admin) views activity logs -> 200 OK with recorded actions
+    let res = ctx
+        .client
+        .get(format!("{}/api/groups/{}/activities", ctx.base_url, group_id))
+        .bearer_auth(&alice_token)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let logs: Value = res.json().await.unwrap();
+    let logs_arr = logs.as_array().unwrap();
+    assert!(logs_arr.len() >= 5); // CREATE_GROUP, ADD_MEMBER x2, CREATE_EXPENSE x2, UPDATE_EXPENSE x2
+
+    let actions: Vec<&str> = logs_arr
+        .iter()
+        .map(|l| l["action"].as_str().unwrap())
+        .collect();
+    assert!(actions.contains(&"CREATE_GROUP"));
+    assert!(actions.contains(&"ADD_MEMBER"));
+    assert!(actions.contains(&"CREATE_EXPENSE"));
+    assert!(actions.contains(&"UPDATE_EXPENSE"));
+}

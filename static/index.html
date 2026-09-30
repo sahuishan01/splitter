@@ -834,7 +834,8 @@
           <h1 id="group-title" style="font-size: 1.6rem; font-weight: 700;">Group Name</h1>
           <p id="group-desc" style="color: var(--text-muted); font-size: 0.9rem;">Description</p>
         </div>
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="group-activity-btn" class="btn btn-secondary hidden" onclick="openActivityLogModal()">📜 Activity Log</button>
           <button class="btn btn-secondary" onclick="openModal('modal-add-member')">+ Add Member</button>
           <button class="btn btn-primary" onclick="openAddExpenseModal()">+ Add Expense</button>
         </div>
@@ -995,12 +996,13 @@
     </div>
   </div>
 
-  <!-- Modal: Add Expense -->
+  <!-- Modal: Add / Edit Expense -->
   <div id="modal-add-expense" class="modal-overlay">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 520px;">
       <button class="modal-close" onclick="closeModal('modal-add-expense')">&times;</button>
-      <h3 class="card-title" style="margin-bottom: 16px;">Add New Expense</h3>
-      <form onsubmit="handleAddExpense(event)">
+      <h3 id="modal-expense-title" class="card-title" style="margin-bottom: 16px;">Add New Expense</h3>
+      <form onsubmit="handleSaveExpense(event)">
+        <input type="hidden" id="expense-edit-id" />
         <div class="form-group">
           <label class="form-label">Description</label>
           <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Dinner, Groceries, Hotel" required />
@@ -1008,7 +1010,7 @@
         <div class="grid-cols-2">
           <div class="form-group">
             <label class="form-label">Amount</label>
-            <input type="number" step="0.01" min="0.01" id="expense-amount" class="form-input" placeholder="0.00" required />
+            <input type="number" step="0.01" min="0.01" id="expense-amount" class="form-input" placeholder="0.00" oninput="updateSplitCalculations()" required />
           </div>
           <div class="form-group">
             <label class="form-label">Category</label>
@@ -1027,14 +1029,50 @@
             <!-- Dynamically populated -->
           </select>
         </div>
+
+        <!-- Split Type Tabs -->
         <div class="form-group">
-          <label class="form-label">Split Among (Equal Split)</label>
-          <div id="expense-participants-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 140px; overflow-y: auto; padding: 4px;">
-            <!-- Checkboxes populated dynamically -->
+          <label class="form-label">Split Type</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; background: var(--bg-surface); padding: 4px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+            <button type="button" id="split-tab-equal" class="btn btn-sm" style="justify-content: center; background: var(--accent); color: #fff; font-size: 0.8rem;" onclick="setSplitType('EQUAL')">Equal</button>
+            <button type="button" id="split-tab-exact" class="btn btn-sm btn-secondary" style="justify-content: center; font-size: 0.8rem;" onclick="setSplitType('EXACT')">Exact Amount</button>
+            <button type="button" id="split-tab-percent" class="btn btn-sm btn-secondary" style="justify-content: center; font-size: 0.8rem;" onclick="setSplitType('PERCENT')">Percentage (%)</button>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Expense</button>
+
+        <!-- Split Participants & Breakdown -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" id="split-section-label" style="margin-bottom: 0;">Split Breakdown</label>
+            <button type="button" id="btn-split-distribute" class="btn btn-secondary btn-sm hidden" style="font-size: 0.75rem; padding: 2px 8px;" onclick="distributeSplitsEvenly()">Split Evenly</button>
+          </div>
+          <div id="expense-splits-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; padding: 6px; border: 1px solid var(--border-subtle); border-radius: 6px; background: var(--bg-main);">
+            <!-- Populated dynamically -->
+          </div>
+          <div id="split-validation-status" style="margin-top: 6px; font-size: 0.8rem; font-family: var(--font-mono); font-weight: 600;">
+            <!-- Live status message -->
+          </div>
+        </div>
+
+        <button type="submit" id="btn-save-expense" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Expense</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal: Activity Log (Admin Only) -->
+  <div id="modal-activity-log" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <button class="modal-close" onclick="closeModal('modal-activity-log')">&times;</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+        <h3 class="card-title" style="margin-bottom: 0;">📜 Group Activity Log</h3>
+        <button class="btn btn-secondary btn-sm" onclick="loadActivityLogs(true)">↻ Refresh</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+        Audit trail of expenses, splits, settlements, and membership updates.
+      </p>
+      <div id="activity-logs-container" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
+        <!-- Activity items rendered dynamically -->
+      </div>
     </div>
   </div>
 
@@ -1667,6 +1705,9 @@
           currentGroupDetail = cachedDetail;
           document.getElementById('group-title').textContent = cachedDetail.group.name;
           document.getElementById('group-desc').textContent = cachedDetail.group.description || `${cachedDetail.members.length} members • Currency: ${cachedDetail.group.default_currency}`;
+          const isGrpAdmin = cachedDetail.user_role === 'admin' || (currentUser && currentUser.is_admin);
+          const actBtn = document.getElementById('group-activity-btn');
+          if (actBtn) actBtn.classList.toggle('hidden', !isGrpAdmin);
         } else {
           renderGroupDetailsSkeleton();
         }
@@ -1691,6 +1732,9 @@
 
         document.getElementById('group-title').textContent = detail.group.name;
         document.getElementById('group-desc').textContent = detail.group.description || `${detail.members.length} members • Currency: ${detail.group.default_currency}`;
+        const isGrpAdmin = detail.user_role === 'admin' || (currentUser && currentUser.is_admin);
+        const actBtn = document.getElementById('group-activity-btn');
+        if (actBtn) actBtn.classList.toggle('hidden', !isGrpAdmin);
 
         // Fetch balances, expenses, settlements
         const [balances, expenses, settlements] = await Promise.all([
@@ -1788,29 +1832,50 @@
         const row = document.createElement('div');
         row.className = 'expense-row';
 
-        const splitsHtml = (exp.splits || []).map(s => `
-          <span style="font-size: 0.75rem; background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">
-            ${escapeHtml(s.display_name)}: ${formatMoney(s.amount_cents, currency)}
-          </span>
-        `).join(' ');
+        const splitsHtml = (exp.splits || []).map(s => {
+          const pctStr = s.share_percentage ? ` (${s.share_percentage}%)` : '';
+          return `
+            <span style="font-size: 0.75rem; background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">
+              ${escapeHtml(s.display_name)}: ${formatMoney(s.amount_cents, currency)}${pctStr}
+            </span>
+          `;
+        }).join(' ');
 
-        const canDelete = exp.paid_by === currentUser.id || currentUser.is_admin;
+        const isCreator = exp.created_by ? exp.created_by === currentUser.id : exp.paid_by === currentUser.id;
+        const isGroupAdmin = currentGroupDetail && currentGroupDetail.user_role === 'admin';
+        const isGlobalAdmin = currentUser && currentUser.is_admin;
+        const canEdit = (isCreator || isGroupAdmin || isGlobalAdmin) && !exp.is_pending;
+        const canDelete = (isCreator || exp.paid_by === currentUser.id || isGroupAdmin || isGlobalAdmin) && !exp.is_pending;
         const isPending = exp.is_pending;
+
+        const splitBadge = exp.split_type === 'PERCENT'
+          ? '<span class="role-tag" style="background: rgba(163, 113, 247, 0.15); color: #d2a8ff; margin-left: 6px;">% Split</span>'
+          : (exp.split_type === 'EXACT'
+              ? '<span class="role-tag" style="background: rgba(56, 139, 253, 0.15); color: #79c0ff; margin-left: 6px;">Exact Split</span>'
+              : '<span class="role-tag" style="background: rgba(110, 118, 129, 0.15); color: #8b949e; margin-left: 6px;">Equal Split</span>');
 
         row.innerHTML = `
           <div>
             <div class="expense-title">
               ${escapeHtml(exp.description)}
+              ${splitBadge}
               ${isPending ? '<span class="role-tag pending" style="margin-left: 6px;">Pending Sync</span>' : ''}
             </div>
-            <div class="expense-sub">Paid by <strong>${escapeHtml(exp.paid_by_name || 'You')}</strong> • ${new Date(exp.expense_date || Date.now()).toLocaleDateString()} • <span class="role-tag">${escapeHtml(exp.category || 'General')}</span></div>
+            <div class="expense-sub">
+              Paid by <strong>${escapeHtml(exp.paid_by_name || 'You')}</strong> • Added by <strong>${escapeHtml(exp.created_by_name || exp.paid_by_name || 'Member')}</strong> • ${new Date(exp.expense_date || Date.now()).toLocaleDateString()} • <span class="role-tag">${escapeHtml(exp.category || 'General')}</span>
+            </div>
             <div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;">${splitsHtml}</div>
           </div>
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
             <div class="expense-amount">${formatMoney(exp.amount_cents, currency)}</div>
-            ${canDelete && !isPending ? `
-              <button class="btn btn-danger btn-sm" onclick="deleteExpense('${exp.id}')">Delete</button>
-            ` : ''}
+            <div style="display: flex; gap: 6px;">
+              ${canEdit ? `
+                <button class="btn btn-secondary btn-sm" onclick="openEditExpenseModal('${exp.id}')">Edit</button>
+              ` : ''}
+              ${canDelete ? `
+                <button class="btn btn-danger btn-sm" onclick="deleteExpense('${exp.id}')">Delete</button>
+              ` : ''}
+            </div>
           </div>
         `;
         container.appendChild(row);
@@ -1846,26 +1911,22 @@
     }
 
     // Real-Time Local Auto-Adjustment of Final Statements
-    function autoAdjustStatementsForExpense(expense, participants) {
+    function autoAdjustStatementsForExpense(expense, splitsList) {
       if (!currentBalancesSummary || !currentBalancesSummary.balances) return;
 
       const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
-      const count = participants.length;
-      const baseShare = Math.floor(expense.amount_cents / count);
-      let rem = expense.amount_cents % count;
 
       // Adjust balances array
       currentBalancesSummary.balances.forEach(b => {
         if (b.user_id === expense.paid_by) {
           b.net_balance_cents += expense.amount_cents;
         }
-        if (participants.includes(b.user_id)) {
-          let share = baseShare;
-          if (rem > 0) {
-            share += 1;
-            rem -= 1;
-          }
-          b.net_balance_cents -= share;
+      });
+
+      splitsList.forEach(s => {
+        const b = currentBalancesSummary.balances.find(bal => bal.user_id === s.user_id);
+        if (b) {
+          b.net_balance_cents -= s.amount_cents;
         }
       });
 
@@ -1875,8 +1936,11 @@
 
       // Re-render UI with Auto-Adjusted badge
       renderBalancesUI(currentBalancesSummary);
-      document.getElementById('statements-sync-badge').textContent = 'Auto-Adjusted';
-      document.getElementById('statements-sync-badge').className = 'role-tag pending';
+      const stBadge = document.getElementById('statements-sync-badge');
+      if (stBadge) {
+        stBadge.textContent = 'Auto-Adjusted';
+        stBadge.className = 'role-tag pending';
+      }
     }
 
     function autoAdjustStatementsForSettlement(settlement) {
@@ -1897,56 +1961,304 @@
       cacheSet(`balances_${currentGroupId}`, currentBalancesSummary);
 
       renderBalancesUI(currentBalancesSummary);
-      document.getElementById('statements-sync-badge').textContent = 'Auto-Adjusted';
-      document.getElementById('statements-sync-badge').className = 'role-tag pending';
+      const stBadge = document.getElementById('statements-sync-badge');
+      if (stBadge) {
+        stBadge.textContent = 'Auto-Adjusted';
+        stBadge.className = 'role-tag pending';
+      }
     }
 
-    // Add Expense Modal
+    // Split Types & Expense Modal State
+    let currentSplitType = 'EQUAL';
+    let editingExpenseId = null;
+
+    function setSplitType(type) {
+      currentSplitType = type;
+      ['equal', 'exact', 'percent'].forEach(t => {
+        const btn = document.getElementById(`split-tab-${t}`);
+        if (!btn) return;
+        if (t.toUpperCase() === type) {
+          btn.style.background = 'var(--accent)';
+          btn.style.color = '#fff';
+          btn.classList.remove('btn-secondary');
+        } else {
+          btn.style.background = 'transparent';
+          btn.style.color = 'var(--text-main)';
+          btn.classList.add('btn-secondary');
+        }
+      });
+
+      const distBtn = document.getElementById('btn-split-distribute');
+      if (distBtn) {
+        distBtn.classList.toggle('hidden', type === 'EQUAL');
+      }
+
+      renderSplitInputs();
+      updateSplitCalculations();
+    }
+
+    function renderSplitInputs(existingSplits = null) {
+      if (!currentGroupDetail || !currentGroupDetail.members) return;
+      const container = document.getElementById('expense-splits-list');
+      container.innerHTML = '';
+      const currency = currentGroupDetail.group.default_currency || 'USD';
+
+      currentGroupDetail.members.forEach(m => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.justifyContent = 'space-between';
+        row.style.gap = '8px';
+        row.style.padding = '4px 6px';
+        row.style.background = 'var(--bg-surface)';
+        row.style.borderRadius = '4px';
+
+        const existing = existingSplits ? existingSplits.find(s => s.user_id === m.user_id) : null;
+        const isChecked = existingSplits ? !!existing : true;
+
+        if (currentSplitType === 'EQUAL') {
+          row.innerHTML = `
+            <label style="display: flex; align-items: center; gap: 8px; width: 100%; cursor: pointer; font-size: 0.85rem;">
+              <input type="checkbox" name="split_participant" value="${m.user_id}" ${isChecked ? 'checked' : ''} onchange="updateSplitCalculations()" />
+              <span style="font-weight: 500;">${escapeHtml(m.display_name)}</span> ${m.user_id === currentUser.id ? '<span class="role-tag" style="font-size: 0.7rem;">You</span>' : ''}
+              <span id="equal-share-${m.user_id}" style="margin-left: auto; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem;"></span>
+            </label>
+          `;
+        } else if (currentSplitType === 'EXACT') {
+          const val = existing ? (existing.amount_cents / 100).toFixed(2) : '';
+          row.innerHTML = `
+            <label style="display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; font-size: 0.85rem;">
+              <input type="checkbox" name="split_participant" value="${m.user_id}" ${isChecked ? 'checked' : ''} onchange="updateSplitCalculations()" />
+              <span style="font-weight: 500;">${escapeHtml(m.display_name)}</span> ${m.user_id === currentUser.id ? '<span class="role-tag" style="font-size: 0.7rem;">You</span>' : ''}
+            </label>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="font-size: 0.8rem; color: var(--text-dim);">${currency === 'INR' ? '₹' : (currency === 'EUR' ? '€' : (currency === 'GBP' ? '£' : '$'))}</span>
+              <input type="number" step="0.01" min="0" class="form-input exact-split-val" data-user="${m.user_id}" value="${val}" placeholder="0.00" style="width: 85px; padding: 4px 6px; font-size: 0.85rem;" oninput="updateSplitCalculations()" />
+            </div>
+          `;
+        } else if (currentSplitType === 'PERCENT') {
+          const val = existing ? (existing.share_percentage || 0) : '';
+          row.innerHTML = `
+            <label style="display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; font-size: 0.85rem;">
+              <input type="checkbox" name="split_participant" value="${m.user_id}" ${isChecked ? 'checked' : ''} onchange="updateSplitCalculations()" />
+              <span style="font-weight: 500;">${escapeHtml(m.display_name)}</span> ${m.user_id === currentUser.id ? '<span class="role-tag" style="font-size: 0.7rem;">You</span>' : ''}
+            </label>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <input type="number" step="0.1" min="0" max="100" class="form-input percent-split-val" data-user="${m.user_id}" value="${val}" placeholder="0" style="width: 75px; padding: 4px 6px; font-size: 0.85rem;" oninput="updateSplitCalculations()" />
+              <span style="font-size: 0.8rem; color: var(--text-dim);">%</span>
+              <span id="percent-preview-${m.user_id}" style="min-width: 60px; text-align: right; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem;"></span>
+            </div>
+          `;
+        }
+        container.appendChild(row);
+      });
+    }
+
+    function updateSplitCalculations() {
+      const amtInput = document.getElementById('expense-amount');
+      const totalAmt = parseFloat(amtInput.value) || 0;
+      const totalCents = Math.round(totalAmt * 100);
+      const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+      const statusEl = document.getElementById('split-validation-status');
+
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="split_participant"]:checked'));
+      const checkedCount = checkedBoxes.length;
+
+      if (currentSplitType === 'EQUAL') {
+        if (checkedCount === 0) {
+          statusEl.textContent = '⚠️ Select at least one participant';
+          statusEl.style.color = '#f85149';
+          return;
+        }
+        const perPerson = totalAmt / checkedCount;
+        checkedBoxes.forEach(cb => {
+          const shareSpan = document.getElementById(`equal-share-${cb.value}`);
+          if (shareSpan) {
+            shareSpan.textContent = totalAmt > 0 ? formatMoney(Math.round(perPerson * 100), currency) : '';
+          }
+        });
+        statusEl.textContent = `${checkedCount} members selected • ${formatMoney(Math.round(perPerson * 100), currency)} each`;
+        statusEl.style.color = 'var(--text-muted)';
+      } else if (currentSplitType === 'EXACT') {
+        let allocatedCents = 0;
+        document.querySelectorAll('.exact-split-val').forEach(inp => {
+          const cb = document.querySelector(`input[name="split_participant"][value="${inp.dataset.user}"]`);
+          if (cb && cb.checked) {
+            const v = parseFloat(inp.value) || 0;
+            allocatedCents += Math.round(v * 100);
+          }
+        });
+
+        const remCents = totalCents - allocatedCents;
+        if (totalCents > 0 && remCents === 0) {
+          statusEl.innerHTML = `<span style="color: #3fb950;">✓ Exact splits match total: ${formatMoney(totalCents, currency)}</span>`;
+        } else {
+          const remStr = formatMoney(remCents, currency);
+          statusEl.innerHTML = `<span style="color: #f85149;">Allocated: ${formatMoney(allocatedCents, currency)} / ${formatMoney(totalCents, currency)} • Remaining: ${remStr}</span>`;
+        }
+      } else if (currentSplitType === 'PERCENT') {
+        let allocatedPct = 0;
+        document.querySelectorAll('.percent-split-val').forEach(inp => {
+          const cb = document.querySelector(`input[name="split_participant"][value="${inp.dataset.user}"]`);
+          const prevSpan = document.getElementById(`percent-preview-${inp.dataset.user}`);
+          if (cb && cb.checked) {
+            const pct = parseFloat(inp.value) || 0;
+            allocatedPct += pct;
+            if (prevSpan) {
+              const cents = Math.round(totalCents * (pct / 100));
+              prevSpan.textContent = formatMoney(cents, currency);
+            }
+          } else if (prevSpan) {
+            prevSpan.textContent = '';
+          }
+        });
+
+        const remPct = Math.round((100.0 - allocatedPct) * 100) / 100;
+        if (Math.abs(remPct) < 0.05) {
+          statusEl.innerHTML = `<span style="color: #3fb950;">✓ Percentages total 100% (${formatMoney(totalCents, currency)})</span>`;
+        } else {
+          statusEl.innerHTML = `<span style="color: #f85149;">Allocated: ${allocatedPct.toFixed(1)}% / 100% • Remaining: ${remPct.toFixed(1)}%</span>`;
+        }
+      }
+    }
+
+    function distributeSplitsEvenly() {
+      const amtInput = document.getElementById('expense-amount');
+      const totalAmt = parseFloat(amtInput.value) || 0;
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="split_participant"]:checked'));
+      if (checkedBoxes.length === 0) {
+        alert('Please check at least one participant');
+        return;
+      }
+
+      if (currentSplitType === 'EXACT') {
+        const totalCents = Math.round(totalAmt * 100);
+        const count = checkedBoxes.length;
+        const base = Math.floor(totalCents / count);
+        let rem = totalCents % count;
+
+        checkedBoxes.forEach(cb => {
+          const inp = document.querySelector(`.exact-split-val[data-user="${cb.value}"]`);
+          if (inp) {
+            let myCents = base;
+            if (rem > 0) {
+              myCents += 1;
+              rem -= 1;
+            }
+            inp.value = (myCents / 100).toFixed(2);
+          }
+        });
+      } else if (currentSplitType === 'PERCENT') {
+        const count = checkedBoxes.length;
+        const basePct = Math.floor((100.0 / count) * 10) / 10;
+        let remPct = Math.round((100.0 - (basePct * count)) * 10) / 10;
+
+        checkedBoxes.forEach((cb, idx) => {
+          const inp = document.querySelector(`.percent-split-val[data-user="${cb.value}"]`);
+          if (inp) {
+            let val = basePct;
+            if (idx === 0) {
+              val = Math.round((val + remPct) * 10) / 10;
+            }
+            inp.value = val;
+          }
+        });
+      }
+
+      updateSplitCalculations();
+    }
+
     function openAddExpenseModal() {
       if (!currentGroupDetail) return;
+      editingExpenseId = null;
+      document.getElementById('expense-edit-id').value = '';
+      document.getElementById('modal-expense-title').textContent = 'Add New Expense';
+      document.getElementById('btn-save-expense').textContent = 'Save Expense';
+
       const payerSelect = document.getElementById('expense-payer');
       payerSelect.innerHTML = '';
-
-      const partsList = document.getElementById('expense-participants-list');
-      partsList.innerHTML = '';
-
       currentGroupDetail.members.forEach(m => {
         const opt = document.createElement('option');
         opt.value = m.user_id;
         opt.textContent = m.display_name + (m.user_id === currentUser.id ? ' (You)' : '');
         if (m.user_id === currentUser.id) opt.selected = true;
         payerSelect.appendChild(opt);
-
-        const label = document.createElement('label');
-        label.style.display = 'flex';
-        label.style.alignItems = 'center';
-        label.style.gap = '8px';
-        label.style.fontSize = '0.85rem';
-        label.style.cursor = 'pointer';
-        label.innerHTML = `
-          <input type="checkbox" name="expense_participant" value="${m.user_id}" checked />
-          <span>${escapeHtml(m.display_name)}</span>
-        `;
-        partsList.appendChild(label);
       });
 
       document.getElementById('expense-desc').value = '';
       document.getElementById('expense-amount').value = '';
+      document.getElementById('expense-category').value = 'General';
+
+      setSplitType('EQUAL');
       openModal('modal-add-expense');
     }
 
-    async function handleAddExpense(e) {
+    function openEditExpenseModal(expId) {
+      if (!currentGroupDetail) return;
+      const cached = cacheGet(`expenses_${currentGroupId}`) || [];
+      const exp = cached.find(e => e.id === expId);
+      if (!exp) return;
+
+      editingExpenseId = exp.id;
+      document.getElementById('expense-edit-id').value = exp.id;
+      document.getElementById('modal-expense-title').textContent = 'Edit Expense';
+      document.getElementById('btn-save-expense').textContent = 'Update Expense';
+
+      const payerSelect = document.getElementById('expense-payer');
+      payerSelect.innerHTML = '';
+      currentGroupDetail.members.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.user_id;
+        opt.textContent = m.display_name + (m.user_id === currentUser.id ? ' (You)' : '');
+        if (m.user_id === exp.paid_by) opt.selected = true;
+        payerSelect.appendChild(opt);
+      });
+
+      document.getElementById('expense-desc').value = exp.description;
+      document.getElementById('expense-amount').value = (exp.amount_cents / 100).toFixed(2);
+      document.getElementById('expense-category').value = exp.category || 'General';
+
+      const type = exp.split_type || 'EQUAL';
+      currentSplitType = type;
+      ['equal', 'exact', 'percent'].forEach(t => {
+        const btn = document.getElementById(`split-tab-${t}`);
+        if (!btn) return;
+        if (t.toUpperCase() === type) {
+          btn.style.background = 'var(--accent)';
+          btn.style.color = '#fff';
+          btn.classList.remove('btn-secondary');
+        } else {
+          btn.style.background = 'transparent';
+          btn.style.color = 'var(--text-main)';
+          btn.classList.add('btn-secondary');
+        }
+      });
+      const distBtn = document.getElementById('btn-split-distribute');
+      if (distBtn) distBtn.classList.toggle('hidden', type === 'EQUAL');
+
+      renderSplitInputs(exp.splits);
+      updateSplitCalculations();
+      openModal('modal-add-expense');
+    }
+
+    async function handleSaveExpense(e) {
       e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]');
-      setButtonLoading(btn, true, 'Saving Expense...');
-      const desc = document.getElementById('expense-desc').value;
+      const btn = document.getElementById('btn-save-expense');
+      const isEdit = !!editingExpenseId;
+      setButtonLoading(btn, true, isEdit ? 'Updating Expense...' : 'Saving Expense...');
+
+      const desc = document.getElementById('expense-desc').value.trim();
       const amtVal = parseFloat(document.getElementById('expense-amount').value);
       const category = document.getElementById('expense-category').value;
       const paid_by = document.getElementById('expense-payer').value;
 
-      const checkedParts = Array.from(document.querySelectorAll('input[name="expense_participant"]:checked')).map(el => el.value);
-      if (checkedParts.length === 0) {
-        alert('Please select at least one person to split the expense with.');
+      if (!desc) {
+        alert('Expense description cannot be empty');
+        setButtonLoading(btn, false);
+        return;
+      }
+      if (!amtVal || amtVal <= 0) {
+        alert('Expense amount must be greater than zero');
         setButtonLoading(btn, false);
         return;
       }
@@ -1956,75 +2268,196 @@
         description: desc,
         amount_cents: amount_cents,
         paid_by: paid_by,
-        split_type: 'EQUAL',
-        category: category,
-        participants: checkedParts
+        split_type: currentSplitType,
+        category: category
       };
 
-      const payerMember = currentGroupDetail.members.find(m => m.user_id === paid_by);
-      const payerName = payerMember ? payerMember.display_name : 'You';
-
-      // 1. Optimistic Local Update
-      const optimisticExp = {
-        id: 'local_' + uuidv4(),
-        group_id: currentGroupId,
-        paid_by: paid_by,
-        paid_by_name: payerName,
-        description: desc,
-        amount_cents: amount_cents,
-        currency: currentGroupDetail.group.default_currency,
-        split_type: 'EQUAL',
-        category: category,
-        expense_date: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        is_pending: true,
-        splits: checkedParts.map(uid => {
-          const m = currentGroupDetail.members.find(mem => mem.user_id === uid);
-          return {
-            user_id: uid,
-            display_name: m ? m.display_name : 'Member',
-            amount_cents: Math.round(amount_cents / checkedParts.length)
-          };
-        })
-      };
-
-      // Add to local cache and re-render
-      const cachedExpenses = cacheGet(`expenses_${currentGroupId}`) || [];
-      cachedExpenses.unshift(optimisticExp);
-      cacheSet(`expenses_${currentGroupId}`, cachedExpenses);
-      renderExpensesUI(cachedExpenses, currentGroupDetail.group.default_currency);
-
-      // Auto-adjust statements locally
-      autoAdjustStatementsForExpense(payload, checkedParts);
-
-      closeModal('modal-add-expense');
-
-      // 2. Transmit to server or queue
-      if (!navigator.onLine) {
-        enqueueMutation('create_expense', currentGroupId, payload, desc);
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="split_participant"]:checked'));
+      if (checkedBoxes.length === 0) {
+        alert('Please select at least one participant for the expense');
         setButtonLoading(btn, false);
         return;
       }
 
-      try {
-        const idempotencyKey = uuidv4();
-        payload.idempotency_key = idempotencyKey;
+      let splitsForOptimistic = [];
 
-        await apiFetch(`/groups/${currentGroupId}/expenses`, {
-          method: 'POST',
-          body: JSON.stringify(payload)
+      if (currentSplitType === 'EQUAL') {
+        payload.participants = checkedBoxes.map(cb => cb.value);
+        const count = checkedBoxes.length;
+        const base = Math.floor(amount_cents / count);
+        let rem = amount_cents % count;
+        splitsForOptimistic = checkedBoxes.map(cb => {
+          let s = base;
+          if (rem > 0) { s += 1; rem -= 1; }
+          const m = currentGroupDetail.members.find(mem => mem.user_id === cb.value);
+          return { user_id: cb.value, display_name: m ? m.display_name : 'Member', amount_cents: s };
         });
+      } else if (currentSplitType === 'EXACT') {
+        const splits = [];
+        let sumCents = 0;
+        for (const cb of checkedBoxes) {
+          const inp = document.querySelector(`.exact-split-val[data-user="${cb.value}"]`);
+          const v = parseFloat(inp.value) || 0;
+          const c = Math.round(v * 100);
+          if (c <= 0) {
+            alert('Each participating member must have an amount greater than 0');
+            setButtonLoading(btn, false);
+            return;
+          }
+          sumCents += c;
+          splits.push({ user_id: cb.value, amount_cents: c });
+          const m = currentGroupDetail.members.find(mem => mem.user_id === cb.value);
+          splitsForOptimistic.push({ user_id: cb.value, display_name: m ? m.display_name : 'Member', amount_cents: c });
+        }
+        if (sumCents !== amount_cents) {
+          alert(`Sum of exact splits (${formatMoney(sumCents, currentGroupDetail.group.default_currency)}) does not match total amount (${formatMoney(amount_cents, currentGroupDetail.group.default_currency)})`);
+          setButtonLoading(btn, false);
+          return;
+        }
+        payload.splits = splits;
+      } else if (currentSplitType === 'PERCENT') {
+        const splits = [];
+        let sumPct = 0;
+        let allocatedCents = 0;
+        for (const cb of checkedBoxes) {
+          const inp = document.querySelector(`.percent-split-val[data-user="${cb.value}"]`);
+          const pct = parseFloat(inp.value) || 0;
+          if (pct <= 0) {
+            alert('Each participating member must have a percentage greater than 0');
+            setButtonLoading(btn, false);
+            return;
+          }
+          sumPct += pct;
+          const c = Math.round(amount_cents * (pct / 100.0));
+          allocatedCents += c;
+          splits.push({ user_id: cb.value, percentage: pct });
+          const m = currentGroupDetail.members.find(mem => mem.user_id === cb.value);
+          splitsForOptimistic.push({ user_id: cb.value, display_name: m ? m.display_name : 'Member', amount_cents: c, share_percentage: pct });
+        }
+        if (Math.abs(sumPct - 100.0) > 0.05) {
+          alert(`Sum of percentages (${sumPct.toFixed(1)}%) must equal 100%`);
+          setButtonLoading(btn, false);
+          return;
+        }
+        const diff = amount_cents - allocatedCents;
+        if (diff !== 0 && splitsForOptimistic.length > 0) {
+          splitsForOptimistic[0].amount_cents += diff;
+        }
+        payload.splits = splits;
+      }
 
-        // Refresh with server confirmed state
+      closeModal('modal-add-expense');
+
+      // Optimistic cache update if creating new
+      if (!isEdit) {
+        const payerMember = currentGroupDetail.members.find(m => m.user_id === paid_by);
+        const optimisticExp = {
+          id: 'local_' + uuidv4(),
+          group_id: currentGroupId,
+          paid_by: paid_by,
+          paid_by_name: payerMember ? payerMember.display_name : 'You',
+          created_by: currentUser.id,
+          created_by_name: currentUser.display_name,
+          description: desc,
+          amount_cents: amount_cents,
+          currency: currentGroupDetail.group.default_currency,
+          split_type: currentSplitType,
+          category: category,
+          expense_date: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          is_pending: true,
+          splits: splitsForOptimistic
+        };
+        const cached = cacheGet(`expenses_${currentGroupId}`) || [];
+        cached.unshift(optimisticExp);
+        cacheSet(`expenses_${currentGroupId}`, cached);
+        renderExpensesUI(cached, currentGroupDetail.group.default_currency);
+        autoAdjustStatementsForExpense(payload, splitsForOptimistic);
+      }
+
+      try {
+        if (isEdit) {
+          await apiFetch(`/groups/${currentGroupId}/expenses/${editingExpenseId}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload)
+          });
+        } else {
+          payload.idempotency_key = uuidv4();
+          await apiFetch(`/groups/${currentGroupId}/expenses`, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+        }
         loadGroupDetails(currentGroupId, false);
       } catch (err) {
-        if (err.message === 'OFFLINE') {
+        if (err.message === 'OFFLINE' && !isEdit) {
           enqueueMutation('create_expense', currentGroupId, payload, desc);
         } else {
-          alert('Error saving expense: ' + err.message);
+          alert((isEdit ? 'Error updating expense: ' : 'Error saving expense: ') + err.message);
         }
       } finally {
         setButtonLoading(btn, false);
+        editingExpenseId = null;
+      }
+    }
+
+    // Activity Log Modal & Viewer
+    function openActivityLogModal() {
+      openModal('modal-activity-log');
+      loadActivityLogs(true);
+    }
+
+    async function loadActivityLogs(fresh = false) {
+      const container = document.getElementById('activity-logs-container');
+      if (!container || !currentGroupId) return;
+
+      container.innerHTML = `
+        <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 50%;"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 70%;"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 40%;"></div></div>
+      `;
+
+      try {
+        const logs = await apiFetch(`/groups/${currentGroupId}/activities`);
+        container.innerHTML = '';
+        if (!logs || logs.length === 0) {
+          container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px 0;">No activities recorded yet.</div>';
+          return;
+        }
+
+        const actionBadges = {
+          CREATE_EXPENSE: { label: 'Expense Added', color: 'rgba(63, 185, 80, 0.15)', text: '#3fb950' },
+          UPDATE_EXPENSE: { label: 'Expense Edited', color: 'rgba(210, 153, 34, 0.15)', text: '#d29922' },
+          DELETE_EXPENSE: { label: 'Expense Deleted', color: 'rgba(248, 81, 73, 0.15)', text: '#f85149' },
+          CREATE_SETTLEMENT: { label: 'Settlement', color: 'rgba(88, 166, 255, 0.15)', text: '#58a6ff' },
+          ADD_MEMBER: { label: 'Member Added', color: 'rgba(163, 113, 247, 0.15)', text: '#bc8cff' },
+          REMOVE_MEMBER: { label: 'Member Removed', color: 'rgba(240, 136, 62, 0.15)', text: '#f0883e' },
+          CREATE_GROUP: { label: 'Group Created', color: 'rgba(110, 118, 129, 0.2)', text: '#8b949e' }
+        };
+
+        logs.forEach(l => {
+          const item = document.createElement('div');
+          item.style.padding = '10px 12px';
+          item.style.background = 'var(--bg-surface)';
+          item.style.borderRadius = '6px';
+          item.style.border = '1px solid var(--border-subtle)';
+
+          const badgeInfo = actionBadges[l.action] || { label: l.action, color: 'rgba(110, 118, 129, 0.2)', text: '#8b949e' };
+          const dateStr = new Date(l.created_at).toLocaleString();
+
+          item.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span class="role-tag" style="background: ${badgeInfo.color}; color: ${badgeInfo.text}; font-weight: 600;">${escapeHtml(badgeInfo.label)}</span>
+              <span style="font-size: 0.75rem; color: var(--text-dim);">${escapeHtml(dateStr)}</span>
+            </div>
+            <div style="font-size: 0.88rem; color: var(--text-main); margin-top: 4px;">
+              ${escapeHtml(l.summary)}
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      } catch (err) {
+        container.innerHTML = `<div style="color: #f85149; padding: 16px 0;">Error loading activity log: ${escapeHtml(err.message)}</div>`;
       }
     }
 

@@ -11,8 +11,8 @@ use crate::{
     models::{ExpenseDetail, IdempotencyRecord, SettlementDetail},
     routes::{
         expenses::{
-            create_expense, create_settlement, list_expenses, list_settlements,
-            CreateExpenseRequest, CreateSettlementRequest,
+            create_expense, create_settlement, list_expenses, list_settlements, update_expense,
+            CreateExpenseRequest, CreateSettlementRequest, UpdateExpenseRequest,
         },
         groups::check_group_membership,
     },
@@ -169,6 +169,60 @@ pub async fn batch_sync(
                             error: Some(format!("Invalid record_settlement payload: {}", e)),
                         });
                     }
+                }
+            }
+            "update_expense" => {
+                let expense_id = mutation
+                    .payload
+                    .get("expense_id")
+                    .and_then(|v| v.as_str())
+                    .map(|s| s.to_string());
+
+                if let Some(exp_id) = expense_id {
+                    match serde_json::from_value::<UpdateExpenseRequest>(mutation.payload) {
+                        Ok(req) => {
+                            match update_expense(
+                                State(pool.clone()),
+                                auth.clone(),
+                                axum::extract::Path((mutation.group_id.clone(), exp_id)),
+                                Json(req),
+                            )
+                            .await
+                            {
+                                Ok(Json(detail)) => {
+                                    results.push(MutationResult {
+                                        idempotency_key: ikey,
+                                        status: "applied".to_string(),
+                                        data: serde_json::to_value(detail).ok(),
+                                        error: None,
+                                    });
+                                }
+                                Err(e) => {
+                                    results.push(MutationResult {
+                                        idempotency_key: ikey,
+                                        status: "error".to_string(),
+                                        data: None,
+                                        error: Some(e.to_string()),
+                                    });
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            results.push(MutationResult {
+                                idempotency_key: ikey,
+                                status: "error".to_string(),
+                                data: None,
+                                error: Some(format!("Invalid update_expense payload: {}", e)),
+                            });
+                        }
+                    }
+                } else {
+                    results.push(MutationResult {
+                        idempotency_key: ikey,
+                        status: "error".to_string(),
+                        data: None,
+                        error: Some("Missing expense_id for update_expense".to_string()),
+                    });
                 }
             }
             unknown => {
