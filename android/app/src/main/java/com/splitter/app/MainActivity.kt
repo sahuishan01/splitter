@@ -20,6 +20,9 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.splitter.sync.SyncQueueWorker
 
@@ -35,8 +38,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val rootLayout = FrameLayout(this)
-        rootLayout.setBackgroundColor(0xFF0D1117.toInt())
+        val rootLayout = FrameLayout(this).apply {
+            fitsSystemWindows = false
+            setBackgroundColor(0xFF0D1117.toInt())
+        }
+
+        // Auto-adjust layout padding for status bar, navigation bar, and camera notch/cutout
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, windowInsets ->
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            windowInsets
+        }
+
+        val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = false
+        insetsController.isAppearanceLightNavigationBars = false
 
         webView = WebView(this).apply {
             layoutParams = FrameLayout.LayoutParams(

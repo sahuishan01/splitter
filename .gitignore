@@ -15,3 +15,6 @@ keystore.properties
 local.properties
 *.apk
 *.aab
+
+# Graphify
+graphify-out/cache/

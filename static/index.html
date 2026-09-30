@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Splitter - Expense Splitting & Debt Settlement</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,28 +45,11 @@
       flex-direction: column;
     }
 
-    /* Offline Bar */
-    #offline-banner {
-      display: none;
-      background: var(--warning);
-      color: #000;
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 8px 16px;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-    #offline-banner.active {
-      display: flex;
-    }
-
-    /* Header */
+    /* Notch & Safe Area Header */
     header {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 12px 24px;
+      padding: max(14px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 14px max(20px, env(safe-area-inset-left));
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -105,7 +88,7 @@
     .header-nav {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .user-badge {
@@ -133,6 +116,11 @@
     .role-tag.admin {
       background: #f8514926;
       color: var(--danger);
+    }
+
+    .role-tag.pending {
+      background: #d2992226;
+      color: var(--warning);
     }
 
     /* Buttons */
@@ -188,9 +176,89 @@
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 24px 16px;
+      padding: 20px max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
       width: 100%;
       flex: 1;
+    }
+
+    /* Sync Progress Tracker Panel */
+    #sync-tracker {
+      display: none;
+      background: #1c2128;
+      border: 1px solid var(--border-muted);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    #sync-tracker.active {
+      display: block;
+    }
+
+    .sync-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .sync-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sync-progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-base);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .sync-progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #58a6ff, #3fb950);
+      transition: width 0.3s ease;
+    }
+
+    .sync-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .sync-ongoing-text {
+      color: var(--accent-primary);
+      font-weight: 500;
+    }
+
+    .sync-needed-list {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .sync-needed-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      background: var(--bg-surface);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
     }
 
     /* Cards */
@@ -296,7 +364,7 @@
     /* Groups list */
     .group-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 16px;
     }
 
@@ -518,13 +586,7 @@
 </head>
 <body>
 
-  <!-- Offline Queue Banner -->
-  <div id="offline-banner">
-    <span>⚠️ You are offline. Changes are saved locally and will sync automatically when connected.</span>
-    <button class="btn btn-secondary btn-sm" onclick="syncOfflineQueue()">Sync Now (<span id="queue-count">0</span>)</button>
-  </div>
-
-  <!-- Header -->
+  <!-- Header with notch inset auto-adjustment -->
   <header>
     <div class="brand" onclick="navigateTo('groups')">
       <div class="brand-logo">÷</div>
@@ -535,13 +597,38 @@
         <span id="user-display-name">User</span>
         <span id="user-role-badge" class="role-tag">Member</span>
       </div>
-      <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')">Admin Panel</button>
+      <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')">Admin</button>
       <button id="logout-btn" class="btn btn-danger btn-sm hidden" onclick="logout()">Logout</button>
     </div>
   </header>
 
   <!-- Main Container -->
   <main class="container">
+
+    <!-- Sync Progress Tracker Widget -->
+    <div id="sync-tracker">
+      <div class="sync-header">
+        <div class="sync-title">
+          <span>⚡ Local Storage Sync</span>
+          <span id="sync-status-badge" class="role-tag pending">2 Pending</span>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="syncOfflineQueue()">Sync Now</button>
+      </div>
+
+      <div class="sync-progress-bar-bg">
+        <div id="sync-progress-fill" class="sync-progress-bar-fill"></div>
+      </div>
+
+      <div class="sync-details">
+        <div id="sync-ongoing-text" class="sync-ongoing-text">Waiting for connection...</div>
+        <div id="sync-needed-count" style="font-family: var(--font-mono);">Still needed: 0 items</div>
+      </div>
+
+      <!-- Collapsible list of items still needed -->
+      <div id="sync-needed-list" class="sync-needed-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
 
     <!-- Auth View -->
     <div id="view-auth" class="auth-container">
@@ -578,7 +665,7 @@
       <div class="card-header">
         <div>
           <h2 class="card-title">Your Expense Groups</h2>
-          <p class="form-help">Split expenses with roommates, trips, and projects</p>
+          <p class="form-help">Split expenses with roommates, trips, and projects (Cached locally)</p>
         </div>
         <button class="btn btn-primary" onclick="openModal('modal-create-group')">+ Create Group</button>
       </div>
@@ -590,7 +677,7 @@
 
     <!-- Group Detail View -->
     <div id="view-group-detail" class="hidden">
-      <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div>
           <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')" style="margin-bottom: 8px;">← Back to Groups</button>
           <h1 id="group-title" style="font-size: 1.6rem; font-weight: 700;">Group Name</h1>
@@ -604,21 +691,26 @@
 
       <!-- Balances and Debt Simplification Cards -->
       <div class="grid-cols-2">
-        <!-- Your Balance Card -->
+        <!-- Member Balances Card -->
         <div class="card">
-          <h3 class="card-title" style="margin-bottom: 12px;">Group Balances</h3>
+          <div class="card-header" style="margin-bottom: 12px;">
+            <h3 class="card-title">Group Balances</h3>
+            <span id="balances-sync-badge" class="role-tag hidden">Auto-Adjusted</span>
+          </div>
           <div id="member-balances-list" class="balance-card">
             <!-- Member balances rendered here -->
           </div>
         </div>
 
-        <!-- Debt Simplification & Settle Up Card -->
+        <!-- Debt Simplification & Settle Up Card (Final Statements) -->
         <div class="card">
           <div class="card-header" style="margin-bottom: 8px;">
-            <h3 class="card-title">Simplified Settlements</h3>
-            <span class="role-tag">Min-Cash-Flow</span>
+            <div>
+              <h3 class="card-title">Final Statements</h3>
+              <p class="form-help">Optimized direct settlements (Auto-adjusts instantly with local changes)</p>
+            </div>
+            <span id="statements-sync-badge" class="role-tag">Min-Cash-Flow</span>
           </div>
-          <p class="form-help" style="margin-bottom: 12px;">Optimized direct transactions to settle all debts with minimal payments.</p>
           <div id="simplified-debts-list">
             <!-- Simplified debts rendered here -->
           </div>
@@ -826,11 +918,31 @@
     let token = localStorage.getItem('splitter_token');
     let currentGroupId = null;
     let currentGroupDetail = null;
+    let currentBalancesSummary = null;
     let authMode = 'login';
+    let isSyncing = false;
 
     const API_BASE = '/api';
 
-    // Helpers
+    // Local Storage Cache Helpers
+    function cacheSet(key, data) {
+      try {
+        localStorage.setItem('splitter_cache_' + key, JSON.stringify(data));
+      } catch (e) {
+        console.warn('Cache write failed:', e);
+      }
+    }
+
+    function cacheGet(key) {
+      try {
+        const item = localStorage.getItem('splitter_cache_' + key);
+        return item ? JSON.parse(item) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // UUID Generator
     function uuidv4() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -845,6 +957,48 @@
       return (cents < 0 ? '-' : '') + sym + val;
     }
 
+    // Min-Cash-Flow Debt Simplification Algorithm (Mirrors backend engine)
+    function computeSimplifiedDebts(balances, currency) {
+      const debtors = balances
+        .filter(b => b.net_balance_cents < 0)
+        .map(b => ({ id: b.user_id, name: b.display_name, amount: -b.net_balance_cents }));
+
+      const creditors = balances
+        .filter(b => b.net_balance_cents > 0)
+        .map(b => ({ id: b.user_id, name: b.display_name, amount: b.net_balance_cents }));
+
+      const simplified = [];
+
+      while (debtors.length > 0 && creditors.length > 0) {
+        debtors.sort((a, b) => b.amount - a.amount);
+        creditors.sort((a, b) => b.amount - a.amount);
+
+        const d = debtors.shift();
+        const c = creditors.shift();
+
+        const settleAmount = Math.min(d.amount, c.amount);
+
+        if (settleAmount > 0) {
+          simplified.push({
+            from_user_id: d.id,
+            from_user_name: d.name,
+            to_user_id: c.id,
+            to_user_name: c.name,
+            amount_cents: settleAmount,
+            currency: currency
+          });
+        }
+
+        const dRem = d.amount - settleAmount;
+        const cRem = c.amount - settleAmount;
+
+        if (dRem > 0) debtors.push({ id: d.id, name: d.name, amount: dRem });
+        if (cRem > 0) creditors.push({ id: c.id, name: c.name, amount: cRem });
+      }
+
+      return simplified;
+    }
+
     // Offline Queue
     function getOfflineQueue() {
       try {
@@ -856,10 +1010,10 @@
 
     function saveOfflineQueue(queue) {
       localStorage.setItem('splitter_offline_queue', JSON.stringify(queue));
-      updateQueueUI();
+      updateSyncUI();
     }
 
-    function enqueueMutation(action, groupId, payload) {
+    function enqueueMutation(action, groupId, payload, title) {
       const queue = getOfflineQueue();
       const idempotencyKey = uuidv4();
       queue.push({
@@ -867,54 +1021,139 @@
         action: action,
         group_id: groupId,
         payload: payload,
+        title: title || (action === 'create_expense' ? payload.description : 'Settlement Payment'),
+        amount_cents: payload.amount_cents || 0,
         queued_at: new Date().toISOString()
       });
       saveOfflineQueue(queue);
       return idempotencyKey;
     }
 
-    function updateQueueUI() {
+    // Sync Progress UI with Ongoing & Still Needed
+    function updateSyncUI(ongoingText = null, progressPercent = null) {
       const queue = getOfflineQueue();
-      const countEl = document.getElementById('queue-count');
-      const banner = document.getElementById('offline-banner');
-      if (countEl) countEl.textContent = queue.length;
-      if (!navigator.onLine || queue.length > 0) {
-        banner.classList.add('active');
-      } else {
-        banner.classList.remove('active');
+      const tracker = document.getElementById('sync-tracker');
+      const fillBar = document.getElementById('sync-progress-fill');
+      const statusBadge = document.getElementById('sync-status-badge');
+      const ongoingEl = document.getElementById('sync-ongoing-text');
+      const neededCountEl = document.getElementById('sync-needed-count');
+      const neededListEl = document.getElementById('sync-needed-list');
+
+      if (queue.length === 0 && !isSyncing) {
+        tracker.classList.remove('active');
+        return;
       }
+
+      tracker.classList.add('active');
+
+      if (isSyncing) {
+        statusBadge.textContent = 'Syncing...';
+        statusBadge.className = 'role-tag';
+        statusBadge.style.color = 'var(--accent-primary)';
+      } else if (!navigator.onLine) {
+        statusBadge.textContent = 'Offline (Paused)';
+        statusBadge.className = 'role-tag pending';
+      } else {
+        statusBadge.textContent = `${queue.length} Pending`;
+        statusBadge.className = 'role-tag pending';
+      }
+
+      // Progress calculation
+      if (progressPercent !== null) {
+        fillBar.style.width = `${progressPercent}%`;
+      } else {
+        fillBar.style.width = isSyncing ? '50%' : '0%';
+      }
+
+      // Ongoing text
+      if (ongoingText) {
+        ongoingEl.textContent = `🔄 Ongoing: ${ongoingText}`;
+      } else if (isSyncing) {
+        ongoingEl.textContent = `🔄 Ongoing: Uploading batch to server...`;
+      } else if (!navigator.onLine) {
+        ongoingEl.textContent = `⏸️ Offline: Waiting for network reconnection`;
+      } else {
+        ongoingEl.textContent = `Ready to sync ${queue.length} action${queue.length > 1 ? 's' : ''}`;
+      }
+
+      // Still needed count and items
+      neededCountEl.textContent = `Still needed: ${queue.length} item${queue.length > 1 ? 's' : ''}`;
+      neededListEl.innerHTML = '';
+
+      queue.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'sync-needed-item';
+        const isExp = item.action === 'create_expense';
+        row.innerHTML = `
+          <span>
+            <strong>${isExp ? '➕ Expense' : '💸 Settlement'}:</strong>
+            ${escapeHtml(item.title)}
+            <span style="font-family: var(--font-mono); margin-left: 6px;">(${formatMoney(item.amount_cents)})</span>
+          </span>
+          <span class="role-tag pending" style="font-size: 0.65rem;">Queued</span>
+        `;
+        neededListEl.appendChild(row);
+      });
     }
 
     async function syncOfflineQueue() {
       const queue = getOfflineQueue();
-      if (queue.length === 0) {
-        updateQueueUI();
+      if (queue.length === 0 || isSyncing) {
+        updateSyncUI();
         return;
       }
 
+      if (!navigator.onLine) {
+        alert('Cannot sync while offline. Please connect to the internet.');
+        return;
+      }
+
+      isSyncing = true;
+      const totalItems = queue.length;
+      updateSyncUI(`Starting sync for ${totalItems} item(s)...`, 10);
+
       try {
+        // Step through items to provide granular ongoing feedback
+        for (let i = 0; i < totalItems; i++) {
+          const item = queue[i];
+          const pct = Math.round(((i + 1) / totalItems) * 80);
+          updateSyncUI(`Syncing "${item.title}" (${i + 1}/${totalItems})...`, pct);
+          await new Promise(r => setTimeout(r, 150)); // Visual smooth feedback
+        }
+
         const res = await apiFetch('/sync/batch', {
           method: 'POST',
           body: JSON.stringify({ mutations: queue })
         });
-        // Clear successfully processed
+
+        // Set to 100%
+        updateSyncUI(`All ${totalItems} items successfully synced!`, 100);
         localStorage.removeItem('splitter_offline_queue');
-        updateQueueUI();
-        if (currentGroupId) {
-          loadGroupDetails(currentGroupId);
-        }
+
+        setTimeout(() => {
+          isSyncing = false;
+          updateSyncUI();
+          if (currentGroupId) {
+            loadGroupDetails(currentGroupId, false);
+          } else {
+            loadGroups(false);
+          }
+        }, 1200);
+
       } catch (e) {
         console.error('Offline sync failed:', e);
+        isSyncing = false;
+        updateSyncUI('Sync paused due to connection issue.', 0);
       }
     }
 
     window.addEventListener('online', () => {
-      updateQueueUI();
+      updateSyncUI('Network restored. Syncing...', 10);
       syncOfflineQueue();
     });
-    window.addEventListener('offline', updateQueueUI);
+    window.addEventListener('offline', () => updateSyncUI());
 
-    // API fetch wrapper
+    // API fetch wrapper with local storage fallback
     async function apiFetch(endpoint, options = {}) {
       const headers = options.headers || {};
       headers['Content-Type'] = 'application/json';
@@ -939,8 +1178,7 @@
         }
         return data;
       } catch (err) {
-        // If offline and mutating, we handle via queue
-        if (!navigator.onLine) {
+        if (!navigator.onLine || err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
           throw new Error('OFFLINE');
         }
         throw err;
@@ -1004,6 +1242,7 @@
         token = res.token;
         localStorage.setItem('splitter_token', token);
         currentUser = res.user;
+        cacheSet('user', currentUser);
         renderUserHeader();
         navigateTo('groups');
       } catch (err) {
@@ -1039,40 +1278,57 @@
       token = null;
       currentUser = null;
       localStorage.removeItem('splitter_token');
+      localStorage.removeItem('splitter_cache_user');
       renderUserHeader();
       navigateTo('auth');
     }
 
-    // Groups logic
-    async function loadGroups() {
+    // Groups Logic (with Local Storage Cache)
+    async function loadGroups(useCache = true) {
+      const container = document.getElementById('groups-list');
+
+      // 1. Immediately render cached groups if available
+      if (useCache) {
+        const cachedGroups = cacheGet('groups');
+        if (cachedGroups) {
+          renderGroupsList(cachedGroups);
+        }
+      }
+
+      // 2. Fetch fresh groups from network in background
       try {
         const groups = await apiFetch('/groups');
-        const container = document.getElementById('groups-list');
-        container.innerHTML = '';
-
-        if (groups.length === 0) {
-          container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No groups yet. Click "+ Create Group" to start splitting expenses!</div>`;
-          return;
-        }
-
-        groups.forEach(g => {
-          const card = document.createElement('div');
-          card.className = 'group-card';
-          card.onclick = () => openGroup(g.id);
-          card.innerHTML = `
-            <div class="group-name">${escapeHtml(g.name)}</div>
-            <div class="group-desc">${escapeHtml(g.description || 'No description')}</div>
-            <div class="group-meta">
-              <span>👥 ${g.member_count} member${g.member_count > 1 ? 's' : ''}</span>
-              <span class="role-tag">${g.user_role}</span>
-              <span>${g.default_currency}</span>
-            </div>
-          `;
-          container.appendChild(card);
-        });
+        cacheSet('groups', groups);
+        renderGroupsList(groups);
       } catch (err) {
-        console.error('Failed to load groups:', err);
+        console.warn('Network groups fetch failed, relying on local storage cache:', err.message);
       }
+    }
+
+    function renderGroupsList(groups) {
+      const container = document.getElementById('groups-list');
+      container.innerHTML = '';
+
+      if (groups.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No groups yet. Click "+ Create Group" to start splitting expenses!</div>`;
+        return;
+      }
+
+      groups.forEach(g => {
+        const card = document.createElement('div');
+        card.className = 'group-card';
+        card.onclick = () => openGroup(g.id);
+        card.innerHTML = `
+          <div class="group-name">${escapeHtml(g.name)}</div>
+          <div class="group-desc">${escapeHtml(g.description || 'No description')}</div>
+          <div class="group-meta">
+            <span>👥 ${g.member_count} member${g.member_count > 1 ? 's' : ''}</span>
+            <span class="role-tag">${g.user_role}</span>
+            <span>${g.default_currency}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
     async function handleCreateGroup(e) {
@@ -1089,42 +1345,88 @@
         closeModal('modal-create-group');
         document.getElementById('new-group-name').value = '';
         document.getElementById('new-group-desc').value = '';
+
+        // Update local cache
+        const cached = cacheGet('groups') || [];
+        cached.unshift({
+          id: group.id,
+          name: group.name,
+          description: group.description,
+          default_currency: group.default_currency,
+          created_by: group.created_by,
+          created_at: group.created_at,
+          member_count: 1,
+          user_role: 'admin'
+        });
+        cacheSet('groups', cached);
+
         openGroup(group.id);
       } catch (err) {
         alert(err.message);
       }
     }
 
-    // Group Details Logic
+    // Group Details Logic (with Local Storage Cache & Auto-Adjust Statements)
     async function openGroup(groupId) {
       currentGroupId = groupId;
       navigateTo('group-detail');
-      await loadGroupDetails(groupId);
+      await loadGroupDetails(groupId, true);
     }
 
-    async function loadGroupDetails(groupId) {
+    async function loadGroupDetails(groupId, useCache = true) {
+      // 1. Immediately render cached group state if available
+      if (useCache) {
+        const cachedDetail = cacheGet(`group_${groupId}`);
+        const cachedBalances = cacheGet(`balances_${groupId}`);
+        const cachedExpenses = cacheGet(`expenses_${groupId}`);
+        const cachedSettlements = cacheGet(`settlements_${groupId}`);
+
+        if (cachedDetail) {
+          currentGroupDetail = cachedDetail;
+          document.getElementById('group-title').textContent = cachedDetail.group.name;
+          document.getElementById('group-desc').textContent = cachedDetail.group.description || `${cachedDetail.members.length} members • Currency: ${cachedDetail.group.default_currency}`;
+        }
+        if (cachedBalances) {
+          renderBalancesUI(cachedBalances);
+        }
+        if (cachedExpenses) {
+          renderExpensesUI(cachedExpenses, cachedDetail ? cachedDetail.group.default_currency : 'USD');
+        }
+        if (cachedSettlements) {
+          renderSettlementsUI(cachedSettlements, cachedDetail ? cachedDetail.group.default_currency : 'USD');
+        }
+      }
+
+      // 2. Fetch fresh data from network in background
       try {
         const detail = await apiFetch(`/groups/${groupId}`);
         currentGroupDetail = detail;
+        cacheSet(`group_${groupId}`, detail);
 
         document.getElementById('group-title').textContent = detail.group.name;
         document.getElementById('group-desc').textContent = detail.group.description || `${detail.members.length} members • Currency: ${detail.group.default_currency}`;
 
-        // Load Balances & Simplified Debts
-        await loadBalances(groupId, detail.group.default_currency);
+        // Fetch balances, expenses, settlements
+        const [balances, expenses, settlements] = await Promise.all([
+          apiFetch(`/groups/${groupId}/balances`),
+          apiFetch(`/groups/${groupId}/expenses`),
+          apiFetch(`/groups/${groupId}/settlements`)
+        ]);
 
-        // Load Expenses
-        await loadExpenses(groupId, detail.group.default_currency);
+        cacheSet(`balances_${groupId}`, balances);
+        cacheSet(`expenses_${groupId}`, expenses);
+        cacheSet(`settlements_${groupId}`, settlements);
 
-        // Load Settlements
-        await loadSettlements(groupId, detail.group.default_currency);
+        renderBalancesUI(balances);
+        renderExpensesUI(expenses, detail.group.default_currency);
+        renderSettlementsUI(settlements, detail.group.default_currency);
       } catch (err) {
-        console.error('Failed to load group detail:', err);
+        console.warn('Network group details fetch failed, relying on local storage cache:', err.message);
       }
     }
 
-    async function loadBalances(groupId, currency) {
-      const summary = await apiFetch(`/groups/${groupId}/balances`);
+    function renderBalancesUI(summary) {
+      currentBalancesSummary = summary;
 
       // 1. Member balances
       const bContainer = document.getElementById('member-balances-list');
@@ -1136,10 +1438,10 @@
         let label = 'settled up';
         if (net > 0) {
           colorClass = 'cents-positive';
-          label = `is owed ${formatMoney(net, currency)}`;
+          label = `is owed ${formatMoney(net, summary.currency)}`;
         } else if (net < 0) {
           colorClass = 'cents-negative';
-          label = `owes ${formatMoney(Math.abs(net), currency)}`;
+          label = `owes ${formatMoney(Math.abs(net), summary.currency)}`;
         }
 
         const row = document.createElement('div');
@@ -1155,10 +1457,10 @@
         bContainer.appendChild(row);
       });
 
-      // 2. Simplified Debts
+      // 2. Simplified Debts (Final Statements)
       const dContainer = document.getElementById('simplified-debts-list');
       dContainer.innerHTML = '';
-      if (summary.simplified_debts.length === 0) {
+      if (!summary.simplified_debts || summary.simplified_debts.length === 0) {
         dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">🎉 Everyone is completely settled up!</div>`;
       } else {
         summary.simplified_debts.forEach(d => {
@@ -1172,7 +1474,7 @@
               <span class="debt-highlight">${escapeHtml(d.from_user_name)}</span> ${isPayerMe ? '(You)' : ''}
               owes
               <span class="debt-highlight">${escapeHtml(d.to_user_name)}</span> ${isPayeeMe ? '(You)' : ''}
-              <strong style="margin-left: 6px; font-family: var(--font-mono);">${formatMoney(d.amount_cents, currency)}</strong>
+              <strong style="margin-left: 6px; font-family: var(--font-mono);">${formatMoney(d.amount_cents, summary.currency)}</strong>
             </div>
             <div>
               ${(isPayerMe || isPayeeMe) ? `
@@ -1187,12 +1489,11 @@
       }
     }
 
-    async function loadExpenses(groupId, currency) {
-      const expenses = await apiFetch(`/groups/${groupId}/expenses`);
+    function renderExpensesUI(expenses, currency) {
       const container = document.getElementById('expenses-list');
       container.innerHTML = '';
 
-      if (expenses.length === 0) {
+      if (!expenses || expenses.length === 0) {
         container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px 0;">No expenses recorded yet.</div>`;
         return;
       }
@@ -1201,23 +1502,27 @@
         const row = document.createElement('div');
         row.className = 'expense-row';
 
-        const splitsHtml = exp.splits.map(s => `
+        const splitsHtml = (exp.splits || []).map(s => `
           <span style="font-size: 0.75rem; background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-subtle);">
             ${escapeHtml(s.display_name)}: ${formatMoney(s.amount_cents, currency)}
           </span>
         `).join(' ');
 
         const canDelete = exp.paid_by === currentUser.id || currentUser.is_admin;
+        const isPending = exp.is_pending;
 
         row.innerHTML = `
           <div>
-            <div class="expense-title">${escapeHtml(exp.description)}</div>
-            <div class="expense-sub">Paid by <strong>${escapeHtml(exp.paid_by_name)}</strong> • ${new Date(exp.expense_date).toLocaleDateString()} • <span class="role-tag">${escapeHtml(exp.category)}</span></div>
+            <div class="expense-title">
+              ${escapeHtml(exp.description)}
+              ${isPending ? '<span class="role-tag pending" style="margin-left: 6px;">Pending Sync</span>' : ''}
+            </div>
+            <div class="expense-sub">Paid by <strong>${escapeHtml(exp.paid_by_name || 'You')}</strong> • ${new Date(exp.expense_date || Date.now()).toLocaleDateString()} • <span class="role-tag">${escapeHtml(exp.category || 'General')}</span></div>
             <div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;">${splitsHtml}</div>
           </div>
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
             <div class="expense-amount">${formatMoney(exp.amount_cents, currency)}</div>
-            ${canDelete ? `
+            ${canDelete && !isPending ? `
               <button class="btn btn-danger btn-sm" onclick="deleteExpense('${exp.id}')">Delete</button>
             ` : ''}
           </div>
@@ -1226,12 +1531,11 @@
       });
     }
 
-    async function loadSettlements(groupId, currency) {
-      const settlements = await apiFetch(`/groups/${groupId}/settlements`);
+    function renderSettlementsUI(settlements, currency) {
       const container = document.getElementById('settlements-list');
       container.innerHTML = '';
 
-      if (settlements.length === 0) {
+      if (!settlements || settlements.length === 0) {
         container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 12px 0;">No settlement payments recorded yet.</div>`;
         return;
       }
@@ -1240,10 +1544,12 @@
         const item = document.createElement('div');
         item.className = 'balance-row';
         item.style.marginBottom = '6px';
+        const isPending = s.is_pending;
         item.innerHTML = `
           <div>
             <strong>${escapeHtml(s.payer_name)}</strong> paid <strong>${escapeHtml(s.payee_name)}</strong>
-            <span style="color: var(--text-dim); font-size: 0.78rem; margin-left: 8px;">${new Date(s.settled_at).toLocaleDateString()}</span>
+            ${isPending ? '<span class="role-tag pending" style="margin-left: 6px;">Pending Sync</span>' : ''}
+            <span style="color: var(--text-dim); font-size: 0.78rem; margin-left: 8px;">${new Date(s.settled_at || Date.now()).toLocaleDateString()}</span>
           </div>
           <div class="cents-positive" style="font-family: var(--font-mono); font-weight: 700;">
             ${formatMoney(s.amount_cents, currency)}
@@ -1251,6 +1557,62 @@
         `;
         container.appendChild(item);
       });
+    }
+
+    // Real-Time Local Auto-Adjustment of Final Statements
+    function autoAdjustStatementsForExpense(expense, participants) {
+      if (!currentBalancesSummary || !currentBalancesSummary.balances) return;
+
+      const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+      const count = participants.length;
+      const baseShare = Math.floor(expense.amount_cents / count);
+      let rem = expense.amount_cents % count;
+
+      // Adjust balances array
+      currentBalancesSummary.balances.forEach(b => {
+        if (b.user_id === expense.paid_by) {
+          b.net_balance_cents += expense.amount_cents;
+        }
+        if (participants.includes(b.user_id)) {
+          let share = baseShare;
+          if (rem > 0) {
+            share += 1;
+            rem -= 1;
+          }
+          b.net_balance_cents -= share;
+        }
+      });
+
+      // Auto-recalculate simplified debts (Final Statements)
+      currentBalancesSummary.simplified_debts = computeSimplifiedDebts(currentBalancesSummary.balances, currency);
+      cacheSet(`balances_${currentGroupId}`, currentBalancesSummary);
+
+      // Re-render UI with Auto-Adjusted badge
+      renderBalancesUI(currentBalancesSummary);
+      document.getElementById('statements-sync-badge').textContent = 'Auto-Adjusted';
+      document.getElementById('statements-sync-badge').className = 'role-tag pending';
+    }
+
+    function autoAdjustStatementsForSettlement(settlement) {
+      if (!currentBalancesSummary || !currentBalancesSummary.balances) return;
+
+      const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+
+      currentBalancesSummary.balances.forEach(b => {
+        if (b.user_id === settlement.payer_id) {
+          b.net_balance_cents += settlement.amount_cents;
+        }
+        if (b.user_id === settlement.payee_id) {
+          b.net_balance_cents -= settlement.amount_cents;
+        }
+      });
+
+      currentBalancesSummary.simplified_debts = computeSimplifiedDebts(currentBalancesSummary.balances, currency);
+      cacheSet(`balances_${currentGroupId}`, currentBalancesSummary);
+
+      renderBalancesUI(currentBalancesSummary);
+      document.getElementById('statements-sync-badge').textContent = 'Auto-Adjusted';
+      document.getElementById('statements-sync-badge').className = 'role-tag pending';
     }
 
     // Add Expense Modal
@@ -1263,14 +1625,12 @@
       partsList.innerHTML = '';
 
       currentGroupDetail.members.forEach(m => {
-        // Payer option
         const opt = document.createElement('option');
         opt.value = m.user_id;
         opt.textContent = m.display_name + (m.user_id === currentUser.id ? ' (You)' : '');
         if (m.user_id === currentUser.id) opt.selected = true;
         payerSelect.appendChild(opt);
 
-        // Participant checkbox
         const label = document.createElement('label');
         label.style.display = 'flex';
         label.style.alignItems = 'center';
@@ -1312,14 +1672,51 @@
         participants: checkedParts
       };
 
-      try {
-        if (!navigator.onLine) {
-          enqueueMutation('create_expense', currentGroupId, payload);
-          closeModal('modal-add-expense');
-          alert('Saved to offline queue! Will sync when connection is restored.');
-          return;
-        }
+      const payerMember = currentGroupDetail.members.find(m => m.user_id === paid_by);
+      const payerName = payerMember ? payerMember.display_name : 'You';
 
+      // 1. Optimistic Local Update
+      const optimisticExp = {
+        id: 'local_' + uuidv4(),
+        group_id: currentGroupId,
+        paid_by: paid_by,
+        paid_by_name: payerName,
+        description: desc,
+        amount_cents: amount_cents,
+        currency: currentGroupDetail.group.default_currency,
+        split_type: 'EQUAL',
+        category: category,
+        expense_date: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        is_pending: true,
+        splits: checkedParts.map(uid => {
+          const m = currentGroupDetail.members.find(mem => mem.user_id === uid);
+          return {
+            user_id: uid,
+            display_name: m ? m.display_name : 'Member',
+            amount_cents: Math.round(amount_cents / checkedParts.length)
+          };
+        })
+      };
+
+      // Add to local cache and re-render
+      const cachedExpenses = cacheGet(`expenses_${currentGroupId}`) || [];
+      cachedExpenses.unshift(optimisticExp);
+      cacheSet(`expenses_${currentGroupId}`, cachedExpenses);
+      renderExpensesUI(cachedExpenses, currentGroupDetail.group.default_currency);
+
+      // Auto-adjust statements locally
+      autoAdjustStatementsForExpense(payload, checkedParts);
+
+      closeModal('modal-add-expense');
+
+      // 2. Transmit to server or queue
+      if (!navigator.onLine) {
+        enqueueMutation('create_expense', currentGroupId, payload, desc);
+        return;
+      }
+
+      try {
         const idempotencyKey = uuidv4();
         payload.idempotency_key = idempotencyKey;
 
@@ -1328,15 +1725,13 @@
           body: JSON.stringify(payload)
         });
 
-        closeModal('modal-add-expense');
-        loadGroupDetails(currentGroupId);
+        // Refresh with server confirmed state
+        loadGroupDetails(currentGroupId, false);
       } catch (err) {
         if (err.message === 'OFFLINE') {
-          enqueueMutation('create_expense', currentGroupId, payload);
-          closeModal('modal-add-expense');
-          alert('Network issue detected. Saved to offline queue!');
+          enqueueMutation('create_expense', currentGroupId, payload, desc);
         } else {
-          alert(err.message);
+          alert('Error saving expense: ' + err.message);
         }
       }
     }
@@ -1347,7 +1742,7 @@
         await apiFetch(`/groups/${currentGroupId}/expenses/${expId}`, {
           method: 'DELETE'
         });
-        loadGroupDetails(currentGroupId);
+        loadGroupDetails(currentGroupId, false);
       } catch (err) {
         alert(err.message);
       }
@@ -1366,13 +1761,13 @@
         });
         closeModal('modal-add-member');
         document.getElementById('add-member-email').value = '';
-        loadGroupDetails(currentGroupId);
+        loadGroupDetails(currentGroupId, false);
       } catch (err) {
         alert(err.message);
       }
     }
 
-    // Settlement Modal
+    // Settlement Modal & Actions
     function openSettleModal(payerId, payerName, payeeId, payeeName, amountCents) {
       document.getElementById('settle-payer-id').value = payerId;
       document.getElementById('settle-payer-name').value = payerName;
@@ -1385,7 +1780,9 @@
     async function handleRecordSettlement(e) {
       e.preventDefault();
       const payerId = document.getElementById('settle-payer-id').value;
+      const payerName = document.getElementById('settle-payer-name').value;
       const payeeId = document.getElementById('settle-payee-id').value;
+      const payeeName = document.getElementById('settle-payee-name').value;
       const amtVal = parseFloat(document.getElementById('settle-amount').value);
       const amount_cents = Math.round(amtVal * 100);
 
@@ -1395,14 +1792,40 @@
         amount_cents: amount_cents
       };
 
-      try {
-        if (!navigator.onLine) {
-          enqueueMutation('record_settlement', currentGroupId, payload);
-          closeModal('modal-settle');
-          alert('Settlement saved to offline queue!');
-          return;
-        }
+      const title = `${payerName} paid ${payeeName}`;
 
+      // 1. Optimistic Local Update
+      const optimisticSettle = {
+        id: 'local_' + uuidv4(),
+        group_id: currentGroupId,
+        payer_id: payerId,
+        payer_name: payerName,
+        payee_id: payeeId,
+        payee_name: payeeName,
+        amount_cents: amount_cents,
+        currency: currentGroupDetail.group.default_currency,
+        settled_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        is_pending: true
+      };
+
+      const cachedSettlements = cacheGet(`settlements_${currentGroupId}`) || [];
+      cachedSettlements.unshift(optimisticSettle);
+      cacheSet(`settlements_${currentGroupId}`, cachedSettlements);
+      renderSettlementsUI(cachedSettlements, currentGroupDetail.group.default_currency);
+
+      // Auto-adjust statements locally
+      autoAdjustStatementsForSettlement(payload);
+
+      closeModal('modal-settle');
+
+      // 2. Transmit or queue
+      if (!navigator.onLine) {
+        enqueueMutation('record_settlement', currentGroupId, payload, title);
+        return;
+      }
+
+      try {
         const idempotencyKey = uuidv4();
         payload.idempotency_key = idempotencyKey;
 
@@ -1411,15 +1834,12 @@
           body: JSON.stringify(payload)
         });
 
-        closeModal('modal-settle');
-        loadGroupDetails(currentGroupId);
+        loadGroupDetails(currentGroupId, false);
       } catch (err) {
         if (err.message === 'OFFLINE') {
-          enqueueMutation('record_settlement', currentGroupId, payload);
-          closeModal('modal-settle');
-          alert('Network issue detected. Saved to offline queue!');
+          enqueueMutation('record_settlement', currentGroupId, payload, title);
         } else {
-          alert(err.message);
+          alert('Error recording settlement: ' + err.message);
         }
       }
     }
@@ -1517,16 +1937,26 @@
         .replace(/'/g, '&#039;');
     }
 
-    // Init
+    // Init with Local Storage Cache
     async function init() {
-      updateQueueUI();
+      updateSyncUI();
+
+      // Read cached user
+      const cachedUser = cacheGet('user');
+      if (cachedUser) {
+        currentUser = cachedUser;
+        renderUserHeader();
+        navigateTo('groups');
+      }
+
       if (token) {
         try {
           currentUser = await apiFetch('/auth/me');
+          cacheSet('user', currentUser);
           renderUserHeader();
-          navigateTo('groups');
+          if (!cachedUser) navigateTo('groups');
         } catch (e) {
-          logout();
+          if (!cachedUser) logout();
         }
       } else {
         navigateTo('auth');
