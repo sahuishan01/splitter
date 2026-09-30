@@ -39,10 +39,10 @@ jobs:
       - name: Setup release signing keystore
         working-directory: android
         env:
-          UPLOAD_KEYSTORE_B64: ${{ secrets.UPLOAD_KEYSTORE_B64 || secrets.SIGNING_KEY }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || secrets.SIGNING_STORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || secrets.SIGNING_KEY_PASSWORD }}
-          KEY_ALIAS: ${{ vars.KEY_ALIAS || secrets.KEY_ALIAS || secrets.SIGNING_KEY_ALIAS }}
+          UPLOAD_KEYSTORE_B64: ${{ secrets.UPLOAD_KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ vars.KEY_ALIAS }}
         run: |
           if [ -z "$UPLOAD_KEYSTORE_B64" ]; then
             echo "::error::UPLOAD_KEYSTORE_B64 secret is not configured; refusing to build release with ephemeral keys to prevent signature conflicts." >&2
@@ -51,11 +51,11 @@ jobs:
           echo "Restoring persistent release keystore from secrets..."
           echo "$UPLOAD_KEYSTORE_B64" | tr -d '\r\n ' | base64 -d > app/upload.keystore
           cat > keystore.properties <<EOF
-storeFile=upload.keystore
-storePassword=$KEYSTORE_PASSWORD
-keyAlias=${KEY_ALIAS:-splitter-upload}
-keyPassword=${KEY_PASSWORD:-$KEYSTORE_PASSWORD}
-EOF
+          storeFile=upload.keystore
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=${KEY_ALIAS:-splitter-upload}
+          keyPassword=$KEY_PASSWORD
+          EOF
 
       - name: Build release APK
         working-directory: android

@@ -325,6 +325,11 @@
       "degree": 15
     },
     {
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
+      "label": "MainActivity",
+      "degree": 13
+    },
+    {
       "id": "src_routes_expenses_create_expense",
       "label": "create_expense()",
       "degree": 13
@@ -347,11 +352,6 @@
     {
       "id": "src_routes_sync_get_changes",
       "label": "get_changes()",
-      "degree": 13
-    },
-    {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
-      "label": "MainActivity",
       "degree": 13
     },
     {
@@ -384,17 +384,6 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     },
     {
-      "source": "get_group_balances()",
-      "target": "simplify_debts()",
-      "source_files": [
-        "src/routes/expenses.rs",
-        "src/services/settlement.rs"
-      ],
-      "confidence": "INFERRED",
-      "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
       "source": "create_expense()",
       "target": "check_group_membership()",
       "source_files": [
@@ -407,6 +396,17 @@
     },
     {
       "source": "create_settlement()",
+      "target": "check_group_membership()",
+      "source_files": [
+        "src/routes/expenses.rs",
+        "src/routes/groups.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "delete_expense()",
       "target": "check_group_membership()",
       "source_files": [
         "src/routes/expenses.rs",

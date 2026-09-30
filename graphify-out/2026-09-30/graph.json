@@ -356,7 +356,6 @@
       "_callable": true,
       "_origin": "ast",
       "community": 14,
-      "community_name": "app/build.gradle.kts",
       "file_type": "code",
       "norm_label": "signingprop()",
       "source_file": "android/app/build.gradle.kts",
@@ -1152,7 +1151,6 @@
       "label": "app/build.gradle.kts",
       "_origin": "ast",
       "community": 14,
-      "community_name": "app/build.gradle.kts",
       "file_type": "code",
       "norm_label": "app/build.gradle.kts",
       "source_file": "android/app/build.gradle.kts",
@@ -1196,14 +1194,13 @@
       "label": "splitter",
       "_origin": "ast",
       "community": 18,
-      "community_name": "splitter",
       "ecosystem": "cargo",
       "file_type": "code",
       "norm_label": "splitter",
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.3"
+      "version": "0.1.4"
     },
     {
       "id": "src_routes_mod",

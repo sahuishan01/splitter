@@ -1200,7 +1200,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.4"
+      "version": "0.1.5"
     },
     {
       "id": "src_routes_mod",
@@ -8915,5 +8915,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c43db9dde4a032103f70be5157a7de558111fa8c"
+  "built_at_commit": "ab5878eeb0876cfe4ff9a89b489c90acb39b511d"
 }
