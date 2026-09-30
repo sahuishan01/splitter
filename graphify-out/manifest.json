@@ -24,10 +24,10 @@
     "semantic_hash": "a9a4143b152f3b9ca835a452fe9b2d73"
   },
   "android/app/src/main/java/com/splitter/sync/SyncQueueWorker.kt": {
-    "mtime": 1790772938.1045387,
-    "seen": 1790773104.0978749,
-    "ast_hash": "a10ee30b7939235d93922d247150aa96",
-    "semantic_hash": "a10ee30b7939235d93922d247150aa96"
+    "mtime": 1790774120.0495713,
+    "seen": 1790774738.7968094,
+    "ast_hash": "328530b42f0c5a4d4a34a50913cb3491",
+    "semantic_hash": ""
   },
   "src/auth/jwt.rs": {
     "mtime": 1790772682.023469,
@@ -130,5 +130,89 @@
     "seen": 1790773104.0979018,
     "ast_hash": "d13491a3f2853b6901c2795e14ea403e",
     "semantic_hash": "d13491a3f2853b6901c2795e14ea403e"
+  },
+  "android/app/build.gradle.kts": {
+    "mtime": 1790774063.5413306,
+    "seen": 1790774738.7967982,
+    "ast_hash": "9c37b4717872103a57eda0b840be5c59",
+    "semantic_hash": ""
+  },
+  "android/app/src/main/java/com/splitter/app/MainActivity.kt": {
+    "mtime": 1790774142.489667,
+    "seen": 1790774738.7967994,
+    "ast_hash": "2c0dfb86a2f8712d50ae5d606bc1fd57",
+    "semantic_hash": ""
+  },
+  "android/app/src/main/java/com/splitter/app/SplitterApplication.kt": {
+    "mtime": 1790774133.097627,
+    "seen": 1790774738.7968006,
+    "ast_hash": "d82a1dc80538f639dc119f8d566298e1",
+    "semantic_hash": ""
+  },
+  "android/app/src/main/java/com/splitter/sync/SplitterDatabase.kt": {
+    "mtime": 1790774112.0695372,
+    "seen": 1790774738.796806,
+    "ast_hash": "fe2097fa6d6f2c28a2e1b2ca37d35d58",
+    "semantic_hash": ""
+  },
+  "android/build.gradle.kts": {
+    "mtime": 1790774056.4773004,
+    "seen": 1790774738.7968109,
+    "ast_hash": "3be13a030a39b3e6f79c215e77825787",
+    "semantic_hash": ""
+  },
+  "android/gradlew": {
+    "mtime": 1790774044.5212495,
+    "seen": 1790774738.796812,
+    "ast_hash": "333720e62b7d47eb207d41c1482379dc",
+    "semantic_hash": ""
+  },
+  "android/settings.gradle.kts": {
+    "mtime": 1790774049.32927,
+    "seen": 1790774738.796813,
+    "ast_hash": "5012357a467618ad7b264e9a7088bed1",
+    "semantic_hash": ""
+  },
+  "migrations/0001_initial.sql": {
+    "mtime": 1790772647.9753268,
+    "seen": 1790774738.796814,
+    "ast_hash": "9ec65950bc11ac2d445d66238e6a6f15",
+    "semantic_hash": ""
+  },
+  ".agents/rules/graphify.md": {
+    "mtime": 1790773102.8132615,
+    "seen": 1790774738.7968438,
+    "ast_hash": "f1e53ecc9194573d3c28fc116c743a2e",
+    "semantic_hash": ""
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1790773102.8132615,
+    "seen": 1790774738.7968447,
+    "ast_hash": "6d73634a678cf1e1c71930adf80bd1f0",
+    "semantic_hash": ""
+  },
+  ".github/workflows/release-apk.yml": {
+    "mtime": 1790774176.553812,
+    "seen": 1790774738.796846,
+    "ast_hash": "c23f10e13a72e8940aa01c17c70e992a",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1790772985.8407423,
+    "seen": 1790774738.796847,
+    "ast_hash": "c7c2685ef5bb82b25288e0b6867ad5cd",
+    "semantic_hash": ""
+  },
+  "android/README.md": {
+    "mtime": 1790772951.1765933,
+    "seen": 1790774738.796848,
+    "ast_hash": "1261e59aa18c5a8a5fdc803f5689d914",
+    "semantic_hash": ""
+  },
+  "static/index.html": {
+    "mtime": 1790772857.496202,
+    "seen": 1790774738.7968493,
+    "ast_hash": "5d981398ee00f4ffe4cf4dbfb45f4e69",
+    "semantic_hash": ""
   }
 }

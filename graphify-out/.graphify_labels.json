@@ -1,0 +1,22 @@
+{
+  "0": "SyncQueueDao",
+  "1": "models.rs",
+  "2": "check_group_membership",
+  "3": "AdminUser",
+  "4": "AuthUser",
+  "5": "get_changes",
+  "6": "login",
+  "7": "AppError",
+  "8": "setup_test_app",
+  "9": "bootstrap_admin_if_configured",
+  "10": "splitter",
+  "11": "routes/mod.rs",
+  "12": "services/mod.rs",
+  "13": "MainActivity.kt",
+  "14": "SyncQueueWorker",
+  "15": "gradlew",
+  "16": "app/build.gradle.kts",
+  "17": "Result",
+  "18": "android/build.gradle.kts",
+  "19": "settings.gradle.kts"
+}
