@@ -45,11 +45,11 @@
       flex-direction: column;
     }
 
-    /* Notch & Safe Area Header */
+    /* Header */
     header {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
-      padding: max(14px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 14px max(20px, env(safe-area-inset-left));
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -176,7 +176,7 @@
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 20px max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+      padding: 16px;
       width: 100%;
       flex: 1;
     }
@@ -582,11 +582,162 @@
     .hidden {
       display: none !important;
     }
+
+    /* Top Global Loading Bar */
+    #global-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #58a6ff, #bc8cff, #3fb950);
+      background-size: 200% 100%;
+      z-index: 99999;
+      transition: width 0.2s ease-out, opacity 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      animation: shimmer-bar 1.5s infinite linear;
+    }
+    #global-loader.active {
+      opacity: 1;
+    }
+    @keyframes shimmer-bar {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* Boot Splash Loader */
+    #app-boot-splash {
+      position: fixed;
+      inset: 0;
+      background: #0d1117;
+      z-index: 99998;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    #app-boot-splash.hidden-splash {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .splash-logo {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #58a6ff, #bc8cff);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 24px;
+      animation: logo-pulse 1.8s infinite ease-in-out;
+      box-shadow: 0 0 25px rgba(88, 166, 255, 0.4);
+    }
+    @keyframes logo-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(88, 166, 255, 0.3); }
+      50% { transform: scale(1.06); box-shadow: 0 0 35px rgba(188, 140, 255, 0.5); }
+    }
+    .splash-spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(88, 166, 255, 0.2);
+      border-top-color: #58a6ff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .splash-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* Spinners & Button Loading */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .spinner-inline {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      border-top-color: currentColor;
+      animation: spin 0.6s linear infinite;
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Skeleton Loading with Shimmer */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite ease-in-out;
+      border-radius: var(--radius-sm);
+    }
+    .skeleton-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .skeleton-line {
+      height: 14px;
+    }
+    .skeleton-line.title {
+      height: 20px;
+      width: 60%;
+    }
+    .skeleton-line.subtitle {
+      width: 85%;
+    }
+    .skeleton-line.meta {
+      width: 40%;
+      height: 12px;
+    }
+    .skeleton-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header with notch inset auto-adjustment -->
+  <!-- Top Global Loading Bar -->
+  <div id="global-loader"></div>
+
+  <!-- Initial Boot Loading Screen -->
+  <div id="app-boot-splash">
+    <div class="splash-logo">÷</div>
+    <div class="splash-spinner"></div>
+    <div class="splash-text">Loading Splitter...</div>
+  </div>
+
+  <!-- Header -->
   <header>
     <div class="brand" onclick="navigateTo('groups')">
       <div class="brand-logo">÷</div>
@@ -1066,10 +1217,11 @@
       }
 
       // Ongoing text
+      // Ongoing text with animated spinner
       if (ongoingText) {
-        ongoingEl.textContent = `🔄 Ongoing: ${ongoingText}`;
+        ongoingEl.innerHTML = `<span class="spinner-inline" style="border-top-color: var(--accent-primary); width: 12px; height: 12px;"></span> <strong>Ongoing:</strong> ${escapeHtml(ongoingText)}`;
       } else if (isSyncing) {
-        ongoingEl.textContent = `🔄 Ongoing: Uploading batch to server...`;
+        ongoingEl.innerHTML = `<span class="spinner-inline" style="border-top-color: var(--accent-primary); width: 12px; height: 12px;"></span> <strong>Ongoing:</strong> Uploading batch to server...`;
       } else if (!navigator.onLine) {
         ongoingEl.textContent = `⏸️ Offline: Waiting for network reconnection`;
       } else {
@@ -1108,6 +1260,8 @@
         return;
       }
 
+      const syncBtn = document.querySelector('#sync-tracker .btn');
+      setButtonLoading(syncBtn, true, 'Syncing...');
       isSyncing = true;
       const totalItems = queue.length;
       updateSyncUI(`Starting sync for ${totalItems} item(s)...`, 10);
@@ -1144,6 +1298,8 @@
         console.error('Offline sync failed:', e);
         isSyncing = false;
         updateSyncUI('Sync paused due to connection issue.', 0);
+      } finally {
+        setButtonLoading(syncBtn, false);
       }
     }
 
@@ -1151,10 +1307,121 @@
       updateSyncUI('Network restored. Syncing...', 10);
       syncOfflineQueue();
     });
-    window.addEventListener('offline', () => updateSyncUI());
+    // Global Loading Bar State
+    let activeRequestsCount = 0;
+    function showGlobalLoader() {
+      activeRequestsCount++;
+      const loader = document.getElementById('global-loader');
+      if (loader) {
+        loader.classList.add('active');
+        loader.style.width = `${Math.min(30 + activeRequestsCount * 25, 90)}%`;
+      }
+    }
+    function hideGlobalLoader() {
+      activeRequestsCount = Math.max(0, activeRequestsCount - 1);
+      const loader = document.getElementById('global-loader');
+      if (loader) {
+        if (activeRequestsCount === 0) {
+          loader.style.width = '100%';
+          setTimeout(() => {
+            if (activeRequestsCount === 0) {
+              loader.classList.remove('active');
+              setTimeout(() => { loader.style.width = '0%'; }, 250);
+            }
+          }, 200);
+        } else {
+          loader.style.width = `${Math.min(30 + activeRequestsCount * 25, 90)}%`;
+        }
+      }
+    }
 
-    // API fetch wrapper with local storage fallback
+    // Button Spinner Helper
+    function setButtonLoading(btn, isLoading, loadingText = '') {
+      if (!btn) return;
+      if (isLoading) {
+        btn.dataset.origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-inline"></span>${loadingText || 'Loading...'}`;
+      } else {
+        if (btn.dataset.origHtml) {
+          btn.innerHTML = btn.dataset.origHtml;
+          delete btn.dataset.origHtml;
+        }
+        btn.disabled = false;
+      }
+    }
+
+    // Skeleton Renderers
+    function renderGroupsSkeleton() {
+      const container = document.getElementById('groups-list');
+      if (!container) return;
+      container.innerHTML = `
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-line title"></div>
+          <div class="skeleton skeleton-line subtitle"></div>
+          <div class="skeleton skeleton-line meta"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-line title"></div>
+          <div class="skeleton skeleton-line subtitle"></div>
+          <div class="skeleton skeleton-line meta"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-line title"></div>
+          <div class="skeleton skeleton-line subtitle"></div>
+          <div class="skeleton skeleton-line meta"></div>
+        </div>
+      `;
+    }
+
+    function renderGroupDetailsSkeleton() {
+      const bList = document.getElementById('member-balances-list');
+      if (bList) {
+        bList.innerHTML = `
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 40%;"></div><div class="skeleton skeleton-line" style="width: 30%;"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 50%;"></div><div class="skeleton skeleton-line" style="width: 25%;"></div></div>
+        `;
+      }
+      const dList = document.getElementById('simplified-debts-list');
+      if (dList) {
+        dList.innerHTML = `
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 60%;"></div><div class="skeleton skeleton-line" style="width: 20%;"></div></div>
+        `;
+      }
+      const eList = document.getElementById('expenses-list');
+      if (eList) {
+        eList.innerHTML = `
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 45%;"></div><div class="skeleton skeleton-line" style="width: 25%;"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 55%;"></div><div class="skeleton skeleton-line" style="width: 20%;"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 40%;"></div><div class="skeleton skeleton-line" style="width: 30%;"></div></div>
+        `;
+      }
+      const sList = document.getElementById('settlements-list');
+      if (sList) {
+        sList.innerHTML = `
+          <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 50%;"></div><div class="skeleton skeleton-line" style="width: 20%;"></div></div>
+        `;
+      }
+    }
+
+    function renderAdminSkeleton() {
+      const tbody = document.getElementById('admin-users-table');
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="padding: 16px;">
+              <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 30%;"></div><div class="skeleton skeleton-line" style="width: 20%;"></div></div>
+              <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 35%;"></div><div class="skeleton skeleton-line" style="width: 15%;"></div></div>
+              <div class="skeleton-row"><div class="skeleton skeleton-line" style="width: 25%;"></div><div class="skeleton skeleton-line" style="width: 25%;"></div></div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // API fetch wrapper with global loading indicator and offline fallback
     async function apiFetch(endpoint, options = {}) {
+      showGlobalLoader();
       const headers = options.headers || {};
       headers['Content-Type'] = 'application/json';
       if (token) {
@@ -1182,6 +1449,8 @@
           throw new Error('OFFLINE');
         }
         throw err;
+      } finally {
+        hideGlobalLoader();
       }
     }
 
@@ -1219,6 +1488,8 @@
 
     async function handleAuthSubmit(e) {
       e.preventDefault();
+      const btn = document.getElementById('auth-submit-btn');
+      setButtonLoading(btn, true, authMode === 'login' ? 'Signing In...' : 'Creating Account...');
       const email = document.getElementById('auth-email').value;
       const password = document.getElementById('auth-password').value;
       const errorEl = document.getElementById('auth-error');
@@ -1247,6 +1518,8 @@
         navigateTo('groups');
       } catch (err) {
         errorEl.textContent = err.message;
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
@@ -1283,16 +1556,21 @@
       navigateTo('auth');
     }
 
-    // Groups Logic (with Local Storage Cache)
+    // Groups Logic (with Local Storage Cache & Skeletons)
     async function loadGroups(useCache = true) {
       const container = document.getElementById('groups-list');
 
       // 1. Immediately render cached groups if available
+      let hasRendered = false;
       if (useCache) {
         const cachedGroups = cacheGet('groups');
         if (cachedGroups) {
           renderGroupsList(cachedGroups);
+          hasRendered = true;
         }
+      }
+      if (!hasRendered) {
+        renderGroupsSkeleton();
       }
 
       // 2. Fetch fresh groups from network in background
@@ -1333,6 +1611,8 @@
 
     async function handleCreateGroup(e) {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      setButtonLoading(btn, true, 'Creating Group...');
       const name = document.getElementById('new-group-name').value;
       const description = document.getElementById('new-group-desc').value;
       const default_currency = document.getElementById('new-group-currency').value;
@@ -1363,6 +1643,8 @@
         openGroup(group.id);
       } catch (err) {
         alert(err.message);
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
@@ -1385,6 +1667,8 @@
           currentGroupDetail = cachedDetail;
           document.getElementById('group-title').textContent = cachedDetail.group.name;
           document.getElementById('group-desc').textContent = cachedDetail.group.description || `${cachedDetail.members.length} members • Currency: ${cachedDetail.group.default_currency}`;
+        } else {
+          renderGroupDetailsSkeleton();
         }
         if (cachedBalances) {
           renderBalancesUI(cachedBalances);
@@ -1395,6 +1679,8 @@
         if (cachedSettlements) {
           renderSettlementsUI(cachedSettlements, cachedDetail ? cachedDetail.group.default_currency : 'USD');
         }
+      } else {
+        renderGroupDetailsSkeleton();
       }
 
       // 2. Fetch fresh data from network in background
@@ -1651,6 +1937,8 @@
 
     async function handleAddExpense(e) {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      setButtonLoading(btn, true, 'Saving Expense...');
       const desc = document.getElementById('expense-desc').value;
       const amtVal = parseFloat(document.getElementById('expense-amount').value);
       const category = document.getElementById('expense-category').value;
@@ -1659,6 +1947,7 @@
       const checkedParts = Array.from(document.querySelectorAll('input[name="expense_participant"]:checked')).map(el => el.value);
       if (checkedParts.length === 0) {
         alert('Please select at least one person to split the expense with.');
+        setButtonLoading(btn, false);
         return;
       }
 
@@ -1713,6 +2002,7 @@
       // 2. Transmit to server or queue
       if (!navigator.onLine) {
         enqueueMutation('create_expense', currentGroupId, payload, desc);
+        setButtonLoading(btn, false);
         return;
       }
 
@@ -1733,6 +2023,8 @@
         } else {
           alert('Error saving expense: ' + err.message);
         }
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
@@ -1751,6 +2043,8 @@
     // Member Management
     async function handleAddMember(e) {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      setButtonLoading(btn, true, 'Adding Member...');
       const email = document.getElementById('add-member-email').value;
       const role = document.getElementById('add-member-role').value;
 
@@ -1764,6 +2058,8 @@
         loadGroupDetails(currentGroupId, false);
       } catch (err) {
         alert(err.message);
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
@@ -1779,6 +2075,8 @@
 
     async function handleRecordSettlement(e) {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      setButtonLoading(btn, true, 'Recording Settlement...');
       const payerId = document.getElementById('settle-payer-id').value;
       const payerName = document.getElementById('settle-payer-name').value;
       const payeeId = document.getElementById('settle-payee-id').value;
@@ -1822,6 +2120,7 @@
       // 2. Transmit or queue
       if (!navigator.onLine) {
         enqueueMutation('record_settlement', currentGroupId, payload, title);
+        setButtonLoading(btn, false);
         return;
       }
 
@@ -1841,11 +2140,14 @@
         } else {
           alert('Error recording settlement: ' + err.message);
         }
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 
     // Admin Dashboard Logic
     async function loadAdminData() {
+      renderAdminSkeleton();
       try {
         const stats = await apiFetch('/admin/stats');
         document.getElementById('admin-stat-users').textContent = stats.total_users;
@@ -1877,11 +2179,11 @@
             </td>
             <td>
               <div style="display: flex; gap: 6px;">
-                <button class="btn btn-secondary btn-sm" onclick="toggleUserRole('${u.id}', ${!u.is_admin})">
+                <button class="btn btn-secondary btn-sm" onclick="toggleUserRole('${u.id}', ${!u.is_admin}, this)">
                   ${u.is_admin ? 'Demote' : 'Promote'}
                 </button>
                 ${!isSelf ? `
-                  <button class="btn btn-danger btn-sm" onclick="toggleUserStatus('${u.id}', ${!u.is_active})">
+                  <button class="btn btn-danger btn-sm" onclick="toggleUserStatus('${u.id}', ${!u.is_active}, this)">
                     ${u.is_active ? 'Disable' : 'Enable'}
                   </button>
                 ` : ''}
@@ -1895,7 +2197,8 @@
       }
     }
 
-    async function toggleUserRole(userId, newIsAdmin) {
+    async function toggleUserRole(userId, newIsAdmin, btn = null) {
+      if (btn) setButtonLoading(btn, true, '...');
       try {
         await apiFetch(`/admin/users/${userId}/role`, {
           method: 'PATCH',
@@ -1904,10 +2207,13 @@
         loadAdminData();
       } catch (err) {
         alert(err.message);
+      } finally {
+        if (btn) setButtonLoading(btn, false);
       }
     }
 
-    async function toggleUserStatus(userId, newIsActive) {
+    async function toggleUserStatus(userId, newIsActive, btn = null) {
+      if (btn) setButtonLoading(btn, true, '...');
       try {
         await apiFetch(`/admin/users/${userId}/status`, {
           method: 'PATCH',
@@ -1916,6 +2222,8 @@
         loadAdminData();
       } catch (err) {
         alert(err.message);
+      } finally {
+        if (btn) setButtonLoading(btn, false);
       }
     }
 
@@ -1939,27 +2247,36 @@
 
     // Init with Local Storage Cache
     async function init() {
-      updateSyncUI();
+      try {
+        updateSyncUI();
 
-      // Read cached user
-      const cachedUser = cacheGet('user');
-      if (cachedUser) {
-        currentUser = cachedUser;
-        renderUserHeader();
-        navigateTo('groups');
-      }
-
-      if (token) {
-        try {
-          currentUser = await apiFetch('/auth/me');
-          cacheSet('user', currentUser);
+        // Read cached user
+        const cachedUser = cacheGet('user');
+        if (cachedUser) {
+          currentUser = cachedUser;
           renderUserHeader();
-          if (!cachedUser) navigateTo('groups');
-        } catch (e) {
-          if (!cachedUser) logout();
+          navigateTo('groups');
         }
-      } else {
-        navigateTo('auth');
+
+        if (token) {
+          try {
+            currentUser = await apiFetch('/auth/me');
+            cacheSet('user', currentUser);
+            renderUserHeader();
+            if (!cachedUser) navigateTo('groups');
+          } catch (e) {
+            if (!cachedUser) logout();
+          }
+        } else {
+          navigateTo('auth');
+        }
+      } finally {
+        // Smoothly dismiss boot splash
+        const splash = document.getElementById('app-boot-splash');
+        if (splash) {
+          splash.classList.add('hidden-splash');
+          setTimeout(() => splash.remove(), 400);
+        }
       }
     }
 

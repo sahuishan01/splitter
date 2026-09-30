@@ -43,13 +43,12 @@ class MainActivity : AppCompatActivity() {
             setBackgroundColor(0xFF0D1117.toInt())
         }
 
-        // Auto-adjust layout padding for status bar, navigation bar, and camera notch/cutout
+        // Apply clean status bar and navigation bar insets exactly once without duplicate gap
         ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, windowInsets ->
-            val insets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
-            view.setPadding(insets.left, insets.top, insets.right, insets.bottom)
-            windowInsets
+            val statusBars = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val navBars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.setPadding(0, statusBars.top, 0, navBars.bottom)
+            WindowInsetsCompat.CONSUMED
         }
 
         val insetsController = WindowInsetsControllerCompat(window, window.decorView)
@@ -71,12 +70,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val progressHeightPx = (3 * resources.displayMetrics.density).toInt().coerceAtLeast(6)
         progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                8
+                progressHeightPx
             )
             max = 100
+            progressDrawable?.setTint(0xFF58A6FF.toInt())
             visibility = View.GONE
         }
 
