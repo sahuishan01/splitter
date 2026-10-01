@@ -1101,6 +1101,45 @@
     </div>
   </div>
 
+  <!-- Modal: Transaction Summary & Share -->
+  <div id="modal-transaction-summary" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <button class="modal-close" onclick="closeModal('modal-transaction-summary')">&times;</button>
+      <div style="text-align: center; margin-bottom: 14px;">
+        <div id="tx-summary-icon" style="font-size: 2.2rem; margin-bottom: 4px;">🎉</div>
+        <h3 id="tx-summary-title" class="card-title" style="margin-bottom: 4px;">Transaction Recorded!</h3>
+        <p id="tx-summary-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+          Share the split summary with your group members.
+        </p>
+      </div>
+
+      <!-- Formatted Summary Card -->
+      <div id="tx-summary-card" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; font-size: 0.9rem;">
+        <!-- Filled dynamically -->
+      </div>
+
+      <!-- Action Buttons Grid -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button id="btn-share-native" class="btn btn-primary" style="justify-content: center; width: 100%; font-size: 0.95rem; padding: 10px;" onclick="triggerActiveShare()">
+          <span style="margin-right: 6px;">📤</span> Share to Apps (WhatsApp, Telegram...)
+        </button>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button id="btn-share-whatsapp" class="btn btn-secondary" style="justify-content: center; font-size: 0.85rem;" onclick="shareViaWhatsApp()">
+            <span style="margin-right: 4px;">💬</span> WhatsApp
+          </button>
+          <button id="btn-copy-summary" class="btn btn-secondary" style="justify-content: center; font-size: 0.85rem;" onclick="copyActiveSummary()">
+            <span style="margin-right: 4px;">📋</span> Copy Text
+          </button>
+        </div>
+
+        <button class="btn btn-secondary" style="justify-content: center; width: 100%; margin-top: 4px; border: none; background: transparent; color: var(--text-dim);" onclick="closeModal('modal-transaction-summary')">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // State
     let currentUser = null;
@@ -1868,7 +1907,8 @@
           </div>
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
             <div class="expense-amount">${formatMoney(exp.amount_cents, currency)}</div>
-            <div style="display: flex; gap: 6px;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;">
+              <button class="btn btn-secondary btn-sm" onclick="shareExpenseById('${exp.id}')">📤 Share</button>
               ${canEdit ? `
                 <button class="btn btn-secondary btn-sm" onclick="openEditExpenseModal('${exp.id}')">Edit</button>
               ` : ''}
@@ -1902,8 +1942,11 @@
             ${isPending ? '<span class="role-tag pending" style="margin-left: 6px;">Pending Sync</span>' : ''}
             <span style="color: var(--text-dim); font-size: 0.78rem; margin-left: 8px;">${new Date(s.settled_at || Date.now()).toLocaleDateString()}</span>
           </div>
-          <div class="cents-positive" style="font-family: var(--font-mono); font-weight: 700;">
-            ${formatMoney(s.amount_cents, currency)}
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="cents-positive" style="font-family: var(--font-mono); font-weight: 700;">
+              ${formatMoney(s.amount_cents, currency)}
+            </div>
+            <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.75rem;" onclick="shareSettlementById('${s.id}')">📤 Share</button>
           </div>
         `;
         container.appendChild(item);
@@ -2241,6 +2284,201 @@
       openModal('modal-add-expense');
     }
 
+    // Transaction Summary & Sharing Helpers
+    let activeShareData = null;
+
+    function formatExpenseSummary(exp, groupName, currency) {
+      const payerName = exp.paid_by_name || 'Member';
+      const splits = exp.splits || [];
+      const totalStr = formatMoney(exp.amount_cents, currency);
+      const dateStr = new Date(exp.expense_date || Date.now()).toLocaleDateString();
+
+      let plain = `🧾 Expense: ${exp.description}\n`;
+      plain += `💰 Amount: ${totalStr}\n`;
+      plain += `👤 Paid by: ${payerName}\n`;
+      if (groupName) plain += `🏷️ Group: ${groupName}\n`;
+      plain += `📅 Date: ${dateStr}\n\n`;
+      if (splits.length > 0) {
+        plain += `Split Breakdown:\n`;
+        splits.forEach(s => {
+          const pct = s.share_percentage ? ` (${s.share_percentage}%)` : '';
+          plain += `• ${s.display_name}: ${formatMoney(s.amount_cents, currency)}${pct}\n`;
+        });
+      }
+      plain += `\nShared via Splitter: https://splitter.algosculptor.com`;
+
+      const splitsHtml = splits.map(s => {
+        const pct = s.share_percentage ? ` <span style="color: var(--text-dim); font-size: 0.75rem;">(${s.share_percentage}%)</span>` : '';
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px dashed var(--border-subtle);">
+            <span>• ${escapeHtml(s.display_name)}</span>
+            <span style="font-family: var(--font-mono); font-weight: 600;">${formatMoney(s.amount_cents, currency)}${pct}</span>
+          </div>
+        `;
+      }).join('');
+
+      const html = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+          <div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">${escapeHtml(exp.description)}</div>
+            <div style="color: var(--text-muted); font-size: 0.82rem; margin-top: 2px;">
+              Paid by <strong>${escapeHtml(payerName)}</strong> • ${escapeHtml(dateStr)}
+            </div>
+            ${groupName ? `<div style="margin-top: 4px;"><span class="role-tag" style="font-size: 0.75rem;">${escapeHtml(groupName)}</span></div>` : ''}
+          </div>
+          <div style="font-size: 1.35rem; font-family: var(--font-mono); font-weight: 800; color: #58a6ff; white-space: nowrap; margin-left: 12px;">
+            ${totalStr}
+          </div>
+        </div>
+        ${splits.length > 0 ? `
+          <div style="border-top: 1px solid var(--border-subtle); margin-top: 10px; padding-top: 8px;">
+            <div style="font-weight: 600; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px;">Split Breakdown</div>
+            ${splitsHtml}
+          </div>
+        ` : ''}
+      `;
+
+      return {
+        title: `Expense: ${exp.description} (${totalStr})`,
+        plainText: plain,
+        htmlPreview: html
+      };
+    }
+
+    function formatSettlementSummary(settle, groupName, currency) {
+      const payerName = settle.payer_name || 'Member';
+      const payeeName = settle.payee_name || 'Member';
+      const totalStr = formatMoney(settle.amount_cents, currency);
+      const dateStr = new Date(settle.settled_at || Date.now()).toLocaleDateString();
+
+      let plain = `💸 Payment Settlement\n`;
+      plain += `👤 ${payerName} paid ${payeeName}\n`;
+      plain += `💰 Amount: ${totalStr}\n`;
+      if (groupName) plain += `🏷️ Group: ${groupName}\n`;
+      plain += `📅 Date: ${dateStr}\n`;
+      plain += `🎉 Status: Settled Up\n\n`;
+      plain += `Shared via Splitter: https://splitter.algosculptor.com`;
+
+      const html = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">${escapeHtml(payerName)} → ${escapeHtml(payeeName)}</div>
+            <div style="color: var(--text-muted); font-size: 0.82rem; margin-top: 2px;">Settlement • ${escapeHtml(dateStr)}</div>
+            ${groupName ? `<div style="margin-top: 4px;"><span class="role-tag" style="font-size: 0.75rem;">${escapeHtml(groupName)}</span></div>` : ''}
+          </div>
+          <div style="font-size: 1.35rem; font-family: var(--font-mono); font-weight: 800; color: #3fb950; white-space: nowrap; margin-left: 12px;">
+            ${totalStr}
+          </div>
+        </div>
+        <div style="border-top: 1px solid var(--border-subtle); margin-top: 8px; padding-top: 8px; font-size: 0.85rem; color: #3fb950; display: flex; align-items: center; gap: 6px;">
+          <span>✓</span> Successfully Settled Up
+        </div>
+      `;
+
+      return {
+        title: `Settlement: ${payerName} paid ${payeeName} (${totalStr})`,
+        plainText: plain,
+        htmlPreview: html
+      };
+    }
+
+    function showTransactionSummary(type, summaryObj) {
+      activeShareData = summaryObj;
+      const iconEl = document.getElementById('tx-summary-icon');
+      const titleEl = document.getElementById('tx-summary-title');
+      const subtitleEl = document.getElementById('tx-summary-subtitle');
+      const cardEl = document.getElementById('tx-summary-card');
+
+      if (type === 'create_expense') {
+        iconEl.textContent = '🎉';
+        titleEl.textContent = 'Expense Added!';
+        subtitleEl.textContent = 'Split recorded. Share the breakdown with your group.';
+      } else if (type === 'update_expense') {
+        iconEl.textContent = '✏️';
+        titleEl.textContent = 'Expense Updated!';
+        subtitleEl.textContent = 'Changes saved. Share the updated breakdown with your group.';
+      } else if (type === 'settlement') {
+        iconEl.textContent = '💸';
+        titleEl.textContent = 'Settlement Recorded!';
+        subtitleEl.textContent = 'Payment recorded and group balance settled.';
+      } else {
+        iconEl.textContent = '🧾';
+        titleEl.textContent = 'Transaction Summary';
+        subtitleEl.textContent = 'Share this transaction with your group.';
+      }
+
+      cardEl.innerHTML = summaryObj.htmlPreview;
+      openModal('modal-transaction-summary');
+    }
+
+    function triggerActiveShare() {
+      if (!activeShareData) return;
+      const { title, plainText } = activeShareData;
+
+      // 1. Android Native Interface
+      if (window.AndroidNative && typeof window.AndroidNative.shareText === 'function') {
+        try {
+          window.AndroidNative.shareText(title, plainText);
+          return;
+        } catch (e) {
+          console.warn('AndroidNative.shareText failed:', e);
+        }
+      }
+
+      // 2. Web Share API
+      if (navigator.share) {
+        navigator.share({ title: title, text: plainText }).catch(err => {
+          if (err.name !== 'AbortError') {
+            copyActiveSummary();
+          }
+        });
+      } else {
+        copyActiveSummary();
+      }
+    }
+
+    function shareViaWhatsApp() {
+      if (!activeShareData) return;
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(activeShareData.plainText)}`;
+      window.open(url, '_blank');
+    }
+
+    function copyActiveSummary() {
+      if (!activeShareData) return;
+      const btn = document.getElementById('btn-copy-summary');
+      navigator.clipboard.writeText(activeShareData.plainText).then(() => {
+        if (btn) {
+          const orig = btn.innerHTML;
+          btn.innerHTML = `<span style="color: #3fb950;">✓ Copied!</span>`;
+          setTimeout(() => { btn.innerHTML = orig; }, 2000);
+        }
+      }).catch(() => {
+        alert('Summary copied to clipboard!');
+      });
+    }
+
+    function shareExpenseById(expId) {
+      if (!currentGroupDetail) return;
+      const cached = cacheGet(`expenses_${currentGroupId}`) || [];
+      const exp = cached.find(e => e.id === expId);
+      if (!exp) return;
+      const groupName = currentGroupDetail.group.name;
+      const currency = currentGroupDetail.group.default_currency;
+      const summaryObj = formatExpenseSummary(exp, groupName, currency);
+      showTransactionSummary('share_expense', summaryObj);
+    }
+
+    function shareSettlementById(settleId) {
+      if (!currentGroupDetail) return;
+      const cached = cacheGet(`settlements_${currentGroupId}`) || [];
+      const s = cached.find(x => x.id === settleId);
+      if (!s) return;
+      const groupName = currentGroupDetail.group.name;
+      const currency = currentGroupDetail.group.default_currency;
+      const summaryObj = formatSettlementSummary(s, groupName, currency);
+      showTransactionSummary('share_settlement', summaryObj);
+    }
+
     async function handleSaveExpense(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-save-expense');
@@ -2348,19 +2586,33 @@
 
       closeModal('modal-add-expense');
 
+      const payerMember = currentGroupDetail.members.find(m => m.user_id === paid_by);
+      const payerName = payerMember ? payerMember.display_name : 'You';
+      const groupName = currentGroupDetail ? currentGroupDetail.group.name : '';
+      const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+
+      // Build summary object for transaction share modal
+      const summaryExp = {
+        description: desc,
+        amount_cents: amount_cents,
+        paid_by_name: payerName,
+        expense_date: new Date().toISOString(),
+        splits: splitsForOptimistic
+      };
+      const summaryObj = formatExpenseSummary(summaryExp, groupName, currency);
+
       // Optimistic cache update if creating new
       if (!isEdit) {
-        const payerMember = currentGroupDetail.members.find(m => m.user_id === paid_by);
         const optimisticExp = {
           id: 'local_' + uuidv4(),
           group_id: currentGroupId,
           paid_by: paid_by,
-          paid_by_name: payerMember ? payerMember.display_name : 'You',
+          paid_by_name: payerName,
           created_by: currentUser.id,
           created_by_name: currentUser.display_name,
           description: desc,
           amount_cents: amount_cents,
-          currency: currentGroupDetail.group.default_currency,
+          currency: currency,
           split_type: currentSplitType,
           category: category,
           expense_date: new Date().toISOString(),
@@ -2371,9 +2623,12 @@
         const cached = cacheGet(`expenses_${currentGroupId}`) || [];
         cached.unshift(optimisticExp);
         cacheSet(`expenses_${currentGroupId}`, cached);
-        renderExpensesUI(cached, currentGroupDetail.group.default_currency);
+        renderExpensesUI(cached, currency);
         autoAdjustStatementsForExpense(payload, splitsForOptimistic);
       }
+
+      // Display the transaction summary with sharing options
+      showTransactionSummary(isEdit ? 'update_expense' : 'create_expense', summaryObj);
 
       try {
         if (isEdit) {
@@ -2549,6 +2804,11 @@
       autoAdjustStatementsForSettlement(payload);
 
       closeModal('modal-settle');
+
+      const groupName = currentGroupDetail ? currentGroupDetail.group.name : '';
+      const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+      const summaryObj = formatSettlementSummary(optimisticSettle, groupName, currency);
+      showTransactionSummary('settlement', summaryObj);
 
       // 2. Transmit or queue
       if (!navigator.onLine) {

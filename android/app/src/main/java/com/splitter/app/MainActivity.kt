@@ -2,6 +2,7 @@ package com.splitter.app
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -9,6 +10,7 @@ import android.net.NetworkRequest
 import android.net.http.SslError
 import android.os.Bundle
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -68,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 loadWithOverviewMode = true
                 mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
+            addJavascriptInterface(WebAppInterface(this@MainActivity), "AndroidNative")
         }
 
         val progressHeightPx = (3 * resources.displayMetrics.density).toInt().coerceAtLeast(6)
@@ -228,6 +231,27 @@ class MainActivity : AppCompatActivity() {
             webView.goBack()
         } else {
             super.onBackPressed()
+        }
+    }
+
+    inner class WebAppInterface(private val context: Context) {
+        @JavascriptInterface
+        fun shareText(title: String, text: String) {
+            runOnUiThread {
+                try {
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TITLE, title)
+                        putExtra(Intent.EXTRA_SUBJECT, title)
+                        putExtra(Intent.EXTRA_TEXT, text)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, title)
+                    context.startActivity(shareIntent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 }
