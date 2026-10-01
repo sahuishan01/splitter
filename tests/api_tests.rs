@@ -506,3 +506,106 @@ async fn test_exact_percent_edit_and_activity_logs() {
     assert!(actions.contains(&"CREATE_EXPENSE"));
     assert!(actions.contains(&"UPDATE_EXPENSE"));
 }
+
+#[tokio::test]
+async fn test_attachment_upload_and_expense_attachment() {
+    let ctx = setup_test_app().await;
+
+    // 1. Register User
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "uploader@example.com",
+            "password": "password123",
+            "display_name": "Uploader"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let user_token = res.json::<Value>().await.unwrap()["token"].as_str().unwrap().to_string();
+
+    // 2. Create Group
+    let res = ctx
+        .client
+        .post(format!("{}/api/groups", ctx.base_url))
+        .bearer_auth(&user_token)
+        .json(&json!({
+            "name": "Receipt Group",
+            "default_currency": "USD"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let group_id = res.json::<Value>().await.unwrap()["id"].as_str().unwrap().to_string();
+
+    // 3. Upload File
+    let form = reqwest::multipart::Form::new()
+        .part("file", reqwest::multipart::Part::bytes(b"Mock receipt image content".to_vec()).file_name("receipt.jpg").mime_str("image/jpeg").unwrap())
+        .text("group_id", group_id.clone());
+
+    let res = ctx
+        .client
+        .post(format!("{}/api/upload", ctx.base_url))
+        .bearer_auth(&user_token)
+        .multipart(form)
+        .send()
+        .await
+        .unwrap();
+
+    assert_eq!(res.status(), 201);
+    let upload_resp: Value = res.json().await.unwrap();
+    let attachment_id = upload_resp["id"].as_str().unwrap().to_string();
+    let file_url = upload_resp["file_url"].as_str().unwrap().to_string();
+    assert_eq!(upload_resp["file_name"], "receipt.jpg");
+
+    // 4. Download Attachment
+    let res = ctx
+        .client
+        .get(format!("{}{}", ctx.base_url, file_url))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let bytes = res.bytes().await.unwrap();
+    assert_eq!(bytes.as_ref(), b"Mock receipt image content");
+
+    // 5. Create Expense with Attachment
+    let res = ctx
+        .client
+        .post(format!("{}/api/groups/{}/expenses", ctx.base_url, group_id))
+        .bearer_auth(&user_token)
+        .json(&json!({
+            "description": "Dinner at Bistro",
+            "amount_cents": 4500,
+            "attachment_id": attachment_id,
+            "attachment_url": file_url,
+            "attachment_name": "receipt.jpg"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let exp_resp: Value = res.json().await.unwrap();
+    assert_eq!(exp_resp["attachment_id"], attachment_id);
+    assert_eq!(exp_resp["attachment_url"], file_url);
+    assert_eq!(exp_resp["attachment_name"], "receipt.jpg");
+
+    // 6. List expenses and verify attachment is returned
+    let res = ctx
+        .client
+        .get(format!("{}/api/groups/{}/expenses", ctx.base_url, group_id))
+        .bearer_auth(&user_token)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let expenses: Value = res.json().await.unwrap();
+    let exp = &expenses[0];
+    assert_eq!(exp["attachment_id"], attachment_id);
+    assert_eq!(exp["attachment_url"], file_url);
+    assert_eq!(exp["attachment_name"], "receipt.jpg");
+}
+

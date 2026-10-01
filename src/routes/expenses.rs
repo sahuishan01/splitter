@@ -36,6 +36,9 @@ pub struct CreateExpenseRequest {
     pub participants: Option<Vec<String>>,
     pub splits: Option<Vec<SplitInput>>,
     pub idempotency_key: Option<String>,
+    pub attachment_id: Option<String>,
+    pub attachment_url: Option<String>,
+    pub attachment_name: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -49,6 +52,9 @@ pub struct UpdateExpenseRequest {
     pub expense_date: Option<String>,
     pub participants: Option<Vec<String>>,
     pub splits: Option<Vec<SplitInput>>,
+    pub attachment_id: Option<String>,
+    pub attachment_url: Option<String>,
+    pub attachment_name: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -257,8 +263,8 @@ pub async fn create_expense(
     let mut tx = pool.begin().await?;
 
     sqlx::query(
-        "INSERT INTO expenses (id, group_id, paid_by, created_by, description, amount_cents, currency, split_type, category, expense_date, created_at, idempotency_key)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO expenses (id, group_id, paid_by, created_by, description, amount_cents, currency, split_type, category, expense_date, created_at, idempotency_key, attachment_url, attachment_name, attachment_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     )
     .bind(&expense_id)
     .bind(&group_id)
@@ -272,8 +278,20 @@ pub async fn create_expense(
     .bind(&expense_date)
     .bind(&now)
     .bind(&payload.idempotency_key)
+    .bind(&payload.attachment_url)
+    .bind(&payload.attachment_name)
+    .bind(&payload.attachment_id)
     .execute(&mut *tx)
     .await?;
+
+    if let Some(ref att_id) = payload.attachment_id {
+        sqlx::query("UPDATE attachments SET expense_id = ?, group_id = ? WHERE id = ?")
+            .bind(&expense_id)
+            .bind(&group_id)
+            .bind(att_id)
+            .execute(&mut *tx)
+            .await?;
+    }
 
     let mut split_details = Vec::new();
 
@@ -355,6 +373,9 @@ pub async fn create_expense(
         expense_date,
         created_at: now.clone(),
         splits: split_details,
+        attachment_url: payload.attachment_url,
+        attachment_name: payload.attachment_name,
+        attachment_id: payload.attachment_id,
     };
 
     // Save idempotency record if key provided
@@ -433,9 +454,13 @@ pub async fn update_expense(
 
     let mut tx = pool.begin().await?;
 
+    let att_url = payload.attachment_url.or(existing.attachment_url);
+    let att_name = payload.attachment_name.or(existing.attachment_name);
+    let att_id = payload.attachment_id.or(existing.attachment_id);
+
     sqlx::query(
         "UPDATE expenses
-         SET paid_by = ?, description = ?, amount_cents = ?, currency = ?, split_type = ?, category = ?, expense_date = ?
+         SET paid_by = ?, description = ?, amount_cents = ?, currency = ?, split_type = ?, category = ?, expense_date = ?, attachment_url = ?, attachment_name = ?, attachment_id = ?
          WHERE id = ?"
     )
     .bind(&paid_by)
@@ -445,9 +470,21 @@ pub async fn update_expense(
     .bind(&split_type)
     .bind(&category)
     .bind(&expense_date)
+    .bind(&att_url)
+    .bind(&att_name)
+    .bind(&att_id)
     .bind(&expense_id)
     .execute(&mut *tx)
     .await?;
+
+    if let Some(ref aid) = att_id {
+        sqlx::query("UPDATE attachments SET expense_id = ?, group_id = ? WHERE id = ?")
+            .bind(&expense_id)
+            .bind(&group_id)
+            .bind(aid)
+            .execute(&mut *tx)
+            .await?;
+    }
 
     sqlx::query("DELETE FROM expense_splits WHERE expense_id = ?")
         .bind(&expense_id)
@@ -543,6 +580,9 @@ pub async fn update_expense(
         expense_date,
         created_at: existing.created_at,
         splits: split_details,
+        attachment_url: att_url,
+        attachment_name: att_name,
+        attachment_id: att_id,
     };
 
     Ok(Json(detail))
@@ -615,6 +655,9 @@ pub async fn list_expenses(
             expense_date: exp.expense_date,
             created_at: exp.created_at,
             splits: split_details,
+            attachment_url: exp.attachment_url,
+            attachment_name: exp.attachment_name,
+            attachment_id: exp.attachment_id,
         });
     }
 

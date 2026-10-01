@@ -69,6 +69,9 @@ pub struct Expense {
     pub expense_date: String,
     pub created_at: String,
     pub idempotency_key: Option<String>,
+    pub attachment_url: Option<String>,
+    pub attachment_name: Option<String>,
+    pub attachment_id: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, Clone)]
@@ -97,6 +100,38 @@ pub struct ExpenseDetail {
     pub expense_date: String,
     pub created_at: String,
     pub splits: Vec<ExpenseSplitDetail>,
+    pub attachment_url: Option<String>,
+    pub attachment_name: Option<String>,
+    pub attachment_id: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, Clone)]
+pub struct Attachment {
+    pub id: String,
+    pub expense_id: Option<String>,
+    pub group_id: Option<String>,
+    pub uploaded_by: String,
+    pub file_name: String,
+    pub file_path: String,
+    pub file_size: i64,
+    pub content_type: String,
+    pub ocr_text: Option<String>,
+    pub detected_amount_cents: Option<i64>,
+    pub detected_merchant: Option<String>,
+    pub created_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct AttachmentResponse {
+    pub id: String,
+    pub file_url: String,
+    pub file_name: String,
+    pub file_size: i64,
+    pub content_type: String,
+    pub ocr_text: Option<String>,
+    pub detected_amount: Option<f64>,
+    pub detected_amount_cents: Option<i64>,
+    pub detected_merchant: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

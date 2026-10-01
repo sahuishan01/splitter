@@ -48,6 +48,11 @@ pub fn create_app(pool: SqlitePool) -> Router {
         .route("/groups/:id/balances", get(routes::expenses::get_group_balances))
         .route("/groups/:id/settlements", post(routes::expenses::create_settlement).get(routes::expenses::list_settlements))
         .route("/groups/:id/activities", get(routes::expenses::list_activities))
+        // Attachments & OCR
+        .route("/upload", post(routes::attachments::upload_attachment))
+        .route("/attachments/:id", get(routes::attachments::get_attachment_file))
+        .route("/attachments/:id/info", get(routes::attachments::get_attachment_info))
+        .route("/ocr/scan", post(routes::attachments::scan_ocr_direct))
         // Batch Offline Sync
         .route("/sync/batch", post(routes::sync::batch_sync))
         .route("/sync/changes", get(routes::sync::get_changes))
@@ -55,6 +60,7 @@ pub fn create_app(pool: SqlitePool) -> Router {
 
     Router::new()
         .nest("/api", api_router)
+        .nest_service("/uploads", ServeDir::new("uploads"))
         .nest_service("/", ServeDir::new("static").fallback(ServeDir::new("static/index.html")))
         .layer(cors)
         .layer(TraceLayer::new_for_http())

@@ -1,17 +1,20 @@
 package com.splitter.app
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -21,6 +24,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -35,6 +39,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var offlineBanner: TextView
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
+    private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
+
+    private val fileChooserLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val uris = if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            WebChromeClient.FileChooserParams.parseResult(result.resultCode, intent)
+        } else {
+            null
+        }
+        fileUploadCallback?.onReceiveValue(uris)
+        fileUploadCallback = null
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,6 +158,28 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     progressBar.visibility = View.GONE
                     swipeRefresh.isRefreshing = false
+                }
+            }
+
+            override fun onShowFileChooser(
+                webView: WebView?,
+                filePathCallback: ValueCallback<Array<Uri>>?,
+                fileChooserParams: FileChooserParams?
+            ): Boolean {
+                fileUploadCallback?.onReceiveValue(null)
+                fileUploadCallback = filePathCallback
+
+                return try {
+                    val intent = fileChooserParams?.createIntent() ?: Intent(Intent.ACTION_GET_CONTENT).apply {
+                        type = "*/*"
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                    }
+                    fileChooserLauncher.launch(intent)
+                    true
+                } catch (e: Exception) {
+                    fileUploadCallback?.onReceiveValue(null)
+                    fileUploadCallback = null
+                    false
                 }
             }
         }

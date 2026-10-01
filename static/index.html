@@ -1030,6 +1030,52 @@
           </select>
         </div>
 
+        <!-- Receipt Attachment & OCR Scanner -->
+        <div class="form-group" style="background: var(--bg-surface); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-subtle);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label class="form-label" style="margin-bottom: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              📸 Bill Scanning & Attachments
+            </label>
+            <span style="font-size: 0.72rem; color: #58a6ff; font-weight: 600;">AI OCR Enabled</span>
+          </div>
+
+          <input type="file" id="expense-attachment-file" accept="image/*,.pdf" style="display: none;" onchange="handleAttachmentSelected(this)" />
+          <input type="file" id="expense-camera-file" accept="image/*" capture="environment" style="display: none;" onchange="handleAttachmentSelected(this)" />
+
+          <!-- Action Buttons -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="attachment-buttons-container">
+            <button type="button" class="btn btn-secondary btn-sm" style="justify-content: center; gap: 6px; font-size: 0.8rem;" onclick="triggerCameraCapture()">
+              <span>📸</span> Scan Bill (Camera)
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" style="justify-content: center; gap: 6px; font-size: 0.8rem;" onclick="triggerFileSelect()">
+              <span>📎</span> Attach Image / Bill
+            </button>
+          </div>
+
+          <!-- OCR Scanning Progress -->
+          <div id="expense-attachment-loading" class="hidden" style="margin-top: 10px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(88, 166, 255, 0.1); border-radius: 6px; border: 1px solid rgba(88, 166, 255, 0.3);">
+            <div class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></div>
+            <span style="font-size: 0.82rem; color: #58a6ff;">Scanning bill with OCR & extracting total amount...</span>
+          </div>
+
+          <!-- Attachment Preview & OCR Result Card -->
+          <div id="expense-attachment-preview" class="hidden" style="margin-top: 10px; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 6px;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <img id="attachment-preview-thumb" src="" alt="Receipt" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-subtle); background: #000;" />
+              <div style="flex: 1; min-width: 0;">
+                <div id="attachment-preview-name" style="font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main);">receipt.jpg</div>
+                <div id="attachment-ocr-badge" style="font-size: 0.75rem; margin-top: 2px; color: #3fb950; font-weight: 600;">✓ OCR Total Detected</div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.75rem;" onclick="toggleOcrRawText()">🔍 OCR</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.75rem; color: #f85149;" onclick="clearActiveAttachment()">✕</button>
+              </div>
+            </div>
+            <!-- Collapsible OCR Raw Text -->
+            <div id="expense-ocr-text-box" class="hidden" style="margin-top: 8px; padding: 8px; background: var(--bg-surface); border-radius: 4px; border: 1px dashed var(--border-subtle); max-height: 120px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); white-space: pre-wrap;"></div>
+          </div>
+        </div>
+
         <!-- Split Type Tabs -->
         <div class="form-group">
           <label class="form-label">Split Type</label>
@@ -1137,6 +1183,32 @@
           Done
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal: Attachment / Receipt Viewer -->
+  <div id="modal-attachment-viewer" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 650px;">
+      <button class="modal-close" onclick="closeModal('modal-attachment-viewer')">&times;</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 id="att-viewer-title" class="card-title" style="margin-bottom: 0;">📎 Receipt / Attachment</h3>
+        <a id="att-viewer-download" href="#" target="_blank" download class="btn btn-secondary btn-sm" style="gap: 4px;">
+          <span>📥</span> Download
+        </a>
+      </div>
+      <div id="att-viewer-content" style="text-align: center; margin-bottom: 14px; background: #000; border-radius: 8px; overflow: hidden; max-height: 480px; display: flex; align-items: center; justify-content: center;">
+        <img id="att-viewer-img" src="" alt="Attachment" style="max-width: 100%; max-height: 480px; object-fit: contain;" />
+      </div>
+      <div id="att-viewer-ocr-section" class="hidden" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Extracted Bill Information (OCR)</div>
+          <div id="att-viewer-detected-amt" style="font-family: var(--font-mono); font-weight: 700; color: #3fb950; font-size: 0.95rem;"></div>
+        </div>
+        <div id="att-viewer-merchant" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;"></div>
+        <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Raw OCR Text:</div>
+        <pre id="att-viewer-ocr-text" style="background: var(--bg-main); padding: 8px; border-radius: 4px; border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); max-height: 120px; overflow-y: auto; white-space: pre-wrap; margin: 0;"></pre>
+      </div>
+      <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="closeModal('modal-attachment-viewer')">Close</button>
     </div>
   </div>
 
@@ -1903,11 +1975,21 @@
             <div class="expense-sub">
               Paid by <strong>${escapeHtml(exp.paid_by_name || 'You')}</strong> • Added by <strong>${escapeHtml(exp.created_by_name || exp.paid_by_name || 'Member')}</strong> • ${new Date(exp.expense_date || Date.now()).toLocaleDateString()} • <span class="role-tag">${escapeHtml(exp.category || 'General')}</span>
             </div>
-            <div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;">${splitsHtml}</div>
+            <div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
+              ${splitsHtml}
+              ${exp.attachment_url ? `
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 7px; font-size: 0.72rem; gap: 4px; border-color: rgba(88, 166, 255, 0.4); color: #58a6ff;" onclick="openAttachmentViewer('${exp.id}')">
+                  <span>📎</span> ${escapeHtml(exp.attachment_name || 'Receipt')}
+                </button>
+              ` : ''}
+            </div>
           </div>
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
             <div class="expense-amount">${formatMoney(exp.amount_cents, currency)}</div>
             <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;">
+              ${exp.attachment_url ? `
+                <button class="btn btn-secondary btn-sm" style="color: #58a6ff;" onclick="openAttachmentViewer('${exp.id}')">📎 Bill</button>
+              ` : ''}
               <button class="btn btn-secondary btn-sm" onclick="shareExpenseById('${exp.id}')">📤 Share</button>
               ${canEdit ? `
                 <button class="btn btn-secondary btn-sm" onclick="openEditExpenseModal('${exp.id}')">Edit</button>
@@ -2211,6 +2293,208 @@
       updateSplitCalculations();
     }
 
+    // Attachment & OCR Management
+    let activeAttachment = null;
+
+    function triggerCameraCapture() {
+      const input = document.getElementById('expense-camera-file');
+      if (input) input.click();
+    }
+
+    function triggerFileSelect() {
+      const input = document.getElementById('expense-attachment-file');
+      if (input) input.click();
+    }
+
+    function resetAttachmentUI() {
+      activeAttachment = null;
+      const fileInp = document.getElementById('expense-attachment-file');
+      if (fileInp) fileInp.value = '';
+      const camInp = document.getElementById('expense-camera-file');
+      if (camInp) camInp.value = '';
+      const loadEl = document.getElementById('expense-attachment-loading');
+      if (loadEl) loadEl.classList.add('hidden');
+      const prevEl = document.getElementById('expense-attachment-preview');
+      if (prevEl) prevEl.classList.add('hidden');
+      const ocrBox = document.getElementById('expense-ocr-text-box');
+      if (ocrBox) ocrBox.classList.add('hidden');
+      const btnCont = document.getElementById('attachment-buttons-container');
+      if (btnCont) btnCont.classList.remove('hidden');
+    }
+
+    function setAttachmentPreviewUI(att, isLocal = false) {
+      activeAttachment = att;
+      const btnCont = document.getElementById('attachment-buttons-container');
+      if (btnCont) btnCont.classList.add('hidden');
+      const loadEl = document.getElementById('expense-attachment-loading');
+      if (loadEl) loadEl.classList.add('hidden');
+      const prevBox = document.getElementById('expense-attachment-preview');
+      if (prevBox) prevBox.classList.remove('hidden');
+
+      const nameEl = document.getElementById('attachment-preview-name');
+      if (nameEl) nameEl.textContent = att.file_name || 'Receipt';
+      const thumb = document.getElementById('attachment-preview-thumb');
+      if (thumb) {
+        if (att.file_url) {
+          thumb.src = att.file_url;
+          thumb.style.display = 'block';
+        } else {
+          thumb.style.display = 'none';
+        }
+      }
+
+      const badge = document.getElementById('attachment-ocr-badge');
+      if (badge) {
+        if (att.detected_amount) {
+          const cur = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+          badge.innerHTML = `<span style="color: #3fb950;">✓ OCR Total: ${formatMoney(att.detected_amount_cents, cur)}</span>` + (att.detected_merchant ? ` • ${escapeHtml(att.detected_merchant)}` : '');
+        } else if (isLocal) {
+          badge.innerHTML = `<span style="color: var(--accent-gold);">📎 Attached locally (syncs on save)</span>`;
+        } else {
+          badge.innerHTML = `<span style="color: var(--text-dim);">📎 Attached (${att.content_type || 'file'})</span>`;
+        }
+      }
+
+      const ocrBox = document.getElementById('expense-ocr-text-box');
+      if (ocrBox) {
+        if (att.ocr_text) {
+          ocrBox.textContent = att.ocr_text;
+        } else {
+          ocrBox.textContent = 'No OCR text extracted.';
+        }
+      }
+    }
+
+    function clearActiveAttachment() {
+      resetAttachmentUI();
+    }
+
+    function toggleOcrRawText() {
+      const box = document.getElementById('expense-ocr-text-box');
+      if (box) box.classList.toggle('hidden');
+    }
+
+    async function handleAttachmentSelected(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+
+      if (file.size > 20 * 1024 * 1024) {
+        alert('File exceeds 20MB limit. Please choose a smaller image.');
+        input.value = '';
+        return;
+      }
+
+      const localUrl = URL.createObjectURL(file);
+
+      const btnCont = document.getElementById('attachment-buttons-container');
+      if (btnCont) btnCont.classList.add('hidden');
+      const loader = document.getElementById('expense-attachment-loading');
+      if (loader) loader.classList.remove('hidden');
+
+      if (!navigator.onLine) {
+        if (loader) loader.classList.add('hidden');
+        setAttachmentPreviewUI({
+          id: 'local_' + uuidv4(),
+          file_name: file.name,
+          file_url: localUrl,
+          file_size: file.size,
+          content_type: file.type,
+          is_local: true
+        }, true);
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        if (currentGroupId) formData.append('group_id', currentGroupId);
+
+        const token = localStorage.getItem('splitter_token');
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Upload failed');
+        }
+
+        const data = await res.json();
+        setAttachmentPreviewUI(data);
+
+        // Auto-fill final amount if detected!
+        if (data.detected_amount && data.detected_amount > 0) {
+          const amtInput = document.getElementById('expense-amount');
+          amtInput.value = data.detected_amount.toFixed(2);
+          updateSplitCalculations();
+
+          // Highlight input to confirm OCR auto-fill
+          amtInput.style.borderColor = '#3fb950';
+          amtInput.style.boxShadow = '0 0 8px rgba(63, 185, 80, 0.4)';
+          setTimeout(() => {
+            amtInput.style.borderColor = '';
+            amtInput.style.boxShadow = '';
+          }, 2500);
+        }
+
+        // Auto-fill description if empty and merchant was detected
+        const descInput = document.getElementById('expense-desc');
+        if (!descInput.value.trim() && data.detected_merchant) {
+          descInput.value = data.detected_merchant;
+        }
+
+      } catch (err) {
+        alert('Attachment upload / OCR failed: ' + err.message);
+        resetAttachmentUI();
+      }
+    }
+
+    async function openAttachmentViewer(expId) {
+      const cached = cacheGet(`expenses_${currentGroupId}`) || [];
+      const exp = cached.find(e => e.id === expId);
+      if (!exp || !exp.attachment_url) return;
+
+      document.getElementById('att-viewer-title').textContent = `📎 ${exp.attachment_name || 'Receipt / Attachment'}`;
+      const dlBtn = document.getElementById('att-viewer-download');
+      dlBtn.href = exp.attachment_url;
+      dlBtn.download = exp.attachment_name || 'receipt';
+
+      const contentBox = document.getElementById('att-viewer-content');
+      const ocrSection = document.getElementById('att-viewer-ocr-section');
+      ocrSection.classList.add('hidden');
+
+      const isImg = exp.attachment_url.match(/\.(jpeg|jpg|png|webp|gif|bmp)/i) || !exp.attachment_url.includes('.');
+      if (isImg) {
+        contentBox.innerHTML = `<img src="${exp.attachment_url}" alt="Attachment" style="max-width: 100%; max-height: 480px; object-fit: contain; border-radius: 6px;" />`;
+      } else {
+        contentBox.innerHTML = `
+          <div style="padding: 40px 20px; text-align: center; color: var(--text-muted);">
+            <div style="font-size: 3rem; margin-bottom: 8px;">📄</div>
+            <div style="font-size: 1rem; color: var(--text-main); font-weight: 600; margin-bottom: 12px;">${escapeHtml(exp.attachment_name || 'Document')}</div>
+            <a href="${exp.attachment_url}" target="_blank" class="btn btn-primary" style="display: inline-flex;">Open File in Browser</a>
+          </div>
+        `;
+      }
+
+      if (exp.attachment_id) {
+        try {
+          const info = await apiFetch(`/attachments/${exp.attachment_id}/info`);
+          if (info && (info.ocr_text || info.detected_amount)) {
+            ocrSection.classList.remove('hidden');
+            document.getElementById('att-viewer-detected-amt').textContent = info.detected_amount ? `Detected Total: ${formatMoney(info.detected_amount_cents, exp.currency)}` : '';
+            document.getElementById('att-viewer-merchant').textContent = info.detected_merchant ? `Store / Vendor: ${info.detected_merchant}` : '';
+            document.getElementById('att-viewer-ocr-text').textContent = info.ocr_text || 'No text extracted.';
+          }
+        } catch (e) {
+          // ignore info load errors
+        }
+      }
+
+      openModal('modal-attachment-viewer');
+    }
+
     function openAddExpenseModal() {
       if (!currentGroupDetail) return;
       editingExpenseId = null;
@@ -2232,6 +2516,7 @@
       document.getElementById('expense-amount').value = '';
       document.getElementById('expense-category').value = 'General';
 
+      resetAttachmentUI();
       setSplitType('EQUAL');
       openModal('modal-add-expense');
     }
@@ -2260,6 +2545,17 @@
       document.getElementById('expense-desc').value = exp.description;
       document.getElementById('expense-amount').value = (exp.amount_cents / 100).toFixed(2);
       document.getElementById('expense-category').value = exp.category || 'General';
+
+      if (exp.attachment_url) {
+        setAttachmentPreviewUI({
+          id: exp.attachment_id || null,
+          file_url: exp.attachment_url,
+          file_name: exp.attachment_name || 'Receipt',
+          ocr_text: null
+        });
+      } else {
+        resetAttachmentUI();
+      }
 
       const type = exp.split_type || 'EQUAL';
       currentSplitType = type;
@@ -2297,6 +2593,7 @@
       plain += `💰 Amount: ${totalStr}\n`;
       plain += `👤 Paid by: ${payerName}\n`;
       if (groupName) plain += `🏷️ Group: ${groupName}\n`;
+      if (exp.attachment_url) plain += `📎 Receipt: Attached\n`;
       plain += `📅 Date: ${dateStr}\n\n`;
       if (splits.length > 0) {
         plain += `Split Breakdown:\n`;
@@ -2325,6 +2622,11 @@
               Paid by <strong>${escapeHtml(payerName)}</strong> • ${escapeHtml(dateStr)}
             </div>
             ${groupName ? `<div style="margin-top: 4px;"><span class="role-tag" style="font-size: 0.75rem;">${escapeHtml(groupName)}</span></div>` : ''}
+            ${exp.attachment_url ? `
+              <div style="margin-top: 6px; font-size: 0.78rem; color: #58a6ff; display: flex; align-items: center; gap: 4px;">
+                <span>📎</span> Receipt Attached: ${escapeHtml(exp.attachment_name || 'Bill')}
+              </div>
+            ` : ''}
           </div>
           <div style="font-size: 1.35rem; font-family: var(--font-mono); font-weight: 800; color: #58a6ff; white-space: nowrap; margin-left: 12px;">
             ${totalStr}
@@ -2584,6 +2886,12 @@
         payload.splits = splits;
       }
 
+      if (activeAttachment) {
+        payload.attachment_id = activeAttachment.id;
+        payload.attachment_url = activeAttachment.file_url;
+        payload.attachment_name = activeAttachment.file_name;
+      }
+
       closeModal('modal-add-expense');
 
       const payerMember = currentGroupDetail.members.find(m => m.user_id === paid_by);
@@ -2597,7 +2905,9 @@
         amount_cents: amount_cents,
         paid_by_name: payerName,
         expense_date: new Date().toISOString(),
-        splits: splitsForOptimistic
+        splits: splitsForOptimistic,
+        attachment_url: activeAttachment ? activeAttachment.file_url : null,
+        attachment_name: activeAttachment ? activeAttachment.file_name : null
       };
       const summaryObj = formatExpenseSummary(summaryExp, groupName, currency);
 
@@ -2618,7 +2928,10 @@
           expense_date: new Date().toISOString(),
           created_at: new Date().toISOString(),
           is_pending: true,
-          splits: splitsForOptimistic
+          splits: splitsForOptimistic,
+          attachment_id: activeAttachment ? activeAttachment.id : null,
+          attachment_url: activeAttachment ? activeAttachment.file_url : null,
+          attachment_name: activeAttachment ? activeAttachment.file_name : null,
         };
         const cached = cacheGet(`expenses_${currentGroupId}`) || [];
         cached.unshift(optimisticExp);
@@ -2629,6 +2942,7 @@
 
       // Display the transaction summary with sharing options
       showTransactionSummary(isEdit ? 'update_expense' : 'create_expense', summaryObj);
+      resetAttachmentUI();
 
       try {
         if (isEdit) {
