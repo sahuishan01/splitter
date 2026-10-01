@@ -1857,7 +1857,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.10"
+      "version": "0.1.11"
     },
     {
       "id": "src_models_rs_self",
@@ -11929,5 +11929,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2832b98615521411d6800e1f2f2561b89851f7bd"
+  "built_at_commit": "00154d2a50ac4b7f502e82d456584994c52cf410"
 }

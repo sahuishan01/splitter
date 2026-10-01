@@ -433,13 +433,8 @@
       "degree": 14
     },
     {
-      "id": "src_routes_expenses_list_expenses",
-      "label": "list_expenses()",
-      "degree": 13
-    },
-    {
-      "id": "src_routes_expenses_list_settlements",
-      "label": "list_settlements()",
+      "id": "src_routes_groups_add_member",
+      "label": "add_member()",
       "degree": 13
     },
     {
@@ -448,8 +443,13 @@
       "degree": 13
     },
     {
-      "id": "src_routes_groups_add_member",
-      "label": "add_member()",
+      "id": "src_routes_expenses_list_expenses",
+      "label": "list_expenses()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_expenses_list_settlements",
+      "label": "list_settlements()",
       "degree": 13
     },
     {
@@ -482,33 +482,33 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     },
     {
-      "source": "login()",
-      "target": "issue_token()",
+      "source": "get_group_balances()",
+      "target": "simplify_debts()",
       "source_files": [
-        "src/routes/auth.rs",
-        "src/auth/jwt.rs"
+        "src/routes/expenses.rs",
+        "src/services/settlement.rs"
       ],
       "confidence": "INFERRED",
       "relation": "calls",
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "register()",
-      "target": "issue_token()",
+      "source": "create_expense()",
+      "target": "log_activity()",
       "source_files": [
-        "src/routes/auth.rs",
-        "src/auth/jwt.rs"
+        "src/routes/expenses.rs",
+        "src/services/activity.rs"
       ],
       "confidence": "INFERRED",
       "relation": "calls",
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "update_profile()",
-      "target": "issue_token()",
+      "source": "create_settlement()",
+      "target": "log_activity()",
       "source_files": [
-        "src/routes/auth.rs",
-        "src/auth/jwt.rs"
+        "src/routes/expenses.rs",
+        "src/services/activity.rs"
       ],
       "confidence": "INFERRED",
       "relation": "calls",

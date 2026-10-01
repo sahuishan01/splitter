@@ -1222,6 +1222,8 @@
       </div>
       <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="closeModal('modal-attachment-viewer')">Close</button>
     </div>
+  </div>
+
   <!-- Modal: User Profile & Reset Options -->
   <div id="modal-profile" class="modal-overlay">
     <div class="modal-dialog" style="max-width: 540px;">
@@ -1902,7 +1904,13 @@
     }
 
     function openProfileModal() {
-      if (!currentUser) return;
+      if (!currentUser) {
+        currentUser = cacheGet('user');
+      }
+      if (!currentUser) {
+        alert('Please log in to access your profile.');
+        return;
+      }
       document.getElementById('profile-name').value = currentUser.display_name || '';
       document.getElementById('profile-email').value = currentUser.email || '';
       document.getElementById('profile-role').textContent = currentUser.is_admin ? 'Admin' : 'Member';

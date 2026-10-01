@@ -1,9 +1,9 @@
 {
   "Cargo.toml": {
-    "mtime": 1790866323.0266726,
-    "seen": 1790866432.384791,
-    "ast_hash": "2589bb8fbdafa22ca0e844bf86d8bb92",
-    "semantic_hash": "2589bb8fbdafa22ca0e844bf86d8bb92"
+    "mtime": 1790866692.5483038,
+    "seen": 1790866793.182231,
+    "ast_hash": "5af2abcd317cfd9efcd39367724decaf",
+    "semantic_hash": "5af2abcd317cfd9efcd39367724decaf"
   },
   "android/app/src/main/java/com/splitter/sync/OfflineQueueRepository.kt": {
     "mtime": 1790772944.176564,
@@ -132,10 +132,10 @@
     "semantic_hash": "96945838bcc9bffaad6855f180e45c35"
   },
   "android/app/build.gradle.kts": {
-    "mtime": 1790866326.798689,
-    "seen": 1790866432.3847935,
-    "ast_hash": "63e0317bdf1db071ac7dda79d92f245b",
-    "semantic_hash": "63e0317bdf1db071ac7dda79d92f245b"
+    "mtime": 1790866698.028329,
+    "seen": 1790866793.1822338,
+    "ast_hash": "d8b4a0c6ffcfea332402d8fca0cb4727",
+    "semantic_hash": "d8b4a0c6ffcfea332402d8fca0cb4727"
   },
   "android/app/src/main/java/com/splitter/app/MainActivity.kt": {
     "mtime": 1790845334.993519,
@@ -175,7 +175,7 @@
   },
   "migrations/0001_initial.sql": {
     "mtime": 1790772647.9753268,
-    "seen": 1790846066.684305,
+    "seen": 1790866452.5487895,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -210,9 +210,9 @@
     "semantic_hash": ""
   },
   "static/index.html": {
-    "mtime": 1790845704.0070794,
-    "seen": 1790846066.6852612,
-    "ast_hash": "aa6123658a6b71ee8a964493d29d7f61",
+    "mtime": 1790866279.4024823,
+    "seen": 1790866452.5488305,
+    "ast_hash": "0d8bbe41d93f75f0b17f7f2503c4a5c0",
     "semantic_hash": ""
   },
   "src/services/activity.rs": {
@@ -223,7 +223,7 @@
   },
   "migrations/0002_add_created_by_and_activity_logs.sql": {
     "mtime": 1790784643.9222388,
-    "seen": 1790846066.6843069,
+    "seen": 1790866452.548791,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -238,5 +238,11 @@
     "seen": 1790845915.0465033,
     "ast_hash": "3f738d06e66ec837b26cf49333a7a1f3",
     "semantic_hash": "3f738d06e66ec837b26cf49333a7a1f3"
+  },
+  "migrations/0003_add_attachments.sql": {
+    "mtime": 1790844785.8991847,
+    "seen": 1790866452.5487924,
+    "ast_hash": "",
+    "semantic_hash": ""
   }
 }
