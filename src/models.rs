@@ -173,6 +173,10 @@ pub struct SettlementDetail {
 pub struct MemberBalance {
     pub user_id: String,
     pub display_name: String,
+    #[serde(default)]
+    pub total_paid_cents: i64,
+    #[serde(default)]
+    pub total_owed_cents: i64,
     pub net_balance_cents: i64,
 }
 
@@ -191,6 +195,8 @@ pub struct GroupBalanceSummary {
     pub group_id: String,
     pub currency: String,
     pub balances: Vec<MemberBalance>,
+    #[serde(default)]
+    pub direct_debts: Vec<SimplifiedDebt>,
     pub simplified_debts: Vec<SimplifiedDebt>,
 }
 

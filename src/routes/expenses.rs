@@ -14,7 +14,10 @@ use crate::{
         GroupMemberRow, IdempotencyRecord, MemberBalance, Settlement, SettlementDetail,
     },
     routes::groups::check_group_membership,
-    services::{activity::log_activity, settlement::simplify_debts},
+    services::{
+        activity::log_activity,
+        settlement::{compute_direct_debts, simplify_debts, SettlementDebtEntry, SplitDebtEntry},
+    },
 };
 
 #[derive(Debug, Deserialize, Clone)]
@@ -799,16 +802,68 @@ pub async fn get_group_balances(
         balances.push(MemberBalance {
             user_id: member.user_id.clone(),
             display_name: member.display_name.clone().unwrap_or_else(|| "User".into()),
+            total_paid_cents: paid + s_paid,
+            total_owed_cents: owed + s_rec,
             net_balance_cents: net,
         });
     }
 
+    // Build user name mapping
+    let mut user_names = std::collections::HashMap::new();
+    for member in &members {
+        user_names.insert(
+            member.user_id.clone(),
+            member.display_name.clone().unwrap_or_else(|| "User".into()),
+        );
+    }
+
+    // Fetch all splits for expenses in this group to calculate direct pairwise debts
+    let split_rows: Vec<(String, String, i64)> = sqlx::query_as(
+        "SELECT e.paid_by, es.user_id, es.amount_cents
+         FROM expense_splits es
+         JOIN expenses e ON es.expense_id = e.id
+         WHERE e.group_id = ?"
+    )
+    .bind(&group_id)
+    .fetch_all(&pool)
+    .await?;
+
+    let split_entries: Vec<SplitDebtEntry> = split_rows
+        .into_iter()
+        .map(|(paid_by, borrower_id, amount_cents)| SplitDebtEntry {
+            payer_id: paid_by,
+            borrower_id,
+            amount_cents,
+        })
+        .collect();
+
+    // Fetch all settlements in this group
+    let settlement_rows: Vec<(String, String, i64)> = sqlx::query_as(
+        "SELECT payer_id, payee_id, amount_cents
+         FROM settlements
+         WHERE group_id = ?"
+    )
+    .bind(&group_id)
+    .fetch_all(&pool)
+    .await?;
+
+    let settlement_entries: Vec<SettlementDebtEntry> = settlement_rows
+        .into_iter()
+        .map(|(payer_id, payee_id, amount_cents)| SettlementDebtEntry {
+            payer_id,
+            payee_id,
+            amount_cents,
+        })
+        .collect();
+
+    let direct = compute_direct_debts(&split_entries, &settlement_entries, &user_names, &group.default_currency);
     let simplified = simplify_debts(&balances, &group.default_currency);
 
     Ok(Json(GroupBalanceSummary {
         group_id,
         currency: group.default_currency,
         balances,
+        direct_debts: direct,
         simplified_debts: simplified,
     }))
 }

@@ -450,6 +450,47 @@
       color: var(--accent-primary);
     }
 
+    /* Settlement Mode Toggle (Direct Debts vs Min-Cash-Flow) */
+    .settlement-toggle-container {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-surface);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 12px;
+    }
+
+    .toggle-mode-btn {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .toggle-mode-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-card);
+    }
+
+    .toggle-mode-btn.active {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-primary);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .expense-list {
       display: flex;
       flex-direction: column;
@@ -871,12 +912,20 @@
           <div class="card-header" style="margin-bottom: 8px;">
             <div>
               <h3 class="card-title">Final Statements</h3>
-              <p class="form-help">Optimized direct settlements (Auto-adjusts instantly with local changes)</p>
+              <p class="form-help" id="statements-card-desc">Direct pairwise settlements between members</p>
             </div>
-            <span id="statements-sync-badge" class="role-tag">Min-Cash-Flow</span>
+            <span id="statements-sync-badge" class="role-tag">Direct</span>
+          </div>
+          <div class="settlement-toggle-container">
+            <button type="button" id="toggle-mode-direct" class="toggle-mode-btn active" onclick="setSettlementMode('direct')">
+              Direct Debts (Default)
+            </button>
+            <button type="button" id="toggle-mode-simplified" class="toggle-mode-btn" onclick="setSettlementMode('simplified')">
+              Simplified (Min-Cash-Flow)
+            </button>
           </div>
           <div id="simplified-debts-list">
-            <!-- Simplified debts rendered here -->
+            <!-- Simplified/Direct debts rendered here -->
           </div>
         </div>
       </div>
@@ -1409,6 +1458,7 @@
     let currentBalancesSummary = null;
     let authMode = 'login';
     let isSyncing = false;
+    let settlementMode = localStorage.getItem('splitter_settlement_mode') || 'direct';
 
     const API_BASE = '/api';
 
@@ -1485,6 +1535,109 @@
       }
 
       return simplified;
+    }
+
+    // Direct Pairwise Debt Computation Algorithm (Attributable pairwise debts)
+    function computeDirectDebts(expenses, settlements, userNames, currency) {
+      const directed = {};
+      const allUsers = new Set();
+
+      if (expenses && Array.isArray(expenses)) {
+        expenses.forEach(exp => {
+          const payerId = exp.paid_by;
+          if (exp.splits && Array.isArray(exp.splits)) {
+            exp.splits.forEach(s => {
+              const borrowerId = s.user_id;
+              const amount = s.amount_cents || 0;
+              if (borrowerId !== payerId && amount > 0) {
+                allUsers.add(borrowerId);
+                allUsers.add(payerId);
+                const key = borrowerId + '->' + payerId;
+                directed[key] = (directed[key] || 0) + amount;
+              }
+            });
+          }
+        });
+      }
+
+      if (settlements && Array.isArray(settlements)) {
+        settlements.forEach(s => {
+          const payerId = s.payer_id;
+          const payeeId = s.payee_id;
+          const amount = s.amount_cents || 0;
+          if (payerId !== payeeId && amount > 0) {
+            allUsers.add(payerId);
+            allUsers.add(payeeId);
+            const key = payerId + '->' + payeeId;
+            directed[key] = (directed[key] || 0) - amount;
+          }
+        });
+      }
+
+      const userList = Array.from(allUsers);
+      const direct = [];
+
+      for (let i = 0; i < userList.length; i++) {
+        for (let j = i + 1; j < userList.length; j++) {
+          const u1 = userList[i];
+          const u2 = userList[j];
+          const owed1to2 = directed[u1 + '->' + u2] || 0;
+          const owed2to1 = directed[u2 + '->' + u1] || 0;
+          const net = owed1to2 - owed2to1;
+
+          if (net > 0) {
+            direct.push({
+              from_user_id: u1,
+              from_user_name: (userNames && userNames[u1]) || 'User',
+              to_user_id: u2,
+              to_user_name: (userNames && userNames[u2]) || 'User',
+              amount_cents: net,
+              currency: currency
+            });
+          } else if (net < 0) {
+            direct.push({
+              from_user_id: u2,
+              from_user_name: (userNames && userNames[u2]) || 'User',
+              to_user_id: u1,
+              to_user_name: (userNames && userNames[u1]) || 'User',
+              amount_cents: -net,
+              currency: currency
+            });
+          }
+        }
+      }
+
+      direct.sort((a, b) => b.amount_cents - a.amount_cents);
+      return direct;
+    }
+
+    function setSettlementMode(mode) {
+      settlementMode = mode;
+      localStorage.setItem('splitter_settlement_mode', mode);
+      updateSettlementToggleUI();
+      if (currentBalancesSummary) {
+        renderDebtsListUI(currentBalancesSummary);
+      }
+    }
+
+    function updateSettlementToggleUI() {
+      const btnDirect = document.getElementById('toggle-mode-direct');
+      const btnSimp = document.getElementById('toggle-mode-simplified');
+      const badge = document.getElementById('statements-sync-badge');
+      const desc = document.getElementById('statements-card-desc');
+
+      if (btnDirect && btnSimp) {
+        btnDirect.classList.toggle('active', settlementMode === 'direct');
+        btnSimp.classList.toggle('active', settlementMode === 'simplified');
+      }
+      if (badge) {
+        badge.textContent = settlementMode === 'direct' ? 'Direct' : 'Min-Cash-Flow';
+      }
+      if (desc) {
+        desc.textContent = settlementMode === 'direct'
+          ? 'Direct pairwise settlements between members'
+          : 'Optimized minimum cash flow transactions to settle all debts';
+      }
     }
 
     // Offline Queue
@@ -1804,6 +1957,13 @@
       }
 
       if (view === 'groups') {
+        currentGroupId = null;
+        try {
+          localStorage.removeItem('splitter_active_group_id');
+          if (window.location.hash.startsWith('#group=')) {
+            history.replaceState(null, '', window.location.pathname);
+          }
+        } catch (e) {}
         document.getElementById('view-groups').classList.remove('hidden');
         loadGroups();
       } else if (view === 'group-detail') {
@@ -2135,6 +2295,12 @@
     // Group Details Logic (with Local Storage Cache & Auto-Adjust Statements)
     async function openGroup(groupId) {
       currentGroupId = groupId;
+      try {
+        localStorage.setItem('splitter_active_group_id', groupId);
+        if (window.location.hash !== '#group=' + groupId) {
+          window.location.hash = 'group=' + groupId;
+        }
+      } catch (e) {}
       navigateTo('group-detail');
       await loadGroupDetails(groupId, true);
     }
@@ -2198,71 +2364,120 @@
         renderSettlementsUI(settlements, detail.group.default_currency);
       } catch (err) {
         console.warn('Network group details fetch failed, relying on local storage cache:', err.message);
+        if (!cacheGet(`group_${groupId}`)) {
+          try {
+            localStorage.removeItem('splitter_active_group_id');
+            if (window.location.hash.startsWith('#group=')) {
+              history.replaceState(null, '', window.location.pathname);
+            }
+          } catch (e) {}
+          navigateTo('groups');
+        }
       }
     }
 
     function renderBalancesUI(summary) {
       currentBalancesSummary = summary;
 
-      // 1. Member balances
+      // Ensure direct_debts is available (recompute locally if needed)
+      if (!summary.direct_debts && currentGroupId) {
+        const cachedExpenses = cacheGet(`expenses_${currentGroupId}`) || [];
+        const cachedSettlements = cacheGet(`settlements_${currentGroupId}`) || [];
+        const userNames = {};
+        if (summary.balances) {
+          summary.balances.forEach(b => { userNames[b.user_id] = b.display_name; });
+        }
+        summary.direct_debts = computeDirectDebts(cachedExpenses, cachedSettlements, userNames, summary.currency);
+      }
+
+      // 1. Member balances with Paid, Share, Net
       const bContainer = document.getElementById('member-balances-list');
       bContainer.innerHTML = '';
-      summary.balances.forEach(b => {
-        const isMe = b.user_id === currentUser.id;
-        const net = b.net_balance_cents;
-        let colorClass = 'cents-neutral';
-        let label = 'settled up';
-        if (net > 0) {
-          colorClass = 'cents-positive';
-          label = `is owed ${formatMoney(net, summary.currency)}`;
-        } else if (net < 0) {
-          colorClass = 'cents-negative';
-          label = `owes ${formatMoney(Math.abs(net), summary.currency)}`;
-        }
+      if (summary.balances) {
+        summary.balances.forEach(b => {
+          const isMe = currentUser && b.user_id === currentUser.id;
+          const net = b.net_balance_cents;
+          let colorClass = 'cents-neutral';
+          let statusLabel = 'settled up';
+          let netPrefix = '';
+          if (net > 0) {
+            colorClass = 'cents-positive';
+            statusLabel = 'is owed';
+            netPrefix = '+';
+          } else if (net < 0) {
+            colorClass = 'cents-negative';
+            statusLabel = 'owes';
+            netPrefix = '-';
+          }
 
-        const row = document.createElement('div');
-        row.className = 'balance-row';
-        row.innerHTML = `
-          <div>
-            <strong>${escapeHtml(b.display_name)}</strong> ${isMe ? '<span class="role-tag">You</span>' : ''}
-          </div>
-          <div class="${colorClass}" style="font-family: var(--font-mono); font-weight: 600;">
-            ${label}
-          </div>
-        `;
-        bContainer.appendChild(row);
-      });
-
-      // 2. Simplified Debts (Final Statements)
-      const dContainer = document.getElementById('simplified-debts-list');
-      dContainer.innerHTML = '';
-      if (!summary.simplified_debts || summary.simplified_debts.length === 0) {
-        dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">🎉 Everyone is completely settled up!</div>`;
-      } else {
-        summary.simplified_debts.forEach(d => {
-          const isPayerMe = d.from_user_id === currentUser.id;
-          const isPayeeMe = d.to_user_id === currentUser.id;
-
-          const item = document.createElement('div');
-          item.className = 'debt-item';
-          item.innerHTML = `
-            <div class="debt-desc">
-              <span class="debt-highlight">${escapeHtml(d.from_user_name)}</span> ${isPayerMe ? '(You)' : ''}
-              owes
-              <span class="debt-highlight">${escapeHtml(d.to_user_name)}</span> ${isPayeeMe ? '(You)' : ''}
-              <strong style="margin-left: 6px; font-family: var(--font-mono);">${formatMoney(d.amount_cents, summary.currency)}</strong>
-            </div>
+          const row = document.createElement('div');
+          row.className = 'balance-row';
+          row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle); gap: 12px;';
+          row.innerHTML = `
             <div>
-              ${(isPayerMe || isPayeeMe) ? `
-                <button class="btn btn-secondary btn-sm" onclick="openSettleModal('${d.from_user_id}', '${escapeHtml(d.from_user_name)}', '${d.to_user_id}', '${escapeHtml(d.to_user_name)}', ${d.amount_cents})">
-                  Settle Up
-                </button>
-              ` : ''}
+              <div style="font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                <span>${escapeHtml(b.display_name)}</span> ${isMe ? '<span class="role-tag">You</span>' : ''}
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; font-family: var(--font-mono);">
+                <span>Paid: <strong style="color: var(--text-main);">${formatMoney(b.total_paid_cents || 0, summary.currency)}</strong></span>
+                <span style="margin: 0 5px; opacity: 0.5;">•</span>
+                <span>Share: <strong style="color: var(--text-main);">${formatMoney(b.total_owed_cents || 0, summary.currency)}</strong></span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="${colorClass}" style="font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem;">
+                ${netPrefix}${formatMoney(Math.abs(net), summary.currency)}
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                ${statusLabel}
+              </div>
             </div>
           `;
-          dContainer.appendChild(item);
+          bContainer.appendChild(row);
         });
       }
+
+      // 2. Debts List (Direct vs Simplified)
+      renderDebtsListUI(summary);
+    }
+
+    function renderDebtsListUI(summary) {
+      updateSettlementToggleUI();
+      const dContainer = document.getElementById('simplified-debts-list');
+      dContainer.innerHTML = '';
+
+      const debts = settlementMode === 'direct'
+        ? (summary.direct_debts || [])
+        : (summary.simplified_debts || []);
+
+      if (!debts || debts.length === 0) {
+        dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">🎉 Everyone is completely settled up!</div>`;
+        return;
+      }
+
+      debts.forEach(d => {
+        const isPayerMe = currentUser && d.from_user_id === currentUser.id;
+        const isPayeeMe = currentUser && d.to_user_id === currentUser.id;
+
+        const item = document.createElement('div');
+        item.className = 'debt-item';
+        item.innerHTML = `
+          <div class="debt-desc">
+            <span class="debt-highlight">${escapeHtml(d.from_user_name)}</span> ${isPayerMe ? '(You)' : ''}
+            owes
+            <span class="debt-highlight">${escapeHtml(d.to_user_name)}</span> ${isPayeeMe ? '(You)' : ''}
+            <strong style="margin-left: 6px; font-family: var(--font-mono);">${formatMoney(d.amount_cents, summary.currency)}</strong>
+          </div>
+          <div>
+            ${(isPayerMe || isPayeeMe) ? `
+              <button class="btn btn-secondary btn-sm" onclick="openSettleModal('${d.from_user_id}', '${escapeHtml(d.from_user_name)}', '${d.to_user_id}', '${escapeHtml(d.to_user_name)}', ${d.amount_cents})">
+                Settle Up
+              </button>
+            ` : ''}
+          </div>
+        `;
+        dContainer.appendChild(item);
+      });
     }
 
     function renderExpensesUI(expenses, currency) {
@@ -2379,6 +2594,7 @@
       // Adjust balances array
       currentBalancesSummary.balances.forEach(b => {
         if (b.user_id === expense.paid_by) {
+          b.total_paid_cents = (b.total_paid_cents || 0) + expense.amount_cents;
           b.net_balance_cents += expense.amount_cents;
         }
       });
@@ -2386,11 +2602,20 @@
       splitsList.forEach(s => {
         const b = currentBalancesSummary.balances.find(bal => bal.user_id === s.user_id);
         if (b) {
+          b.total_owed_cents = (b.total_owed_cents || 0) + s.amount_cents;
           b.net_balance_cents -= s.amount_cents;
         }
       });
 
-      // Auto-recalculate simplified debts (Final Statements)
+      // User name map
+      const userNames = {};
+      currentBalancesSummary.balances.forEach(b => { userNames[b.user_id] = b.display_name; });
+
+      const cachedExpenses = cacheGet(`expenses_${currentGroupId}`) || [];
+      const cachedSettlements = cacheGet(`settlements_${currentGroupId}`) || [];
+
+      // Auto-recalculate direct and simplified debts
+      currentBalancesSummary.direct_debts = computeDirectDebts(cachedExpenses, cachedSettlements, userNames, currency);
       currentBalancesSummary.simplified_debts = computeSimplifiedDebts(currentBalancesSummary.balances, currency);
       cacheSet(`balances_${currentGroupId}`, currentBalancesSummary);
 
@@ -2410,13 +2635,22 @@
 
       currentBalancesSummary.balances.forEach(b => {
         if (b.user_id === settlement.payer_id) {
+          b.total_paid_cents = (b.total_paid_cents || 0) + settlement.amount_cents;
           b.net_balance_cents += settlement.amount_cents;
         }
         if (b.user_id === settlement.payee_id) {
+          b.total_owed_cents = (b.total_owed_cents || 0) + settlement.amount_cents;
           b.net_balance_cents -= settlement.amount_cents;
         }
       });
 
+      const userNames = {};
+      currentBalancesSummary.balances.forEach(b => { userNames[b.user_id] = b.display_name; });
+
+      const cachedExpenses = cacheGet(`expenses_${currentGroupId}`) || [];
+      const cachedSettlements = cacheGet(`settlements_${currentGroupId}`) || [];
+
+      currentBalancesSummary.direct_debts = computeDirectDebts(cachedExpenses, cachedSettlements, userNames, currency);
       currentBalancesSummary.simplified_debts = computeSimplifiedDebts(currentBalancesSummary.balances, currency);
       cacheSet(`balances_${currentGroupId}`, currentBalancesSummary);
 
@@ -3642,6 +3876,18 @@
         .replace(/'/g, '&#039;');
     }
 
+    function getTargetGroupId() {
+      try {
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#group=')) {
+          return hash.replace('#group=', '').trim();
+        }
+        return localStorage.getItem('splitter_active_group_id');
+      } catch (e) {
+        return null;
+      }
+    }
+
     // Init with Local Storage Cache
     async function init() {
       try {
@@ -3652,7 +3898,12 @@
         if (cachedUser) {
           currentUser = cachedUser;
           renderUserHeader();
-          navigateTo('groups');
+          const targetGroupId = getTargetGroupId();
+          if (targetGroupId) {
+            openGroup(targetGroupId);
+          } else {
+            navigateTo('groups');
+          }
         }
 
         if (token) {
@@ -3660,7 +3911,14 @@
             currentUser = await apiFetch('/auth/me');
             cacheSet('user', currentUser);
             renderUserHeader();
-            if (!cachedUser) navigateTo('groups');
+            if (!cachedUser) {
+              const targetGroupId = getTargetGroupId();
+              if (targetGroupId) {
+                openGroup(targetGroupId);
+              } else {
+                navigateTo('groups');
+              }
+            }
           } catch (e) {
             if (!cachedUser) logout();
           }
@@ -3676,6 +3934,15 @@
         }
       }
     }
+
+    window.addEventListener('hashchange', () => {
+      const target = getTargetGroupId();
+      if (target && target !== currentGroupId && currentUser) {
+        openGroup(target);
+      } else if (!target && currentGroupId && currentUser) {
+        navigateTo('groups');
+      }
+    });
 
     init();
   </script>

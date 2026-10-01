@@ -199,11 +199,28 @@ async fn test_full_expense_splitting_flow() {
     assert_eq!(res.status(), 200);
     let balances_data: Value = res.json().await.unwrap();
 
+    let direct = balances_data["direct_debts"].as_array().unwrap();
+    assert_eq!(direct.len(), 1);
+    assert_eq!(direct[0]["from_user_id"], bob_id);
+    assert_eq!(direct[0]["to_user_id"], alice_id);
+    assert_eq!(direct[0]["amount_cents"], 5000);
+
     let simplified = balances_data["simplified_debts"].as_array().unwrap();
     assert_eq!(simplified.len(), 1);
     assert_eq!(simplified[0]["from_user_id"], bob_id);
     assert_eq!(simplified[0]["to_user_id"], alice_id);
     assert_eq!(simplified[0]["amount_cents"], 5000); // Bob owes Alice 50.00
+
+    let balances = balances_data["balances"].as_array().unwrap();
+    let alice_bal = balances.iter().find(|b| b["user_id"] == alice_id).unwrap();
+    assert_eq!(alice_bal["total_paid_cents"], 10000);
+    assert_eq!(alice_bal["total_owed_cents"], 5000);
+    assert_eq!(alice_bal["net_balance_cents"], 5000);
+
+    let bob_bal = balances.iter().find(|b| b["user_id"] == bob_id).unwrap();
+    assert_eq!(bob_bal["total_paid_cents"], 0);
+    assert_eq!(bob_bal["total_owed_cents"], 5000);
+    assert_eq!(bob_bal["net_balance_cents"], -5000);
 
     // 9. Bob settles up with Alice ($50.00 / 5000 cents)
     let res = ctx
@@ -230,6 +247,7 @@ async fn test_full_expense_splitting_flow() {
         .await
         .unwrap();
     let balances_after: Value = res.json().await.unwrap();
+    assert_eq!(balances_after["direct_debts"].as_array().unwrap().len(), 0);
     assert_eq!(balances_after["simplified_debts"].as_array().unwrap().len(), 0);
 
     // 11. Test Batch Sync Offline Queue Endpoint
