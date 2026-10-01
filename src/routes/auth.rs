@@ -135,3 +135,77 @@ pub async fn me(
 
     Ok(Json(user.into()))
 }
+
+#[derive(Debug, Deserialize)]
+pub struct UpdateProfileRequest {
+    pub display_name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ChangePasswordRequest {
+    pub current_password: String,
+    pub new_password: String,
+}
+
+pub async fn update_profile(
+    State(pool): State<SqlitePool>,
+    auth: AuthUser,
+    Json(payload): Json<UpdateProfileRequest>,
+) -> Result<Json<AuthResponse>, AppError> {
+    let name = payload.display_name.trim();
+    if name.is_empty() || name.len() > 60 {
+        return Err(AppError::BadRequest("Display name must be between 1 and 60 characters".to_string()));
+    }
+
+    sqlx::query("UPDATE users SET display_name = ? WHERE id = ?")
+        .bind(name)
+        .bind(&auth.0.sub)
+        .execute(&pool)
+        .await?;
+
+    let user: User = sqlx::query_as("SELECT * FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_one(&pool)
+        .await?;
+
+    let token = issue_token(&user.id, &user.email, &user.display_name, user.is_admin)?;
+
+    Ok(Json(AuthResponse {
+        token,
+        user: user.into(),
+    }))
+}
+
+pub async fn change_password(
+    State(pool): State<SqlitePool>,
+    auth: AuthUser,
+    Json(payload): Json<ChangePasswordRequest>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    if payload.new_password.len() < 6 {
+        return Err(AppError::BadRequest("New password must be at least 6 characters".to_string()));
+    }
+
+    let user: User = sqlx::query_as("SELECT * FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_optional(&pool)
+        .await?
+        .ok_or_else(|| AppError::NotFound("User not found".to_string()))?;
+
+    if !verify_password(&payload.current_password, &user.password_hash) {
+        return Err(AppError::Unauthorized("Current password is incorrect".to_string()));
+    }
+
+    let new_hash = hash_password(&payload.new_password)
+        .map_err(|e| AppError::Internal(anyhow::anyhow!("Password hashing failed: {}", e)))?;
+
+    sqlx::query("UPDATE users SET password_hash = ? WHERE id = ?")
+        .bind(&new_hash)
+        .bind(&user.id)
+        .execute(&pool)
+        .await?;
+
+    Ok(Json(serde_json::json!({
+        "message": "Password updated successfully"
+    })))
+}
+

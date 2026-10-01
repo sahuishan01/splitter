@@ -609,3 +609,124 @@ async fn test_attachment_upload_and_expense_attachment() {
     assert_eq!(exp["attachment_name"], "receipt.jpg");
 }
 
+#[tokio::test]
+async fn test_profile_update_and_password_resets() {
+    let ctx = setup_test_app().await;
+
+    // 1. Register Admin
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "sysadmin@example.com",
+            "password": "adminpassword123",
+            "display_name": "Admin"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let admin_token = res.json::<Value>().await.unwrap()["token"].as_str().unwrap().to_string();
+
+    // 2. Register Standard User
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "bob@example.com",
+            "password": "initialpassword",
+            "display_name": "Bob Original"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let bob_data: Value = res.json().await.unwrap();
+    let bob_token = bob_data["token"].as_str().unwrap().to_string();
+    let bob_id = bob_data["user"]["id"].as_str().unwrap().to_string();
+
+    // 3. Update Bob's Profile Display Name
+    let res = ctx
+        .client
+        .patch(format!("{}/api/auth/profile", ctx.base_url))
+        .bearer_auth(&bob_token)
+        .json(&json!({
+            "display_name": "Bob Upgraded"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let profile_resp: Value = res.json().await.unwrap();
+    assert_eq!(profile_resp["user"]["display_name"], "Bob Upgraded");
+
+    // 4. Bob Changes His Password
+    // 4a. Wrong current password -> 401 Unauthorized
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/change-password", ctx.base_url))
+        .bearer_auth(&bob_token)
+        .json(&json!({
+            "current_password": "wrongpassword",
+            "new_password": "brandnewpassword123"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 401);
+
+    // 4b. Correct current password -> 200 OK
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/change-password", ctx.base_url))
+        .bearer_auth(&bob_token)
+        .json(&json!({
+            "current_password": "initialpassword",
+            "new_password": "brandnewpassword123"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+
+    // 4c. Verify login with new password
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/login", ctx.base_url))
+        .json(&json!({
+            "email": "bob@example.com",
+            "password": "brandnewpassword123"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+
+    // 5. Admin Resets User Password
+    let res = ctx
+        .client
+        .post(format!("{}/api/admin/users/{}/reset-password", ctx.base_url, bob_id))
+        .bearer_auth(&admin_token)
+        .json(&json!({
+            "new_password": "adminresetpass456"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+
+    // 5a. Verify user logs in with admin-reset password
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/login", ctx.base_url))
+        .json(&json!({
+            "email": "bob@example.com",
+            "password": "adminresetpass456"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+}
+
+

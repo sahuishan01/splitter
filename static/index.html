@@ -100,6 +100,12 @@
       padding: 4px 12px;
       border-radius: 20px;
       border: 1px solid var(--border-subtle);
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+    .user-badge:hover {
+      border-color: var(--accent-primary);
+      background: var(--bg-surface);
     }
 
     .role-tag {
@@ -744,10 +750,11 @@
       <div class="brand-title">Splitter</div>
     </div>
     <div class="header-nav">
-      <div id="user-header-info" class="user-badge hidden">
+      <div id="user-header-info" class="user-badge hidden" onclick="openProfileModal()" style="cursor: pointer;" title="Account Profile & Settings">
         <span id="user-display-name">User</span>
         <span id="user-role-badge" class="role-tag">Member</span>
       </div>
+      <button id="profile-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="openProfileModal()">👤 Profile</button>
       <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')">Admin</button>
       <button id="logout-btn" class="btn btn-danger btn-sm hidden" onclick="logout()">Logout</button>
     </div>
@@ -808,6 +815,11 @@
           Log In
         </button>
         <div id="auth-error" class="form-help cents-negative" style="margin-top: 12px; text-align: center;"></div>
+        <div style="margin-top: 14px; text-align: center;">
+          <a href="javascript:void(0)" onclick="openModal('modal-reset-help')" style="color: var(--text-dim); font-size: 0.8rem; text-decoration: none; cursor: pointer; transition: color var(--transition-fast);">
+            Forgot Password / Reset Options?
+          </a>
+        </div>
       </form>
     </div>
 
@@ -1209,6 +1221,180 @@
         <pre id="att-viewer-ocr-text" style="background: var(--bg-main); padding: 8px; border-radius: 4px; border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); max-height: 120px; overflow-y: auto; white-space: pre-wrap; margin: 0;"></pre>
       </div>
       <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="closeModal('modal-attachment-viewer')">Close</button>
+    </div>
+  <!-- Modal: User Profile & Reset Options -->
+  <div id="modal-profile" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <button class="modal-close" onclick="closeModal('modal-profile')">&times;</button>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px;">
+        <div id="profile-avatar-circle" style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-primary), #1f6feb); color: #fff; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; text-transform: uppercase; box-shadow: 0 4px 12px rgba(56, 139, 253, 0.25);">
+          U
+        </div>
+        <div>
+          <h3 class="card-title" style="margin-bottom: 2px;">Account Profile</h3>
+          <p class="form-help" style="margin-bottom: 0;">Personal credentials, security, and device data maintenance</p>
+        </div>
+      </div>
+
+      <!-- Profile Information Section -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+          <span>👤</span> Personal Details
+        </h4>
+        <form onsubmit="handleUpdateProfile(event)">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" for="profile-name">Display Name</label>
+            <input type="text" id="profile-name" class="form-input" placeholder="Your display name" required minlength="1" maxlength="60" />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label class="form-label" for="profile-email" style="margin-bottom: 0;">Email Address</label>
+              <span class="role-tag" style="font-size: 0.7rem; padding: 2px 6px; background: rgba(255,255,255,0.06); color: var(--text-dim);">🔒 Immutable</span>
+            </div>
+            <input type="email" id="profile-email" class="form-input" readonly disabled style="opacity: 0.75; cursor: not-allowed; background: rgba(0,0,0,0.2);" />
+            <div class="form-help" style="margin-top: 4px; font-size: 0.76rem; color: var(--text-dim);">
+              Primary email address cannot be changed to protect audit trail and ledger balance integrity.
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 14px; font-size: 0.82rem; color: var(--text-dim);">
+            <div>Role: <strong id="profile-role" style="color: var(--text-main);">Member</strong></div>
+            <div>•</div>
+            <div>Joined: <span id="profile-joined" style="font-family: var(--font-mono);">--</span></div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" id="btn-save-profile" class="btn btn-primary btn-sm">Save Display Name</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Security / Change Password Section -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+          <span>🔑</span> Security & Password Reset
+        </h4>
+        <form onsubmit="handleChangePassword(event)">
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" for="profile-curr-pwd">Current Password</label>
+            <input type="password" id="profile-curr-pwd" class="form-input" placeholder="Enter current password" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" for="profile-new-pwd">New Password</label>
+            <input type="password" id="profile-new-pwd" class="form-input" placeholder="Minimum 6 characters" required minlength="6" />
+          </div>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" for="profile-conf-pwd">Confirm New Password</label>
+            <input type="password" id="profile-conf-pwd" class="form-input" placeholder="Repeat new password" required minlength="6" />
+          </div>
+          <div id="profile-pwd-msg" class="form-help" style="margin-bottom: 10px; display: none;"></div>
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" id="btn-change-pwd" class="btn btn-secondary btn-sm">Update Password</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- App Reset & Maintenance Options -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px;">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+          <span>⚙️</span> Device Reset & Maintenance
+        </h4>
+        <p class="form-help" style="margin-bottom: 12px; font-size: 0.78rem;">
+          Resolve local caching discrepancies or clear device data:
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(0,0,0,0.12); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 600;">Refresh Local Cache</div>
+              <div style="font-size: 0.75rem; color: var(--text-dim);">Purges cached groups and re-downloads fresh server data</div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="resetLocalCache()">🔄 Refresh</button>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(0,0,0,0.12); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 600;">Clear Offline Queue</div>
+              <div style="font-size: 0.75rem; color: var(--text-dim);"><span id="profile-queue-count" style="font-weight: 700;">0</span> pending offline mutations</div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="resetOfflineQueue()">🧹 Clear</button>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(248, 81, 73, 0.08); border: 1px solid rgba(248, 81, 73, 0.25); border-radius: var(--radius-sm); margin-top: 4px;">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 600; color: #f85149;">Full App Reset</div>
+              <div style="font-size: 0.75rem; color: var(--text-dim);">Wipes local credentials, token, cached ledgers, and logs out</div>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" onclick="fullAppReset()">⚠️ Reset & Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px; text-align: right;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-profile')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Admin Reset User Password -->
+  <div id="modal-admin-reset-pwd" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <button class="modal-close" onclick="closeModal('modal-admin-reset-pwd')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 6px;">Reset User Password</h3>
+      <p class="form-help" style="margin-bottom: 16px;">
+        Set a new password for <strong id="admin-reset-user-name" style="color: var(--text-main);">User</strong> (<span id="admin-reset-user-email">email</span>).
+      </p>
+      <form onsubmit="handleAdminResetPassword(event)">
+        <input type="hidden" id="admin-reset-user-id" />
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="admin-new-user-pwd">New Password</label>
+          <input type="password" id="admin-new-user-pwd" class="form-input" placeholder="Minimum 6 characters" required minlength="6" />
+        </div>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="admin-conf-user-pwd">Confirm New Password</label>
+          <input type="password" id="admin-conf-user-pwd" class="form-input" placeholder="Repeat new password" required minlength="6" />
+        </div>
+        <div id="admin-reset-pwd-msg" class="form-help" style="margin-bottom: 12px; display: none;"></div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-admin-reset-pwd')">Cancel</button>
+          <button type="submit" id="btn-admin-reset-pwd-submit" class="btn btn-primary">Reset Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Login Assistance & Reset Help -->
+  <div id="modal-reset-help" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 460px;">
+      <button class="modal-close" onclick="closeModal('modal-reset-help')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 8px;">Password & Account Reset</h3>
+      <p class="form-help" style="margin-bottom: 16px;">Assistance for recovering access or resolving app issues</p>
+
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; font-size: 0.85rem; line-height: 1.5;">
+        <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">🔐 Forgotten Password?</div>
+        <div style="color: var(--text-muted); margin-bottom: 8px;">
+          Splitter instances are self-hosted. To reset a forgotten password:
+        </div>
+        <ul style="margin: 0; padding-left: 20px; color: var(--text-dim); font-size: 0.82rem;">
+          <li>Contact your server administrator (e.g. system administrator).</li>
+          <li>Admins can instantly reset member passwords from the <strong>Admin Dashboard &rarr; Platform Users &rarr; Reset</strong>.</li>
+        </ul>
+      </div>
+
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.5;">
+        <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">🧹 Stuck or Corrupted App Cache?</div>
+        <div style="color: var(--text-muted); margin-bottom: 10px;">
+          If the application fails to open or encounters stored state conflicts:
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;" onclick="fullAppReset()">
+          Clear Device Storage & Reload
+        </button>
+      </div>
+
+      <div style="text-align: right;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-reset-help')">Close</button>
+      </div>
     </div>
   </div>
 
@@ -1673,14 +1859,17 @@
     }
 
     function renderUserHeader() {
+      const profileBtn = document.getElementById('profile-nav-btn');
       if (!currentUser) {
         document.getElementById('user-header-info').classList.add('hidden');
+        if (profileBtn) profileBtn.classList.add('hidden');
         document.getElementById('admin-nav-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.add('hidden');
         return;
       }
 
       document.getElementById('user-header-info').classList.remove('hidden');
+      if (profileBtn) profileBtn.classList.remove('hidden');
       document.getElementById('logout-btn').classList.remove('hidden');
       document.getElementById('user-display-name').textContent = currentUser.display_name;
 
@@ -1703,6 +1892,144 @@
       localStorage.removeItem('splitter_cache_user');
       renderUserHeader();
       navigateTo('auth');
+    }
+
+    // Profile & Reset Operations
+    function updateProfileOfflineCount() {
+      const queue = getOfflineQueue();
+      const el = document.getElementById('profile-queue-count');
+      if (el) el.textContent = queue.length;
+    }
+
+    function openProfileModal() {
+      if (!currentUser) return;
+      document.getElementById('profile-name').value = currentUser.display_name || '';
+      document.getElementById('profile-email').value = currentUser.email || '';
+      document.getElementById('profile-role').textContent = currentUser.is_admin ? 'Admin' : 'Member';
+      document.getElementById('profile-joined').textContent = currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString() : 'N/A';
+
+      const initials = (currentUser.display_name || currentUser.email || 'U').trim().substring(0, 2).toUpperCase();
+      const avatar = document.getElementById('profile-avatar-circle');
+      if (avatar) avatar.textContent = initials;
+
+      const msgEl = document.getElementById('profile-pwd-msg');
+      if (msgEl) {
+        msgEl.style.display = 'none';
+        msgEl.textContent = '';
+      }
+      document.getElementById('profile-curr-pwd').value = '';
+      document.getElementById('profile-new-pwd').value = '';
+      document.getElementById('profile-conf-pwd').value = '';
+
+      updateProfileOfflineCount();
+      openModal('modal-profile');
+    }
+
+    async function handleUpdateProfile(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-profile');
+      const newName = document.getElementById('profile-name').value.trim();
+      if (!newName) {
+        alert('Display name cannot be empty');
+        return;
+      }
+      setButtonLoading(btn, true, 'Saving...');
+      try {
+        const res = await apiFetch('/auth/profile', {
+          method: 'PATCH',
+          body: JSON.stringify({ display_name: newName })
+        });
+        token = res.token;
+        localStorage.setItem('splitter_token', token);
+        currentUser = res.user;
+        cacheSet('user', currentUser);
+        renderUserHeader();
+        alert('Profile display name updated successfully!');
+      } catch (err) {
+        alert('Failed to update profile: ' + err.message);
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    async function handleChangePassword(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-change-pwd');
+      const current_password = document.getElementById('profile-curr-pwd').value;
+      const new_password = document.getElementById('profile-new-pwd').value;
+      const confirm_password = document.getElementById('profile-conf-pwd').value;
+      const msgEl = document.getElementById('profile-pwd-msg');
+      msgEl.style.display = 'none';
+
+      if (new_password.length < 6) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = 'var(--danger)';
+        msgEl.textContent = 'New password must be at least 6 characters.';
+        return;
+      }
+      if (new_password !== confirm_password) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = 'var(--danger)';
+        msgEl.textContent = 'Passwords do not match.';
+        return;
+      }
+
+      setButtonLoading(btn, true, 'Updating...');
+      try {
+        const res = await apiFetch('/auth/change-password', {
+          method: 'POST',
+          body: JSON.stringify({ current_password, new_password })
+        });
+        token = res.token;
+        localStorage.setItem('splitter_token', token);
+        document.getElementById('profile-curr-pwd').value = '';
+        document.getElementById('profile-new-pwd').value = '';
+        document.getElementById('profile-conf-pwd').value = '';
+        msgEl.style.display = 'block';
+        msgEl.style.color = 'var(--success)';
+        msgEl.textContent = 'Password changed successfully!';
+      } catch (err) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = 'var(--danger)';
+        msgEl.textContent = 'Error: ' + err.message;
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    function resetLocalCache() {
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('splitter_cache_') || key.startsWith('splitter_members_'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      closeModal('modal-profile');
+      alert('Local data cache purged. Fetching latest data from server...');
+      if (currentGroupDetail) {
+        loadGroupDetail(currentGroupDetail.group.id, false);
+      } else {
+        loadGroups(false);
+      }
+    }
+
+    function resetOfflineQueue() {
+      if (confirm('Are you sure you want to clear pending offline operations? Any unsynced changes will be lost.')) {
+        localStorage.removeItem(OFFLINE_QUEUE_KEY);
+        renderSyncTracker();
+        updateProfileOfflineCount();
+        alert('Offline queue cleared.');
+      }
+    }
+
+    function fullAppReset() {
+      if (confirm('This will completely reset all local data, cache, and log out of Splitter. Continue?')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+      }
     }
 
     // Groups Logic (with Local Storage Cache & Skeletons)
@@ -3185,9 +3512,12 @@
               ${new Date(u.created_at).toLocaleDateString()}
             </td>
             <td>
-              <div style="display: flex; gap: 6px;">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                 <button class="btn btn-secondary btn-sm" onclick="toggleUserRole('${u.id}', ${!u.is_admin}, this)">
                   ${u.is_admin ? 'Demote' : 'Promote'}
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="openAdminResetPasswordModal('${u.id}', '${escapeHtml(u.display_name).replace(/'/g, "\\'")}', '${escapeHtml(u.email).replace(/'/g, "\\'")}')" title="Reset this user's password">
+                  🔑 Reset
                 </button>
                 ${!isSelf ? `
                   <button class="btn btn-danger btn-sm" onclick="toggleUserStatus('${u.id}', ${!u.is_active}, this)">
@@ -3231,6 +3561,58 @@
         alert(err.message);
       } finally {
         if (btn) setButtonLoading(btn, false);
+      }
+    }
+
+    function openAdminResetPasswordModal(userId, displayName, email) {
+      document.getElementById('admin-reset-user-id').value = userId;
+      document.getElementById('admin-reset-user-name').textContent = displayName;
+      document.getElementById('admin-reset-user-email').textContent = email;
+      document.getElementById('admin-new-user-pwd').value = '';
+      document.getElementById('admin-conf-user-pwd').value = '';
+      const msg = document.getElementById('admin-reset-pwd-msg');
+      if (msg) {
+        msg.style.display = 'none';
+        msg.textContent = '';
+      }
+      openModal('modal-admin-reset-pwd');
+    }
+
+    async function handleAdminResetPassword(e) {
+      e.preventDefault();
+      const userId = document.getElementById('admin-reset-user-id').value;
+      const newPassword = document.getElementById('admin-new-user-pwd').value;
+      const confPassword = document.getElementById('admin-conf-user-pwd').value;
+      const msg = document.getElementById('admin-reset-pwd-msg');
+      const btn = document.getElementById('btn-admin-reset-pwd-submit');
+
+      if (newPassword.length < 6) {
+        msg.style.display = 'block';
+        msg.style.color = 'var(--danger)';
+        msg.textContent = 'Password must be at least 6 characters.';
+        return;
+      }
+      if (newPassword !== confPassword) {
+        msg.style.display = 'block';
+        msg.style.color = 'var(--danger)';
+        msg.textContent = 'Passwords do not match.';
+        return;
+      }
+
+      setButtonLoading(btn, true, 'Resetting...');
+      try {
+        await apiFetch(`/admin/users/${userId}/reset-password`, {
+          method: 'POST',
+          body: JSON.stringify({ new_password: newPassword })
+        });
+        alert('User password has been successfully reset!');
+        closeModal('modal-admin-reset-pwd');
+      } catch (err) {
+        msg.style.display = 'block';
+        msg.style.color = 'var(--danger)';
+        msg.textContent = 'Error: ' + err.message;
+      } finally {
+        setButtonLoading(btn, false);
       }
     }
 

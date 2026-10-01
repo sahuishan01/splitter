@@ -27,10 +27,13 @@ pub fn create_app(pool: SqlitePool) -> Router {
         .route("/auth/register", post(routes::auth::register))
         .route("/auth/login", post(routes::auth::login))
         .route("/auth/me", get(routes::auth::me))
+        .route("/auth/profile", patch(routes::auth::update_profile))
+        .route("/auth/change-password", post(routes::auth::change_password))
         // Admin
         .route("/admin/users", get(routes::admin::list_users))
         .route("/admin/users/:id/role", patch(routes::admin::update_user_role))
         .route("/admin/users/:id/status", patch(routes::admin::update_user_status))
+        .route("/admin/users/:id/reset-password", post(routes::admin::admin_reset_user_password))
         .route("/admin/stats", get(routes::admin::get_admin_stats))
         // Groups
         .route("/groups", post(routes::groups::create_group).get(routes::groups::list_groups))

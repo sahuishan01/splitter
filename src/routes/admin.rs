@@ -122,3 +122,40 @@ pub async fn get_admin_stats(
         total_settlements,
     }))
 }
+
+#[derive(Debug, Deserialize)]
+pub struct AdminResetPasswordRequest {
+    pub new_password: String,
+}
+
+pub async fn admin_reset_user_password(
+    State(pool): State<SqlitePool>,
+    _admin: AdminUser,
+    Path(user_id): Path<String>,
+    Json(payload): Json<AdminResetPasswordRequest>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    if payload.new_password.len() < 6 {
+        return Err(AppError::BadRequest("Password must be at least 6 characters".to_string()));
+    }
+
+    let user: Option<User> = sqlx::query_as("SELECT * FROM users WHERE id = ?")
+        .bind(&user_id)
+        .fetch_optional(&pool)
+        .await?;
+
+    let user = user.ok_or_else(|| AppError::NotFound("User not found".to_string()))?;
+
+    let new_hash = crate::auth::hash_password(&payload.new_password)
+        .map_err(|e| AppError::Internal(anyhow::anyhow!("Failed to hash password: {}", e)))?;
+
+    sqlx::query("UPDATE users SET password_hash = ? WHERE id = ?")
+        .bind(&new_hash)
+        .bind(&user.id)
+        .execute(&pool)
+        .await?;
+
+    Ok(Json(serde_json::json!({
+        "message": format!("Password reset successfully for user '{}'", user.email)
+    })))
+}
+
