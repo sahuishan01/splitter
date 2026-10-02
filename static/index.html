@@ -1097,15 +1097,21 @@
       <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div>
           <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')" style="margin-bottom: 8px;">← Back to Groups</button>
-          <h1 id="group-title" style="font-size: 1.6rem; font-weight: 700;">Group Name</h1>
-          <p id="group-desc" style="color: var(--text-muted); font-size: 0.9rem;">Description</p>
-          <div id="user-group-spent-badge" class="user-spent-badge hidden" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 139, 253, 0.12); border: 1px solid rgba(56, 139, 253, 0.3); border-radius: 6px; padding: 4px 10px; font-size: 0.85rem;">
+          <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 2px;">
+            <h1 id="group-title" style="font-size: 1.5rem; font-weight: 700; margin: 0; letter-spacing: -0.01em;">Group Name</h1>
+            <div id="group-total-expense-badge" class="group-total-badge" style="display: inline-flex; align-items: center; gap: 7px; background: var(--bg-surface); border: 1px solid var(--border-muted); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 0.85rem;" title="Total group expenditure across all members">
+              <span style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em;">Group Total Expense:</span>
+              <span id="group-header-total-spent-val" style="font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem; color: var(--text-main);">₹0.00</span>
+            </div>
+          </div>
+          <p id="group-desc" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Description</p>
+          <div id="user-group-spent-badge" class="user-spent-badge hidden" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; background: var(--accent-subtle); border: 1px solid var(--accent-border); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 0.82rem;">
             <span><strong>Your Total Spent:</strong></span>
-            <span id="group-header-spent-val" style="font-family: var(--font-mono); font-weight: 700; color: #58a6ff;">₹0.00</span>
-            <span class="role-tag" style="font-size: 0.68rem; padding: 1px 5px; background: rgba(56, 139, 253, 0.2); color: #79c0ff;">Visible only to you</span>
+            <span id="group-header-spent-val" style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-primary);">₹0.00</span>
+            <span class="role-tag" style="font-size: 0.65rem; background: rgba(56, 139, 253, 0.2); color: #79c0ff;">Visible only to you</span>
           </div>
         </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start;">
           <button id="group-activity-btn" class="btn btn-secondary hidden" onclick="openActivityLogModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Activity Log</button>
           <button class="btn btn-secondary" onclick="openModal('modal-add-member')">+ Add Member</button>
           <button class="btn btn-primary" onclick="openAddExpenseModal()">+ Add Expense</button>
@@ -1125,9 +1131,13 @@
             <div id="user-total-spent-desc" class="user-spent-desc">Your personal total expenditure across all group expenses</div>
           </div>
           <div class="user-spent-stats">
+            <div class="user-spent-stat-pill" style="border-color: var(--border-muted);">
+              <span class="stat-pill-label">Group Total</span>
+              <span id="user-stat-group-total" class="stat-pill-value" style="color: var(--text-main);">₹0.00</span>
+            </div>
             <div class="user-spent-stat-pill">
               <span class="stat-pill-label">Total Spent</span>
-              <span id="user-stat-spent-amount" class="stat-pill-value" style="color: #58a6ff;">₹0.00</span>
+              <span id="user-stat-spent-amount" class="stat-pill-value" style="color: var(--accent-primary);">₹0.00</span>
             </div>
             <div class="user-spent-stat-pill">
               <span class="stat-pill-label">You Paid</span>
@@ -2573,41 +2583,122 @@
       await loadGroupDetails(groupId, true);
     }
 
-    async function loadGroupDetails(groupId, useCache = true) {
-      // 1. Immediately render cached group state if available
-      if (useCache) {
-        const cachedDetail = cacheGet(`group_${groupId}`);
-        const cachedBalances = cacheGet(`balances_${groupId}`);
-        const cachedExpenses = cacheGet(`expenses_${groupId}`);
-        const cachedSettlements = cacheGet(`settlements_${groupId}`);
+    
+    // Pure Mathematical Group Balance & Debt Computation Engine (Reactive)
+    function computeBalancesFromData(members, expenses, settlements, currency) {
+      const userNames = {};
+      (members || []).forEach(m => { userNames[m.user_id] = m.display_name; });
 
-        if (cachedDetail) {
-          currentGroupDetail = cachedDetail;
-          document.getElementById('group-title').textContent = cachedDetail.group.name;
-          document.getElementById('group-desc').textContent = cachedDetail.group.description || `${cachedDetail.members.length} members • Currency: ${cachedDetail.group.default_currency}`;
-          const isGrpAdmin = cachedDetail.user_role === 'admin' || (currentUser && currentUser.is_admin);
-          const actBtn = document.getElementById('group-activity-btn');
-          if (actBtn) actBtn.classList.toggle('hidden', !isGrpAdmin);
-          if (cachedDetail.user_spent_cents !== undefined) {
-            updatePersonalSpentUI(cachedDetail.user_spent_cents, null, null, cachedDetail.group.default_currency);
+      const balances = (members || []).map(m => {
+        let paid = 0;
+        let owed = 0;
+        (expenses || []).forEach(exp => {
+          if (exp.paid_by === m.user_id) {
+            paid += (exp.amount_cents || 0);
           }
-        } else {
-          renderGroupDetailsSkeleton();
-        }
-        if (cachedBalances) {
-          renderBalancesUI(cachedBalances);
-        }
-        if (cachedExpenses) {
-          renderExpensesUI(cachedExpenses, cachedDetail ? cachedDetail.group.default_currency : 'USD');
-        }
-        if (cachedSettlements) {
-          renderSettlementsUI(cachedSettlements, cachedDetail ? cachedDetail.group.default_currency : 'USD');
-        }
-      } else {
+          if (exp.splits && Array.isArray(exp.splits)) {
+            exp.splits.forEach(s => {
+              if (s.user_id === m.user_id) {
+                owed += (s.amount_cents || 0);
+              }
+            });
+          }
+        });
+
+        let s_paid = 0;
+        let s_rec = 0;
+        (settlements || []).forEach(s => {
+          if (s.payer_id === m.user_id) {
+            s_paid += (s.amount_cents || 0);
+          }
+          if (s.payee_id === m.user_id) {
+            s_rec += (s.amount_cents || 0);
+          }
+        });
+
+        const net = (paid - owed) + (s_paid - s_rec);
+        return {
+          user_id: m.user_id,
+          display_name: m.display_name,
+          total_paid_cents: paid + s_paid,
+          total_owed_cents: owed + s_rec,
+          net_balance_cents: net,
+        };
+      });
+
+      const direct = computeDirectDebts(expenses, settlements, userNames, currency);
+      const simplified = computeSimplifiedDebts(balances, currency);
+      const totalGroupExpense = (expenses || []).reduce((acc, e) => acc + (e.amount_cents || 0), 0);
+      const callerSpent = currentUser ? (balances.find(b => b.user_id === currentUser.id)?.total_owed_cents || 0) : 0;
+
+      return {
+        group_id: currentGroupId,
+        currency: currency,
+        balances: balances,
+        direct_debts: direct,
+        simplified_debts: simplified,
+        user_spent_cents: callerSpent,
+        total_expense_cents: totalGroupExpense,
+      };
+    }
+
+    // Instantly recomputes and renders group ledger state reactively without network wait
+    function recomputeAndRenderGroupState(groupId = currentGroupId) {
+      if (!groupId || !currentGroupDetail) return;
+      const currency = currentGroupDetail.group.default_currency || 'USD';
+      const cachedExpenses = cacheGet(`expenses_${groupId}`) || [];
+      const cachedSettlements = cacheGet(`settlements_${groupId}`) || [];
+
+      const summary = computeBalancesFromData(
+        currentGroupDetail.members || [],
+        cachedExpenses,
+        cachedSettlements,
+        currency
+      );
+
+      currentBalancesSummary = summary;
+      cacheSet(`balances_${groupId}`, summary);
+
+      // Reactive instant render
+      renderBalancesUI(summary);
+      renderExpensesUI(cachedExpenses, currency);
+      renderSettlementsUI(cachedSettlements, currency);
+
+      const stBadge = document.getElementById('statements-sync-badge');
+      if (stBadge) {
+        stBadge.textContent = 'Live';
+        stBadge.className = 'role-tag';
+      }
+    }
+
+    async function loadGroupDetails(groupId, showSkeleton = true) {
+      const cachedDetail = cacheGet(`group_${groupId}`);
+      const cachedExpenses = cacheGet(`expenses_${groupId}`);
+      const cachedBalances = cacheGet(`balances_${groupId}`);
+      const cachedSettlements = cacheGet(`settlements_${groupId}`);
+
+      // 1. Immediately render cached data without skeleton flash
+      if (cachedDetail) {
+        currentGroupDetail = cachedDetail;
+        document.getElementById('group-title').textContent = cachedDetail.group.name;
+        document.getElementById('group-desc').textContent = cachedDetail.group.description || `${cachedDetail.members.length} members • Currency: ${cachedDetail.group.default_currency}`;
+        const isGrpAdmin = cachedDetail.user_role === 'admin' || (currentUser && currentUser.is_admin);
+        const actBtn = document.getElementById('group-activity-btn');
+        if (actBtn) actBtn.classList.toggle('hidden', !isGrpAdmin);
+
+        if (cachedBalances) renderBalancesUI(cachedBalances);
+        if (cachedExpenses) renderExpensesUI(cachedExpenses, cachedDetail.group.default_currency);
+        if (cachedSettlements) renderSettlementsUI(cachedSettlements, cachedDetail.group.default_currency);
+
+        const totalGrp = cachedDetail.total_expense_cents !== undefined
+          ? cachedDetail.total_expense_cents
+          : (cachedExpenses ? cachedExpenses.reduce((s, e) => s + (e.amount_cents || 0), 0) : 0);
+        updatePersonalSpentUI(cachedDetail.user_spent_cents, null, null, cachedDetail.group.default_currency, totalGrp);
+      } else if (showSkeleton) {
         renderGroupDetailsSkeleton();
       }
 
-      // 2. Fetch fresh data from network in background
+      // 2. Fetch fresh data from network in background and update smoothly
       try {
         const detail = await apiFetch(`/groups/${groupId}`);
         currentGroupDetail = detail;
@@ -2618,9 +2709,6 @@
         const isGrpAdmin = detail.user_role === 'admin' || (currentUser && currentUser.is_admin);
         const actBtn = document.getElementById('group-activity-btn');
         if (actBtn) actBtn.classList.toggle('hidden', !isGrpAdmin);
-        if (detail.user_spent_cents !== undefined) {
-          updatePersonalSpentUI(detail.user_spent_cents, null, null, detail.group.default_currency);
-        }
 
         // Fetch balances, expenses, settlements
         const [balances, expenses, settlements] = await Promise.all([
@@ -2650,8 +2738,18 @@
       }
     }
 
-    function updatePersonalSpentUI(spentCents, paidCents, netCents, currency = 'USD') {
+    function updatePersonalSpentUI(spentCents, paidCents, netCents, currency = 'USD', totalGroupCents = null) {
       if (!currentUser) return;
+
+      // Group Total Expense (Header Badge & Stat Pill)
+      if (totalGroupCents !== null && totalGroupCents !== undefined) {
+        const grpVal = document.getElementById('group-header-total-spent-val');
+        if (grpVal) grpVal.textContent = formatMoney(totalGroupCents, currency);
+        const grpStat = document.getElementById('user-stat-group-total');
+        if (grpStat) grpStat.textContent = formatMoney(totalGroupCents, currency);
+        const grpBadge = document.getElementById('group-total-expense-badge');
+        if (grpBadge) grpBadge.classList.remove('hidden');
+      }
 
       const badge = document.getElementById('user-group-spent-badge');
       const badgeVal = document.getElementById('group-header-spent-val');
@@ -2703,7 +2801,14 @@
         summary.direct_debts = computeDirectDebts(cachedExpenses, cachedSettlements, userNames, summary.currency);
       }
 
-      // 0. Update Personal Total Spent Card (Visible Only for Self)
+      // Extract total group expense from summary or compute from cached expenses
+      let totalGroup = summary.total_expense_cents;
+      if (totalGroup === undefined || totalGroup === null) {
+        const cachedExp = cacheGet(`expenses_${currentGroupId}`) || [];
+        totalGroup = cachedExp.reduce((sum, e) => sum + (e.amount_cents || 0), 0);
+      }
+
+      // 0. Update Personal Total Spent Card & Group Total (Visible at top & in rail)
       const myBalance = summary.balances ? summary.balances.find(b => currentUser && b.user_id === currentUser.id) : null;
       if (myBalance) {
         let mySpent = myBalance.total_owed_cents;
@@ -2714,15 +2819,13 @@
           mySpent || 0,
           myBalance.total_paid_cents || 0,
           myBalance.net_balance_cents,
-          summary.currency
+          summary.currency,
+          totalGroup
         );
       } else if (summary.user_spent_cents !== undefined) {
-        updatePersonalSpentUI(summary.user_spent_cents, null, null, summary.currency);
+        updatePersonalSpentUI(summary.user_spent_cents, null, null, summary.currency, totalGroup);
       } else {
-        const spentCard = document.getElementById('user-group-spent-card');
-        if (spentCard) spentCard.classList.add('hidden');
-        const badge = document.getElementById('user-group-spent-badge');
-        if (badge) badge.classList.add('hidden');
+        updatePersonalSpentUI(0, 0, 0, summary.currency, totalGroup);
       }
 
       // 1. Member balances with Total Spent, Paid, Net
@@ -3831,10 +3934,31 @@
       };
       const summaryObj = formatExpenseSummary(summaryExp, groupName, currency);
 
-      // Optimistic cache update if creating new
-      if (!isEdit) {
+      // Instant Reactive Optimistic Cache Update (BOTH New and Edit)
+      const cachedExpenses = cacheGet(`expenses_${currentGroupId}`) || [];
+      let optimisticId = editingExpenseId;
+
+      if (isEdit) {
+        const idx = cachedExpenses.findIndex(e => e.id === editingExpenseId);
+        if (idx !== -1) {
+          cachedExpenses[idx] = {
+            ...cachedExpenses[idx],
+            description: desc,
+            amount_cents: amount_cents,
+            paid_by: paid_by,
+            paid_by_name: payerName,
+            split_type: currentSplitType,
+            category: category,
+            splits: splitsForOptimistic,
+            attachment_id: activeAttachment ? activeAttachment.id : cachedExpenses[idx].attachment_id,
+            attachment_url: activeAttachment ? activeAttachment.file_url : cachedExpenses[idx].attachment_url,
+            attachment_name: activeAttachment ? activeAttachment.file_name : cachedExpenses[idx].attachment_name
+          };
+        }
+      } else {
+        optimisticId = 'local_' + uuidv4();
         const optimisticExp = {
-          id: 'local_' + uuidv4(),
+          id: optimisticId,
           group_id: currentGroupId,
           paid_by: paid_by,
           paid_by_name: payerName,
@@ -3853,14 +3977,15 @@
           attachment_url: activeAttachment ? activeAttachment.file_url : null,
           attachment_name: activeAttachment ? activeAttachment.file_name : null,
         };
-        const cached = cacheGet(`expenses_${currentGroupId}`) || [];
-        cached.unshift(optimisticExp);
-        cacheSet(`expenses_${currentGroupId}`, cached);
-        renderExpensesUI(cached, currency);
-        autoAdjustStatementsForExpense(payload, splitsForOptimistic);
+        cachedExpenses.unshift(optimisticExp);
       }
 
-      // Display the transaction summary with sharing options
+      cacheSet(`expenses_${currentGroupId}`, cachedExpenses);
+
+      // Instant local mathematical recomputation of group total, balances & debts
+      recomputeAndRenderGroupState(currentGroupId);
+
+      // Display transaction summary with sharing options
       showTransactionSummary(isEdit ? 'update_expense' : 'create_expense', summaryObj);
       resetAttachmentUI();
 
@@ -3872,11 +3997,22 @@
           });
         } else {
           payload.idempotency_key = uuidv4();
-          await apiFetch(`/groups/${currentGroupId}/expenses`, {
+          const savedExp = await apiFetch(`/groups/${currentGroupId}/expenses`, {
             method: 'POST',
             body: JSON.stringify(payload)
           });
+          // Replace optimistic ID with server-assigned ID
+          if (savedExp && savedExp.id) {
+            const list = cacheGet(`expenses_${currentGroupId}`) || [];
+            const item = list.find(e => e.id === optimisticId);
+            if (item) {
+              item.id = savedExp.id;
+              item.is_pending = false;
+              cacheSet(`expenses_${currentGroupId}`, list);
+            }
+          }
         }
+        // Quietly refresh in background without skeletons or layout shifts
         loadGroupDetails(currentGroupId, false);
       } catch (err) {
         if (err.message === 'OFFLINE' && !isEdit) {
@@ -3952,13 +4088,28 @@
 
     async function deleteExpense(expId) {
       if (!confirm('Are you sure you want to delete this expense?')) return;
+
+      // 1. Instant optimistic removal
+      const cached = cacheGet(`expenses_${currentGroupId}`) || [];
+      const backup = [...cached];
+      const updated = cached.filter(e => e.id !== expId);
+      cacheSet(`expenses_${currentGroupId}`, updated);
+
+      // Instant reactive re-render
+      recomputeAndRenderGroupState(currentGroupId);
+
+      // 2. Transmit to server in background
       try {
         await apiFetch(`/groups/${currentGroupId}/expenses/${expId}`, {
           method: 'DELETE'
         });
+        // Quiet background sync without skeletons
         loadGroupDetails(currentGroupId, false);
       } catch (err) {
-        alert(err.message);
+        // Rollback on error
+        cacheSet(`expenses_${currentGroupId}`, backup);
+        recomputeAndRenderGroupState(currentGroupId);
+        alert('Failed to delete expense: ' + err.message);
       }
     }
 
@@ -4032,10 +4183,9 @@
       const cachedSettlements = cacheGet(`settlements_${currentGroupId}`) || [];
       cachedSettlements.unshift(optimisticSettle);
       cacheSet(`settlements_${currentGroupId}`, cachedSettlements);
-      renderSettlementsUI(cachedSettlements, currentGroupDetail.group.default_currency);
 
-      // Auto-adjust statements locally
-      autoAdjustStatementsForSettlement(payload);
+      // Instant reactive recomputation of balances & debts
+      recomputeAndRenderGroupState(currentGroupId);
 
       closeModal('modal-settle');
 
@@ -4060,6 +4210,7 @@
           body: JSON.stringify(payload)
         });
 
+        // Quiet background sync without skeletons
         loadGroupDetails(currentGroupId, false);
       } catch (err) {
         if (err.message === 'OFFLINE') {

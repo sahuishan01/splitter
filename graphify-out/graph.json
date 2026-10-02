@@ -624,7 +624,7 @@
       "file_type": "code",
       "norm_label": "activitylog",
       "source_file": "src/models.rs",
-      "source_location": "L216"
+      "source_location": "L218"
     },
     {
       "id": "src_models_activitylogdetail",
@@ -634,7 +634,7 @@
       "file_type": "code",
       "norm_label": "activitylogdetail",
       "source_file": "src/models.rs",
-      "source_location": "L228"
+      "source_location": "L230"
     },
     {
       "id": "src_models_attachment",
@@ -734,7 +734,7 @@
       "file_type": "code",
       "norm_label": "idempotencyrecord",
       "source_file": "src/models.rs",
-      "source_location": "L206"
+      "source_location": "L208"
     },
     {
       "id": "src_models_memberbalance",
@@ -1876,7 +1876,7 @@
       "file_type": "code",
       "norm_label": "add_member()",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252"
+      "source_location": "L271"
     },
     {
       "id": "src_routes_groups_addmemberrequest",
@@ -1896,7 +1896,7 @@
       "file_type": "code",
       "norm_label": "check_group_membership()",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L62"
+      "source_location": "L66"
     },
     {
       "id": "src_routes_groups_create_group",
@@ -1906,7 +1906,7 @@
       "file_type": "code",
       "norm_label": "create_group()",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81"
+      "source_location": "L85"
     },
     {
       "id": "src_routes_groups_creategrouprequest",
@@ -1926,7 +1926,7 @@
       "file_type": "code",
       "norm_label": "get_group()",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197"
+      "source_location": "L205"
     },
     {
       "id": "src_routes_groups_groupdetail",
@@ -1936,7 +1936,7 @@
       "file_type": "code",
       "norm_label": "groupdetail",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L45"
+      "source_location": "L47"
     },
     {
       "id": "src_routes_groups_groupmemberdetail",
@@ -1946,7 +1946,7 @@
       "file_type": "code",
       "norm_label": "groupmemberdetail",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L53"
+      "source_location": "L57"
     },
     {
       "id": "src_routes_groups_groupsummary",
@@ -1966,7 +1966,7 @@
       "file_type": "code",
       "norm_label": "list_groups()",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158"
+      "source_location": "L162"
     },
     {
       "id": "src_routes_groups_remove_member",
@@ -1976,7 +1976,7 @@
       "file_type": "code",
       "norm_label": "remove_member()",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339"
+      "source_location": "L358"
     },
     {
       "id": "apperror",
@@ -2033,7 +2033,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.15"
+      "version": "0.1.16"
     },
     {
       "id": "sqlitepool",
@@ -2568,7 +2568,7 @@
       "file_type": "code",
       "norm_label": "create_settlement()",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878"
+      "source_location": "L887"
     },
     {
       "id": "src_routes_expenses_createexpenserequest",
@@ -2628,7 +2628,7 @@
       "file_type": "code",
       "norm_label": "list_activities()",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058"
+      "source_location": "L1067"
     },
     {
       "id": "src_routes_expenses_list_expenses",
@@ -2648,7 +2648,7 @@
       "file_type": "code",
       "norm_label": "list_settlements()",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014"
+      "source_location": "L1023"
     },
     {
       "id": "src_routes_expenses_splitinput",
@@ -3643,7 +3643,7 @@
       "file_type": "code",
       "norm_label": "test_attachment_upload_and_expense_attachment()",
       "source_file": "tests/api_tests.rs",
-      "source_location": "L555"
+      "source_location": "L557"
     },
     {
       "id": "tests_api_tests_test_exact_percent_edit_and_activity_logs",
@@ -3653,7 +3653,7 @@
       "file_type": "code",
       "norm_label": "test_exact_percent_edit_and_activity_logs()",
       "source_file": "tests/api_tests.rs",
-      "source_location": "L336"
+      "source_location": "L338"
     },
     {
       "id": "tests_api_tests_test_full_expense_splitting_flow",
@@ -3673,7 +3673,7 @@
       "file_type": "code",
       "norm_label": "test_profile_update_and_password_resets()",
       "source_file": "tests/api_tests.rs",
-      "source_location": "L657"
+      "source_location": "L659"
     },
     {
       "id": "tests_api_tests_testcontext",
@@ -4080,7 +4080,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L906",
+      "source_location": "L915",
       "weight": 1.0
     },
     {
@@ -4104,7 +4104,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L868",
+      "source_location": "L876",
       "weight": 1.0
     },
     {
@@ -4116,7 +4116,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1097",
+      "source_location": "L1106",
       "weight": 1.0
     },
     {
@@ -4140,7 +4140,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1055",
+      "source_location": "L1064",
       "weight": 1.0
     },
     {
@@ -4176,7 +4176,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L258",
+      "source_location": "L277",
       "weight": 1.0
     },
     {
@@ -4188,7 +4188,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L329",
+      "source_location": "L348",
       "weight": 1.0
     },
     {
@@ -4200,7 +4200,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L155",
+      "source_location": "L159",
       "weight": 1.0
     },
     {
@@ -4212,7 +4212,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L202",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -4224,7 +4224,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L245",
+      "source_location": "L263",
       "weight": 1.0
     },
     {
@@ -4236,7 +4236,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L194",
+      "source_location": "L202",
       "weight": 1.0
     },
     {
@@ -4248,7 +4248,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L344",
+      "source_location": "L363",
       "weight": 1.0
     },
     {
@@ -4260,7 +4260,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L385",
+      "source_location": "L404",
       "weight": 1.0
     },
     {
@@ -4476,7 +4476,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/api_tests.rs",
-      "source_location": "L556",
+      "source_location": "L558",
       "weight": 1.0
     },
     {
@@ -4488,7 +4488,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/api_tests.rs",
-      "source_location": "L337",
+      "source_location": "L339",
       "weight": 1.0
     },
     {
@@ -4512,7 +4512,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/api_tests.rs",
-      "source_location": "L658",
+      "source_location": "L660",
       "weight": 1.0
     },
     {
@@ -4668,7 +4668,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/models.rs",
-      "source_location": "L223",
+      "source_location": "L225",
       "weight": 1.0
     },
     {
@@ -4680,7 +4680,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/models.rs",
-      "source_location": "L224",
+      "source_location": "L226",
       "weight": 1.0
     },
     {
@@ -4692,7 +4692,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/models.rs",
-      "source_location": "L236",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -4704,7 +4704,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/models.rs",
-      "source_location": "L237",
+      "source_location": "L239",
       "weight": 1.0
     },
     {
@@ -4884,7 +4884,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/models.rs",
-      "source_location": "L212",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
@@ -5136,7 +5136,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L46",
+      "source_location": "L48",
       "weight": 1.0
     },
     {
@@ -5148,7 +5148,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L47",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -5160,7 +5160,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L59",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -6420,7 +6420,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -6432,7 +6432,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -6444,7 +6444,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -6456,7 +6456,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -6468,7 +6468,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -6624,7 +6624,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -6636,7 +6636,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -6648,7 +6648,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -6660,7 +6660,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -6672,7 +6672,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -6744,7 +6744,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -6756,7 +6756,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -6768,7 +6768,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -6780,7 +6780,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -6792,7 +6792,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -6900,7 +6900,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -6912,7 +6912,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -6924,7 +6924,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -6936,7 +6936,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -6948,7 +6948,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -6972,7 +6972,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L62",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -6984,7 +6984,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L62",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -6996,7 +6996,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -7008,7 +7008,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -7020,7 +7020,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -7032,7 +7032,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -7056,7 +7056,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -7068,7 +7068,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -7080,7 +7080,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -7092,7 +7092,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -7104,7 +7104,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L47",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -7116,7 +7116,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -7128,7 +7128,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -7140,7 +7140,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -7152,7 +7152,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -7164,7 +7164,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -7176,7 +7176,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -7188,7 +7188,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -7200,7 +7200,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -8766,7 +8766,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -8778,7 +8778,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -8790,7 +8790,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -8874,7 +8874,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -8886,7 +8886,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -8898,7 +8898,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -8946,7 +8946,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -8958,7 +8958,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -8970,7 +8970,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -9018,7 +9018,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -9030,7 +9030,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -9042,7 +9042,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -9054,7 +9054,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L62",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -9066,7 +9066,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -9078,7 +9078,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -9090,7 +9090,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -9102,7 +9102,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -9114,7 +9114,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -9126,7 +9126,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -9138,7 +9138,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -9150,7 +9150,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -9162,7 +9162,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -9174,7 +9174,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -9702,7 +9702,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -9750,7 +9750,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -9774,7 +9774,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -9798,7 +9798,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -9810,7 +9810,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L62",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -9822,7 +9822,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -9834,7 +9834,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -9846,7 +9846,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -9858,7 +9858,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -10442,7 +10442,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/models.rs",
-      "source_location": "L206",
+      "source_location": "L208",
       "weight": 1.0
     },
     {
@@ -10453,7 +10453,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/models.rs",
-      "source_location": "L216",
+      "source_location": "L218",
       "weight": 1.0
     },
     {
@@ -10464,7 +10464,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/models.rs",
-      "source_location": "L228",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -10794,7 +10794,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1014",
+      "source_location": "L1023",
       "weight": 1.0
     },
     {
@@ -10805,7 +10805,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1058",
+      "source_location": "L1067",
       "weight": 1.0
     },
     {
@@ -10937,7 +10937,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L878",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -10948,7 +10948,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L158",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -10970,7 +10970,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L197",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -10992,7 +10992,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L252",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -11014,7 +11014,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L339",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -11025,7 +11025,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L45",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -11036,7 +11036,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L53",
+      "source_location": "L57",
       "weight": 1.0
     },
     {
@@ -11047,7 +11047,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L62",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -11058,7 +11058,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/routes/groups.rs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -11377,7 +11377,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/api_tests.rs",
-      "source_location": "L336",
+      "source_location": "L338",
       "weight": 1.0
     },
     {
@@ -11410,7 +11410,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/api_tests.rs",
-      "source_location": "L555",
+      "source_location": "L557",
       "weight": 1.0
     },
     {
@@ -11421,7 +11421,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/api_tests.rs",
-      "source_location": "L657",
+      "source_location": "L659",
       "weight": 1.0
     },
     {
@@ -12061,7 +12061,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L884",
+      "source_location": "L893",
       "weight": 1.0
     },
     {
@@ -12073,7 +12073,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L971",
+      "source_location": "L980",
       "weight": 1.0
     },
     {
@@ -12145,7 +12145,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1063",
+      "source_location": "L1072",
       "weight": 1.0
     },
     {
@@ -12169,7 +12169,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/expenses.rs",
-      "source_location": "L1019",
+      "source_location": "L1028",
       "weight": 1.0
     },
     {
@@ -12205,7 +12205,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L318",
+      "source_location": "L337",
       "weight": 1.0
     },
     {
@@ -12217,7 +12217,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L133",
+      "source_location": "L137",
       "weight": 1.0
     },
     {
@@ -12229,7 +12229,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/routes/groups.rs",
-      "source_location": "L374",
+      "source_location": "L393",
       "weight": 1.0
     },
     {
@@ -12330,5 +12330,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "65a2e4b75f24558e613f5dc2e1217f8ac92efe19"
+  "built_at_commit": "077de94ae6c7c276f4276b05c4b0d280d5d1fdda"
 }

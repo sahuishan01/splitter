@@ -865,6 +865,14 @@ pub async fn get_group_balances(
         .map(|b| b.total_owed_cents)
         .unwrap_or(0);
 
+    let total_group_expense: i64 = sqlx::query_scalar(
+        "SELECT COALESCE(SUM(amount_cents), 0) FROM expenses WHERE group_id = ?"
+    )
+    .bind(&group_id)
+    .fetch_one(&pool)
+    .await
+    .unwrap_or(0);
+
     Ok(Json(GroupBalanceSummary {
         group_id,
         currency: group.default_currency,
@@ -872,6 +880,7 @@ pub async fn get_group_balances(
         direct_debts: direct,
         simplified_debts: simplified,
         user_spent_cents: caller_spent_cents,
+        total_expense_cents: total_group_expense,
     }))
 }
 

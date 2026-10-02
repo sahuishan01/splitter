@@ -200,6 +200,8 @@ pub struct GroupBalanceSummary {
     pub simplified_debts: Vec<SimplifiedDebt>,
     #[serde(default)]
     pub user_spent_cents: i64,
+    #[serde(default)]
+    pub total_expense_cents: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, Clone)]

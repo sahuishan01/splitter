@@ -200,6 +200,7 @@ async fn test_full_expense_splitting_flow() {
     let groups_val: Value = res.json().await.unwrap();
     let grp = groups_val.as_array().unwrap().iter().find(|g| g["id"] == group_id).unwrap();
     assert_eq!(grp["user_spent_cents"], 5000);
+    assert_eq!(grp["total_expense_cents"], 10000);
 
     // 8. Check Balances & Simplified Debts
     let res = ctx
@@ -211,6 +212,7 @@ async fn test_full_expense_splitting_flow() {
         .unwrap();
     assert_eq!(res.status(), 200);
     let balances_data: Value = res.json().await.unwrap();
+    assert_eq!(balances_data["total_expense_cents"], 10000);
 
     let direct = balances_data["direct_debts"].as_array().unwrap();
     assert_eq!(direct.len(), 1);

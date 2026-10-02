@@ -39,6 +39,8 @@ pub struct GroupSummary {
     pub user_role: String,
     #[serde(default)]
     pub user_spent_cents: i64,
+    #[serde(default)]
+    pub total_expense_cents: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -47,6 +49,8 @@ pub struct GroupDetail {
     pub members: Vec<GroupMemberDetail>,
     #[serde(default)]
     pub user_spent_cents: i64,
+    #[serde(default)]
+    pub total_expense_cents: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -159,13 +163,16 @@ pub async fn list_groups(
     State(pool): State<SqlitePool>,
     auth: AuthUser,
 ) -> Result<Json<Vec<GroupSummary>>, AppError> {
-    let rows: Vec<(String, String, String, String, String, String, String, i64, i64)> = sqlx::query_as(
+    let rows: Vec<(String, String, String, String, String, String, String, i64, i64, i64)> = sqlx::query_as(
         "SELECT g.id, g.name, g.description, g.default_currency, g.created_by, g.created_at, gm.role,
                 (SELECT COUNT(*) FROM group_members WHERE group_id = g.id) as member_count,
                 (SELECT COALESCE(SUM(es.amount_cents), 0)
                  FROM expense_splits es
                  JOIN expenses e ON es.expense_id = e.id
-                 WHERE e.group_id = g.id AND es.user_id = ?) as user_spent_cents
+                 WHERE e.group_id = g.id AND es.user_id = ?) as user_spent_cents,
+                (SELECT COALESCE(SUM(e2.amount_cents), 0)
+                 FROM expenses e2
+                 WHERE e2.group_id = g.id) as total_expense_cents
          FROM groups g
          JOIN group_members gm ON g.id = gm.group_id
          WHERE gm.user_id = ?
@@ -178,7 +185,7 @@ pub async fn list_groups(
 
     let summaries = rows
         .into_iter()
-        .map(|(id, name, desc, curr, created_by, created_at, role, member_count, user_spent_cents)| GroupSummary {
+        .map(|(id, name, desc, curr, created_by, created_at, role, member_count, user_spent_cents, total_expense_cents)| GroupSummary {
             id,
             name,
             description: desc,
@@ -188,6 +195,7 @@ pub async fn list_groups(
             member_count,
             user_role: role,
             user_spent_cents,
+            total_expense_cents,
         })
         .collect();
 
@@ -242,10 +250,21 @@ pub async fn get_group(
     .await?
     .flatten();
 
+    let total_expense_cents: Option<i64> = sqlx::query_scalar(
+        "SELECT COALESCE(SUM(amount_cents), 0)
+         FROM expenses
+         WHERE group_id = ?"
+    )
+    .bind(&group_id)
+    .fetch_optional(&pool)
+    .await?
+    .flatten();
+
     Ok(Json(GroupDetail {
         group,
         members,
         user_spent_cents: user_spent_cents.unwrap_or(0),
+        total_expense_cents: total_expense_cents.unwrap_or(0),
     }))
 }
 
