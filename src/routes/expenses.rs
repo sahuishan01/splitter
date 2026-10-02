@@ -859,12 +859,19 @@ pub async fn get_group_balances(
     let direct = compute_direct_debts(&split_entries, &settlement_entries, &user_names, &group.default_currency);
     let simplified = simplify_debts(&balances, &group.default_currency);
 
+    let caller_spent_cents = balances
+        .iter()
+        .find(|b| b.user_id == auth.0.sub)
+        .map(|b| b.total_owed_cents)
+        .unwrap_or(0);
+
     Ok(Json(GroupBalanceSummary {
         group_id,
         currency: group.default_currency,
         balances,
         direct_debts: direct,
         simplified_debts: simplified,
+        user_spent_cents: caller_spent_cents,
     }))
 }
 

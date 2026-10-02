@@ -1,6 +1,44 @@
 {
   "communities": {
     "0": [
+      "from",
+      "hashmap",
+      "self",
+      "src_models",
+      "src_models_activitylog",
+      "src_models_activitylogdetail",
+      "src_models_attachment",
+      "src_models_attachmentresponse",
+      "src_models_expense",
+      "src_models_expensedetail",
+      "src_models_expensesplit",
+      "src_models_expensesplitdetail",
+      "src_models_group",
+      "src_models_groupbalancesummary",
+      "src_models_groupmemberrow",
+      "src_models_idempotencyrecord",
+      "src_models_memberbalance",
+      "src_models_rs_option",
+      "src_models_rs_string",
+      "src_models_rs_vec",
+      "src_models_settlement",
+      "src_models_settlementdetail",
+      "src_models_simplifieddebt",
+      "src_models_user",
+      "src_models_userresponse",
+      "src_models_userresponse_from",
+      "src_services_settlement",
+      "src_services_settlement_compute_direct_debts",
+      "src_services_settlement_rs_string",
+      "src_services_settlement_rs_vec",
+      "src_services_settlement_settlementdebtentry",
+      "src_services_settlement_simplify_debts",
+      "src_services_settlement_splitdebtentry",
+      "src_services_settlement_test_direct_debts_pairwise",
+      "src_services_settlement_test_three_person_transitive_simplification",
+      "src_services_settlement_test_two_person_debt"
+    ],
+    "1": [
       "android_app_src_main_java_com_splitter_app_mainactivity",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
       "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_onbackpressed",
@@ -36,43 +74,12 @@
       "webresourcerequest",
       "webview"
     ],
-    "1": [
-      "from",
-      "self",
-      "src_models",
-      "src_models_activitylog",
-      "src_models_activitylogdetail",
-      "src_models_attachment",
-      "src_models_attachmentresponse",
-      "src_models_expense",
-      "src_models_expensedetail",
-      "src_models_expensesplit",
-      "src_models_expensesplitdetail",
-      "src_models_group",
-      "src_models_groupbalancesummary",
-      "src_models_groupmemberrow",
-      "src_models_idempotencyrecord",
-      "src_models_memberbalance",
-      "src_models_rs_option",
-      "src_models_rs_string",
-      "src_models_rs_vec",
-      "src_models_settlement",
-      "src_models_settlementdetail",
-      "src_models_simplifieddebt",
-      "src_models_user",
-      "src_models_userresponse",
-      "src_models_userresponse_from",
-      "src_services_settlement",
-      "src_services_settlement_rs_vec",
-      "src_services_settlement_simplify_debts",
-      "src_services_settlement_test_three_person_transitive_simplification",
-      "src_services_settlement_test_two_person_debt"
-    ],
     "2": [
       "e",
       "src_routes_groups",
       "src_routes_groups_add_member",
       "src_routes_groups_addmemberrequest",
+      "src_routes_groups_check_group_membership",
       "src_routes_groups_create_group",
       "src_routes_groups_creategrouprequest",
       "src_routes_groups_get_group",
@@ -99,35 +106,6 @@
       "src_services_activity_rs_value"
     ],
     "3": [
-      "src_routes_expenses",
-      "src_routes_expenses_compute_splits",
-      "src_routes_expenses_create_expense",
-      "src_routes_expenses_create_settlement",
-      "src_routes_expenses_createexpenserequest",
-      "src_routes_expenses_createsettlementrequest",
-      "src_routes_expenses_delete_expense",
-      "src_routes_expenses_format_money_str",
-      "src_routes_expenses_get_group_balances",
-      "src_routes_expenses_list_activities",
-      "src_routes_expenses_list_expenses",
-      "src_routes_expenses_list_settlements",
-      "src_routes_expenses_rs_apperror",
-      "src_routes_expenses_rs_authuser",
-      "src_routes_expenses_rs_json",
-      "src_routes_expenses_rs_option",
-      "src_routes_expenses_rs_path",
-      "src_routes_expenses_rs_result",
-      "src_routes_expenses_rs_sqlitepool",
-      "src_routes_expenses_rs_state",
-      "src_routes_expenses_rs_string",
-      "src_routes_expenses_rs_vec",
-      "src_routes_expenses_splitinput",
-      "src_routes_expenses_update_expense",
-      "src_routes_expenses_updateexpenserequest",
-      "src_routes_groups_check_group_membership",
-      "value"
-    ],
-    "4": [
       "authuser",
       "src_auth_mod",
       "src_auth_password",
@@ -154,6 +132,34 @@
       "src_routes_auth_rs_value",
       "src_routes_auth_update_profile",
       "src_routes_auth_updateprofilerequest"
+    ],
+    "4": [
+      "src_routes_expenses",
+      "src_routes_expenses_compute_splits",
+      "src_routes_expenses_create_expense",
+      "src_routes_expenses_create_settlement",
+      "src_routes_expenses_createexpenserequest",
+      "src_routes_expenses_createsettlementrequest",
+      "src_routes_expenses_delete_expense",
+      "src_routes_expenses_format_money_str",
+      "src_routes_expenses_get_group_balances",
+      "src_routes_expenses_list_activities",
+      "src_routes_expenses_list_expenses",
+      "src_routes_expenses_list_settlements",
+      "src_routes_expenses_rs_apperror",
+      "src_routes_expenses_rs_authuser",
+      "src_routes_expenses_rs_json",
+      "src_routes_expenses_rs_option",
+      "src_routes_expenses_rs_path",
+      "src_routes_expenses_rs_result",
+      "src_routes_expenses_rs_sqlitepool",
+      "src_routes_expenses_rs_state",
+      "src_routes_expenses_rs_string",
+      "src_routes_expenses_rs_value",
+      "src_routes_expenses_rs_vec",
+      "src_routes_expenses_splitinput",
+      "src_routes_expenses_update_expense",
+      "src_routes_expenses_updateexpenserequest"
     ],
     "5": [
       "android_app_src_main_java_com_splitter_sync_offlinequeuerepository",
@@ -356,33 +362,51 @@
       "android_settings_gradle"
     ],
     "20": [
-      "pkg_splitter"
+      "apperror"
     ],
     "21": [
-      "src_models_rs_self"
+      "group"
     ],
     "22": [
-      "src_routes_admin_rs_path"
+      "json"
     ],
     "23": [
-      "src_routes_admin_rs_vec"
+      "option"
     ],
     "24": [
-      "src_routes_expenses_rs_value"
+      "pkg_splitter"
     ],
     "25": [
-      "src_routes_mod"
+      "sqlitepool"
     ],
     "26": [
+      "src_models_rs_self"
+    ],
+    "27": [
+      "src_routes_admin_rs_path"
+    ],
+    "28": [
+      "src_routes_admin_rs_vec"
+    ],
+    "29": [
+      "src_routes_mod"
+    ],
+    "30": [
       "src_services_mod"
+    ],
+    "31": [
+      "state"
+    ],
+    "32": [
+      "value"
     ]
   },
   "cohesion": {
-    "0": 0.12477718360071301,
-    "1": 0.14942528735632185,
-    "2": 0.18518518518518517,
-    "3": 0.3333333333333333,
-    "4": 0.19384615384615383,
+    "0": 0.12380952380952381,
+    "1": 0.12477718360071301,
+    "2": 0.1921182266009852,
+    "3": 0.19384615384615383,
+    "4": 0.3323076923076923,
     "5": 0.10507246376811594,
     "6": 0.16600790513833993,
     "7": 0.26666666666666666,
@@ -404,7 +428,13 @@
     "23": 1.0,
     "24": 1.0,
     "25": 1.0,
-    "26": 1.0
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0
   },
   "gods": [
     {
@@ -433,13 +463,13 @@
       "degree": 14
     },
     {
-      "id": "src_routes_groups_add_member",
-      "label": "add_member()",
+      "id": "src_services_activity_log_activity",
+      "label": "log_activity()",
       "degree": 13
     },
     {
-      "id": "src_services_activity_log_activity",
-      "label": "log_activity()",
+      "id": "src_routes_sync_get_changes",
+      "label": "get_changes()",
       "degree": 13
     },
     {
@@ -448,13 +478,13 @@
       "degree": 13
     },
     {
-      "id": "src_routes_expenses_list_settlements",
-      "label": "list_settlements()",
+      "id": "src_routes_expenses_get_group_balances",
+      "label": "get_group_balances()",
       "degree": 13
     },
     {
-      "id": "src_routes_sync_get_changes",
-      "label": "get_changes()",
+      "id": "src_routes_expenses_list_settlements",
+      "label": "list_settlements()",
       "degree": 13
     }
   ],
@@ -482,17 +512,6 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     },
     {
-      "source": "get_group_balances()",
-      "target": "simplify_debts()",
-      "source_files": [
-        "src/routes/expenses.rs",
-        "src/services/settlement.rs"
-      ],
-      "confidence": "INFERRED",
-      "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
       "source": "create_expense()",
       "target": "log_activity()",
       "source_files": [
@@ -505,6 +524,17 @@
     },
     {
       "source": "create_settlement()",
+      "target": "log_activity()",
+      "source_files": [
+        "src/routes/expenses.rs",
+        "src/services/activity.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "delete_expense()",
       "target": "log_activity()",
       "source_files": [
         "src/routes/expenses.rs",

@@ -223,6 +223,19 @@ async fn test_full_expense_splitting_flow() {
     assert_eq!(simplified[0]["from_user_id"], bob_id);
     assert_eq!(simplified[0]["to_user_id"], alice_id);
     assert_eq!(simplified[0]["amount_cents"], 5000); // Bob owes Alice 50.00
+    assert_eq!(balances_data["user_spent_cents"], 5000);
+
+    // Verify GET /api/groups/:id returns caller user_spent_cents
+    let res = ctx
+        .client
+        .get(format!("{}/api/groups/{}", ctx.base_url, group_id))
+        .bearer_auth(&bob_token)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let group_detail: Value = res.json().await.unwrap();
+    assert_eq!(group_detail["user_spent_cents"], 5000);
 
     let balances = balances_data["balances"].as_array().unwrap();
     let alice_bal = balances.iter().find(|b| b["user_id"] == alice_id).unwrap();

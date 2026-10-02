@@ -41,13 +41,15 @@ pub struct GroupSummary {
     pub user_spent_cents: i64,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GroupDetail {
     pub group: Group,
     pub members: Vec<GroupMemberDetail>,
+    #[serde(default)]
+    pub user_spent_cents: i64,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GroupMemberDetail {
     pub id: String,
     pub user_id: String,
@@ -228,7 +230,23 @@ pub async fn get_group(
         })
         .collect();
 
-    Ok(Json(GroupDetail { group, members }))
+    let user_spent_cents: Option<i64> = sqlx::query_scalar(
+        "SELECT COALESCE(SUM(es.amount_cents), 0)
+         FROM expense_splits es
+         JOIN expenses e ON es.expense_id = e.id
+         WHERE e.group_id = ? AND es.user_id = ?"
+    )
+    .bind(&group_id)
+    .bind(&auth.0.sub)
+    .fetch_optional(&pool)
+    .await?
+    .flatten();
+
+    Ok(Json(GroupDetail {
+        group,
+        members,
+        user_spent_cents: user_spent_cents.unwrap_or(0),
+    }))
 }
 
 pub async fn add_member(

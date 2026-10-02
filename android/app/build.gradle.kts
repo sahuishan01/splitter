@@ -25,8 +25,8 @@ android {
         applicationId = "com.splitter.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 14
-        versionName = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.1.13"
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 15
+        versionName = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.1.14"
 
         buildConfigField("String", "API_BASE_URL", "\"https://splitter.algosculptor.com\"")
     }
