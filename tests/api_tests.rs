@@ -188,6 +188,19 @@ async fn test_full_expense_splitting_flow() {
     let exp_list: Value = res.json().await.unwrap();
     assert_eq!(exp_list.as_array().unwrap().len(), 1);
 
+    // Verify GET /api/groups returns user_spent_cents per group (private to calling user)
+    let res = ctx
+        .client
+        .get(format!("{}/api/groups", ctx.base_url))
+        .bearer_auth(&alice_token)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let groups_val: Value = res.json().await.unwrap();
+    let grp = groups_val.as_array().unwrap().iter().find(|g| g["id"] == group_id).unwrap();
+    assert_eq!(grp["user_spent_cents"], 5000);
+
     // 8. Check Balances & Simplified Debts
     let res = ctx
         .client

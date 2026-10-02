@@ -27,7 +27,7 @@ pub struct AddMemberRequest {
     pub role: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct GroupSummary {
     pub id: String,
     pub name: String,
@@ -37,6 +37,8 @@ pub struct GroupSummary {
     pub created_at: String,
     pub member_count: i64,
     pub user_role: String,
+    #[serde(default)]
+    pub user_spent_cents: i64,
 }
 
 #[derive(Debug, Serialize)]
@@ -155,21 +157,26 @@ pub async fn list_groups(
     State(pool): State<SqlitePool>,
     auth: AuthUser,
 ) -> Result<Json<Vec<GroupSummary>>, AppError> {
-    let rows: Vec<(String, String, String, String, String, String, String, i64)> = sqlx::query_as(
+    let rows: Vec<(String, String, String, String, String, String, String, i64, i64)> = sqlx::query_as(
         "SELECT g.id, g.name, g.description, g.default_currency, g.created_by, g.created_at, gm.role,
-                (SELECT COUNT(*) FROM group_members WHERE group_id = g.id) as member_count
+                (SELECT COUNT(*) FROM group_members WHERE group_id = g.id) as member_count,
+                (SELECT COALESCE(SUM(es.amount_cents), 0)
+                 FROM expense_splits es
+                 JOIN expenses e ON es.expense_id = e.id
+                 WHERE e.group_id = g.id AND es.user_id = ?) as user_spent_cents
          FROM groups g
          JOIN group_members gm ON g.id = gm.group_id
          WHERE gm.user_id = ?
          ORDER BY g.created_at DESC"
     )
     .bind(&auth.0.sub)
+    .bind(&auth.0.sub)
     .fetch_all(&pool)
     .await?;
 
     let summaries = rows
         .into_iter()
-        .map(|(id, name, desc, curr, created_by, created_at, role, member_count)| GroupSummary {
+        .map(|(id, name, desc, curr, created_by, created_at, role, member_count, user_spent_cents)| GroupSummary {
             id,
             name,
             description: desc,
@@ -178,6 +185,7 @@ pub async fn list_groups(
             created_at,
             member_count,
             user_role: role,
+            user_spent_cents,
         })
         .collect();
 

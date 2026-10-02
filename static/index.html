@@ -95,17 +95,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       background: var(--bg-card);
-      padding: 4px 12px;
+      padding: 5px 12px;
       border-radius: 20px;
       border: 1px solid var(--border-subtle);
       transition: all var(--transition-fast);
       user-select: none;
+      cursor: pointer;
     }
     .user-badge:hover {
       border-color: var(--accent-primary);
       background: var(--bg-surface);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .role-tag {
@@ -491,6 +494,83 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
     }
 
+    /* User Personal Spent Card (Visible Only to Self) */
+    .user-personal-spent-card {
+      background: linear-gradient(135deg, rgba(56, 139, 253, 0.08) 0%, rgba(31, 111, 235, 0.04) 100%);
+      border: 1px solid rgba(56, 139, 253, 0.25);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .user-spent-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .user-spent-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .user-spent-icon {
+      font-size: 1.1rem;
+    }
+    .user-spent-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .user-spent-private-badge {
+      background: rgba(56, 139, 253, 0.15);
+      color: #58a6ff;
+      font-size: 0.68rem;
+    }
+    .user-spent-amount {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+    .user-spent-desc {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .user-spent-stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .user-spent-stat-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 110px;
+    }
+    .stat-pill-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .stat-pill-value {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
     .expense-list {
       display: flex;
       flex-direction: column;
@@ -791,11 +871,11 @@
       <div class="brand-title">Splitter</div>
     </div>
     <div class="header-nav">
-      <div id="user-header-info" class="user-badge hidden" onclick="openProfileModal()" style="cursor: pointer;" title="Account Profile & Settings">
+      <div id="user-header-info" class="user-badge hidden" onclick="openProfileModal()" style="cursor: pointer;" title="Your Profile & Settings">
+        <span style="font-size: 0.95rem; opacity: 0.85;">👤</span>
         <span id="user-display-name">User</span>
         <span id="user-role-badge" class="role-tag">Member</span>
       </div>
-      <button id="profile-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="openProfileModal()">👤 Profile</button>
       <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')">Admin</button>
       <button id="logout-btn" class="btn btn-danger btn-sm hidden" onclick="logout()">Logout</button>
     </div>
@@ -891,6 +971,31 @@
           <button id="group-activity-btn" class="btn btn-secondary hidden" onclick="openActivityLogModal()">📜 Activity Log</button>
           <button class="btn btn-secondary" onclick="openModal('modal-add-member')">+ Add Member</button>
           <button class="btn btn-primary" onclick="openAddExpenseModal()">+ Add Expense</button>
+        </div>
+      </div>
+
+      <!-- User Personal Group Spending (Visible Only for Self) -->
+      <div id="user-group-spent-card" class="card user-personal-spent-card hidden">
+        <div class="user-spent-wrapper">
+          <div class="user-spent-main">
+            <div class="user-spent-header">
+              <span class="user-spent-icon">💳</span>
+              <span class="user-spent-title">Your Total Spent</span>
+              <span class="role-tag user-spent-private-badge">Visible only to you</span>
+            </div>
+            <div id="user-total-spent-amount" class="user-spent-amount">₹0.00</div>
+            <div id="user-total-spent-desc" class="user-spent-desc">Your total consumed share across all group expenses</div>
+          </div>
+          <div class="user-spent-stats">
+            <div class="user-spent-stat-pill">
+              <span class="stat-pill-label">You Paid</span>
+              <span id="user-stat-paid-amount" class="stat-pill-value">₹0.00</span>
+            </div>
+            <div class="user-spent-stat-pill">
+              <span class="stat-pill-label">Net Balance</span>
+              <span id="user-stat-net-amount" class="stat-pill-value cents-neutral">₹0.00</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2021,17 +2126,14 @@
     }
 
     function renderUserHeader() {
-      const profileBtn = document.getElementById('profile-nav-btn');
       if (!currentUser) {
         document.getElementById('user-header-info').classList.add('hidden');
-        if (profileBtn) profileBtn.classList.add('hidden');
         document.getElementById('admin-nav-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.add('hidden');
         return;
       }
 
       document.getElementById('user-header-info').classList.remove('hidden');
-      if (profileBtn) profileBtn.classList.remove('hidden');
       document.getElementById('logout-btn').classList.remove('hidden');
       document.getElementById('user-display-name').textContent = currentUser.display_name;
 
@@ -2240,11 +2342,17 @@
         const card = document.createElement('div');
         card.className = 'group-card';
         card.onclick = () => openGroup(g.id);
+        const hasSpent = g.user_spent_cents !== undefined && g.user_spent_cents !== null;
         card.innerHTML = `
           <div class="group-name">${escapeHtml(g.name)}</div>
           <div class="group-desc">${escapeHtml(g.description || 'No description')}</div>
           <div class="group-meta">
             <span>👥 ${g.member_count} member${g.member_count > 1 ? 's' : ''}</span>
+            ${hasSpent ? `
+              <span class="role-tag" style="background: rgba(56, 139, 253, 0.12); color: #58a6ff; font-weight: 600;" title="Your personal total spent in this group">
+                Spent: ${formatMoney(g.user_spent_cents, g.default_currency)}
+              </span>
+            ` : ''}
             <span class="role-tag">${g.user_role}</span>
             <span>${g.default_currency}</span>
           </div>
@@ -2388,6 +2496,38 @@
           summary.balances.forEach(b => { userNames[b.user_id] = b.display_name; });
         }
         summary.direct_debts = computeDirectDebts(cachedExpenses, cachedSettlements, userNames, summary.currency);
+      }
+
+      // 0. Update Personal Total Spent Card (Visible Only for Self)
+      const myBalance = summary.balances ? summary.balances.find(b => currentUser && b.user_id === currentUser.id) : null;
+      const spentCard = document.getElementById('user-group-spent-card');
+      if (myBalance) {
+        if (spentCard) spentCard.classList.remove('hidden');
+        const spentAmtEl = document.getElementById('user-total-spent-amount');
+        const paidAmtEl = document.getElementById('user-stat-paid-amount');
+        const netAmtEl = document.getElementById('user-stat-net-amount');
+
+        if (spentAmtEl) {
+          spentAmtEl.textContent = formatMoney(myBalance.total_owed_cents || 0, summary.currency);
+        }
+        if (paidAmtEl) {
+          paidAmtEl.textContent = formatMoney(myBalance.total_paid_cents || 0, summary.currency);
+        }
+        if (netAmtEl) {
+          const net = myBalance.net_balance_cents;
+          if (net > 0) {
+            netAmtEl.textContent = `+${formatMoney(net, summary.currency)} (is owed)`;
+            netAmtEl.className = 'stat-pill-value cents-positive';
+          } else if (net < 0) {
+            netAmtEl.textContent = `-${formatMoney(Math.abs(net), summary.currency)} (owes)`;
+            netAmtEl.className = 'stat-pill-value cents-negative';
+          } else {
+            netAmtEl.textContent = `Settled Up`;
+            netAmtEl.className = 'stat-pill-value cents-neutral';
+          }
+        }
+      } else {
+        if (spentCard) spentCard.classList.add('hidden');
       }
 
       // 1. Member balances with Paid, Share, Net
