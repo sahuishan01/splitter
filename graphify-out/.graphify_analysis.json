@@ -468,18 +468,18 @@
       "degree": 13
     },
     {
-      "id": "src_routes_sync_get_changes",
-      "label": "get_changes()",
-      "degree": 13
-    },
-    {
-      "id": "src_routes_expenses_list_expenses",
-      "label": "list_expenses()",
+      "id": "src_routes_groups_add_member",
+      "label": "add_member()",
       "degree": 13
     },
     {
       "id": "src_routes_expenses_get_group_balances",
       "label": "get_group_balances()",
+      "degree": 13
+    },
+    {
+      "id": "src_routes_expenses_list_expenses",
+      "label": "list_expenses()",
       "degree": 13
     },
     {
@@ -512,29 +512,29 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     },
     {
+      "source": "get_group_balances()",
+      "target": "compute_direct_debts()",
+      "source_files": [
+        "src/routes/expenses.rs",
+        "src/services/settlement.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "get_group_balances()",
+      "target": "simplify_debts()",
+      "source_files": [
+        "src/routes/expenses.rs",
+        "src/services/settlement.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
       "source": "create_expense()",
-      "target": "log_activity()",
-      "source_files": [
-        "src/routes/expenses.rs",
-        "src/services/activity.rs"
-      ],
-      "confidence": "INFERRED",
-      "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
-      "source": "create_settlement()",
-      "target": "log_activity()",
-      "source_files": [
-        "src/routes/expenses.rs",
-        "src/services/activity.rs"
-      ],
-      "confidence": "INFERRED",
-      "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
-      "source": "delete_expense()",
       "target": "log_activity()",
       "source_files": [
         "src/routes/expenses.rs",

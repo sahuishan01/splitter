@@ -9,25 +9,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-base: #0d1117;
-      --bg-surface: #161b22;
-      --bg-card: #21262d;
-      --bg-overlay: rgba(13, 17, 23, 0.85);
-      --border-subtle: #30363d;
-      --border-muted: #484f58;
+      /* Deep Obsidian Financial Ledger Theme */
+      --bg-canvas: #0b0f14;
+      --bg-surface: #121820;
+      --bg-elevated: #17202c;
+      --bg-input: #0d1218;
+      --bg-hover: #1c2635;
+      --bg-active: #222f42;
+      --bg-overlay: rgba(11, 15, 20, 0.88);
+
+      /* Hairline Ledger Borders */
+      --border-subtle: #1f2937;
+      --border-muted: #2d3748;
+      --border-focus: #388bfd;
+
+      /* Typography Scale */
       --text-main: #f0f6fc;
       --text-muted: #8b949e;
-      --text-dim: #6e7681;
-      --accent-primary: #58a6ff;
-      --accent-hover: #79c0ff;
-      --success: #3fb950;
-      --danger: #f85149;
+      --text-dim: #656d76;
+
+      /* Solid Semantic Accents (No AI Neon / Gradients) */
+      --accent-primary: #388bfd;
+      --accent-hover: #4a96ff;
+      --accent-active: #2f74d0;
+      --accent-subtle: rgba(56, 139, 253, 0.12);
+      --accent-border: rgba(56, 139, 253, 0.35);
+
+      /* Credit / Debit Semantics */
+      --cents-positive: #2ea043;
+      --cents-positive-subtle: rgba(46, 160, 67, 0.12);
+      --cents-negative: #f85149;
+      --cents-negative-subtle: rgba(248, 81, 73, 0.12);
       --warning: #d29922;
-      --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --font-mono: 'Space Mono', monospace;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --warning-subtle: rgba(210, 153, 34, 0.12);
+
+      /* Backward Compatibility Variables */
+      --bg-base: var(--bg-canvas);
+      --bg-card: var(--bg-surface);
+      --success: var(--cents-positive);
+      --danger: var(--cents-negative);
+
+      /* Geometry */
+      --radius-xs: 3px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --transition-fast: 0.15s ease;
+
+      /* Typefaces */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'Space Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
     }
 
     * {
@@ -37,19 +68,24 @@
     }
 
     body {
-      background: var(--bg-base);
+      background: var(--bg-canvas);
       color: var(--text-main);
       font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Header */
+    /* Top Sticky Header */
     header {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 10px 16px;
+      height: 52px;
+      padding: 0 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -63,129 +99,171 @@
       align-items: center;
       gap: 10px;
       cursor: pointer;
+      user-select: none;
     }
 
     .brand-logo {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, #58a6ff, #bc8cff);
+      width: 26px;
+      height: 26px;
+      background: var(--accent-primary);
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      color: #000;
+      color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 14px;
+      font-size: 15px;
+      line-height: 1;
     }
 
     .brand-title {
       font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: -0.5px;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      padding: 1px 5px;
+      border-radius: var(--radius-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     .header-nav {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .user-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.88rem;
-      background: var(--bg-card);
-      padding: 5px 12px;
-      border-radius: 20px;
+      font-size: 0.82rem;
+      background: var(--bg-elevated);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
-      transition: all var(--transition-fast);
+      transition: border-color var(--transition-fast), background var(--transition-fast);
       user-select: none;
       cursor: pointer;
+      color: var(--text-main);
     }
     .user-badge:hover {
       border-color: var(--accent-primary);
-      background: var(--bg-surface);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: var(--bg-hover);
     }
 
     .role-tag {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #388bfd26;
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--accent-subtle);
       color: var(--accent-primary);
+      border: 1px solid var(--accent-border);
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: center;
+      line-height: 1.4;
     }
 
     .role-tag.admin {
-      background: #f8514926;
-      color: var(--danger);
+      background: var(--cents-negative-subtle);
+      color: var(--cents-negative);
+      border-color: rgba(248, 81, 73, 0.3);
     }
 
     .role-tag.pending {
-      background: #d2992226;
+      background: var(--warning-subtle);
       color: var(--warning);
+      border-color: rgba(210, 153, 34, 0.3);
     }
 
-    /* Buttons */
+    /* Structured Rectangular Buttons */
     .btn {
       font-family: var(--font-sans);
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 8px 16px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 6px 14px;
       border-radius: var(--radius-sm);
       border: 1px solid transparent;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.15s ease-in-out;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       text-decoration: none;
+      line-height: 1.35;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .btn:focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 1px;
     }
 
     .btn-primary {
       background: var(--accent-primary);
-      color: #0d1117;
+      color: #ffffff;
+      border-color: var(--accent-primary);
+      font-weight: 600;
     }
     .btn-primary:hover {
       background: var(--accent-hover);
+      border-color: var(--accent-hover);
     }
 
     .btn-secondary {
-      background: var(--bg-card);
+      background: var(--bg-elevated);
       color: var(--text-main);
       border-color: var(--border-subtle);
     }
     .btn-secondary:hover {
       border-color: var(--border-muted);
-      background: #282e37;
+      background: var(--bg-hover);
     }
 
     .btn-danger {
-      background: rgba(248, 81, 73, 0.15);
-      color: var(--danger);
-      border-color: rgba(248, 81, 73, 0.4);
+      background: var(--cents-negative-subtle);
+      color: var(--cents-negative);
+      border-color: rgba(248, 81, 73, 0.3);
     }
     .btn-danger:hover {
-      background: var(--danger);
-      color: #fff;
+      background: var(--cents-negative);
+      color: #ffffff;
+      border-color: var(--cents-negative);
     }
 
     .btn-sm {
-      padding: 4px 10px;
-      font-size: 0.78rem;
+      padding: 4px 9px;
+      font-size: 0.75rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     /* Container & Layout */
     .container {
-      max-width: 1100px;
+      max-width: 1040px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 20px 18px;
       width: 100%;
       flex: 1;
     }
@@ -193,12 +271,11 @@
     /* Sync Progress Tracker Panel */
     #sync-tracker {
       display: none;
-      background: #1c2128;
-      border: 1px solid var(--border-muted);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      padding: 12px 16px;
+      margin-bottom: 18px;
     }
     #sync-tracker.active {
       display: block;
@@ -208,38 +285,39 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .sync-title {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text-main);
     }
 
     .sync-progress-bar-bg {
       width: 100%;
-      height: 6px;
-      background: var(--bg-base);
-      border-radius: 4px;
+      height: 4px;
+      background: var(--bg-canvas);
+      border-radius: var(--radius-xs);
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .sync-progress-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #58a6ff, #3fb950);
-      transition: width 0.3s ease;
+      background: var(--accent-primary);
+      transition: width 0.25s ease;
     }
 
     .sync-details {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
     }
 
@@ -249,13 +327,13 @@
     }
 
     .sync-needed-list {
-      margin-top: 10px;
-      padding-top: 10px;
+      margin-top: 8px;
+      padding-top: 8px;
       border-top: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 140px;
+      max-height: 130px;
       overflow-y: auto;
     }
 
@@ -263,106 +341,123 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.8rem;
-      padding: 6px 10px;
-      background: var(--bg-surface);
-      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      padding: 5px 8px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-xs);
       border: 1px solid var(--border-subtle);
     }
 
-    /* Cards */
+    /* Structured Ledger Cards & Panels */
     .card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      gap: 12px;
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 0.96rem;
       font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* Auth Form */
+    /* Auth View */
     .auth-container {
-      max-width: 420px;
-      margin: 40px auto;
+      max-width: 400px;
+      margin: 48px auto;
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 32px;
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
     }
 
     .auth-tabs {
       display: flex;
       border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
+      background: var(--bg-canvas);
+      padding: 3px;
+      border-radius: var(--radius-sm);
     }
 
     .auth-tab {
       flex: 1;
       text-align: center;
-      padding: 10px;
+      padding: 7px 12px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       cursor: pointer;
-      border-bottom: 2px solid transparent;
+      border-radius: var(--radius-xs);
+      transition: all var(--transition-fast);
+      user-select: none;
     }
 
     .auth-tab.active {
-      color: var(--accent-primary);
-      border-bottom-color: var(--accent-primary);
+      color: var(--text-main);
+      background: var(--bg-surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
+    /* Forms & Inputs */
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .form-label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
+      font-size: 0.74rem;
+      font-weight: 600;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     .form-input, .form-select, .form-textarea {
       width: 100%;
-      background: var(--bg-base);
+      background: var(--bg-input);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
-      padding: 10px 12px;
+      padding: 8px 11px;
       border-radius: var(--radius-sm);
       font-family: inherit;
-      font-size: 0.9rem;
-      transition: border-color 0.15s;
+      font-size: 0.88rem;
+      transition: border-color var(--transition-fast);
     }
 
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--accent-primary);
+      box-shadow: 0 0 0 1px var(--accent-primary);
     }
 
     .form-help {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-dim);
       margin-top: 4px;
+      line-height: 1.4;
     }
 
-    /* Grid layout */
+    /* Grid Layouts */
     .grid-cols-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 16px;
     }
     @media (max-width: 768px) {
       .grid-cols-2 {
@@ -370,11 +465,11 @@
       }
     }
 
-    /* Groups list */
+    /* Groups Grid */
     .group-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px;
     }
 
     .group-card {
@@ -383,44 +478,53 @@
       border-radius: var(--radius-md);
       padding: 16px;
       cursor: pointer;
-      transition: transform 0.1s, border-color 0.15s;
-      position: relative;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 120px;
     }
 
     .group-card:hover {
       border-color: var(--accent-primary);
-      transform: translateY(-2px);
+      background: var(--bg-elevated);
     }
 
     .group-name {
-      font-size: 1.1rem;
+      font-size: 0.98rem;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
     }
 
     .group-desc {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       margin-bottom: 12px;
-      min-height: 20px;
+      line-height: 1.4;
+      flex: 1;
     }
 
     .group-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       color: var(--text-dim);
       font-family: var(--font-mono);
       border-top: 1px solid var(--border-subtle);
       padding-top: 10px;
+      margin-top: auto;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    /* Expense and Balance Styles */
+    /* Balance and Debt Styles */
     .balance-card {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .balance-row {
@@ -428,38 +532,47 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 14px;
-      background: var(--bg-card);
+      background: var(--bg-elevated);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
+      transition: background var(--transition-fast);
+    }
+    .balance-row:hover {
+      background: var(--bg-hover);
     }
 
     .debt-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 14px;
-      background: #1c2128;
+      padding: 10px 14px;
+      background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       margin-bottom: 8px;
+      gap: 10px;
     }
 
     .debt-desc {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .debt-highlight {
-      font-weight: 700;
-      color: var(--accent-primary);
+      font-weight: 600;
+      color: var(--text-main);
     }
 
-    /* Settlement Mode Toggle (Direct Debts vs Min-Cash-Flow) */
+    /* Settlement Mode Segmented Control */
     .settlement-toggle-container {
       display: flex;
-      gap: 6px;
-      background: var(--bg-surface);
-      padding: 4px;
-      border-radius: var(--radius-md);
+      gap: 3px;
+      background: var(--bg-canvas);
+      padding: 3px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
       margin-bottom: 12px;
     }
@@ -467,163 +580,185 @@
     .toggle-mode-btn {
       flex: 1;
       padding: 6px 10px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
+      font-size: 0.76rem;
+      font-weight: 500;
+      border-radius: var(--radius-xs);
+      border: none;
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition-fast);
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      user-select: none;
     }
 
     .toggle-mode-btn:hover {
       color: var(--text-main);
-      background: var(--bg-card);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .toggle-mode-btn.active {
-      background: var(--accent-primary);
-      color: white;
-      border-color: var(--accent-primary);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-weight: 600;
+      border: 1px solid var(--border-muted);
     }
 
-    /* User Personal Spent Card (Visible Only to Self) */
+    /* User Personal Executive Spent Strip */
     .user-personal-spent-card {
-      background: linear-gradient(135deg, rgba(56, 139, 253, 0.08) 0%, rgba(31, 111, 235, 0.04) 100%);
-      border: 1px solid rgba(56, 139, 253, 0.25);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 16px 20px;
-      margin-bottom: 20px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
     }
     .user-spent-wrapper {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
+    }
+    .user-spent-main {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
     .user-spent-header {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 4px;
     }
     .user-spent-icon {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
+      color: var(--accent-primary);
+      display: inline-flex;
     }
     .user-spent-title {
-      font-size: 0.85rem;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
     }
     .user-spent-private-badge {
-      background: rgba(56, 139, 253, 0.15);
-      color: #58a6ff;
-      font-size: 0.68rem;
+      background: var(--accent-subtle);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-border);
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: var(--radius-xs);
     }
     .user-spent-amount {
-      font-size: 1.85rem;
-      font-weight: 800;
+      font-size: 1.65rem;
+      font-weight: 700;
       font-family: var(--font-mono);
       color: var(--text-main);
-      letter-spacing: -0.5px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
     }
     .user-spent-desc {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       color: var(--text-dim);
-      margin-top: 2px;
     }
     .user-spent-stats {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .user-spent-stat-pill {
-      background: var(--bg-surface);
+      background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 8px 14px;
+      padding: 6px 12px;
       display: flex;
       flex-direction: column;
       gap: 2px;
-      min-width: 110px;
+      min-width: 105px;
     }
     .stat-pill-label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
+      font-size: 0.66rem;
+      color: var(--text-dim);
       text-transform: uppercase;
       font-weight: 600;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.04em;
     }
     .stat-pill-value {
       font-family: var(--font-mono);
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--text-main);
     }
 
+    /* Expense and Settlement Lists */
     .expense-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .expense-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding: 14px;
-      background: var(--bg-card);
+      padding: 12px 14px;
+      background: var(--bg-elevated);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
+      transition: border-color var(--transition-fast);
+      gap: 14px;
+    }
+    .expense-row:hover {
+      border-color: var(--border-muted);
     }
 
     .expense-title {
       font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 4px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .expense-sub {
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
+      margin-top: 3px;
     }
 
     .expense-amount {
       font-family: var(--font-mono);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       text-align: right;
+      color: var(--text-main);
     }
 
     .cents-positive {
-      color: var(--success);
+      color: var(--cents-positive);
     }
 
     .cents-negative {
-      color: var(--danger);
+      color: var(--cents-negative);
     }
 
     .cents-neutral {
       color: var(--text-muted);
     }
 
-    /* Modal */
+    /* Modals & Dialogs */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
       background: var(--bg-overlay);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(2px);
       z-index: 200;
       align-items: center;
       justify-content: center;
@@ -636,28 +771,37 @@
 
     .modal-dialog {
       background: var(--bg-surface);
-      border: 1px solid var(--border-muted);
-      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
       width: 100%;
-      max-width: 500px;
+      max-width: 520px;
       max-height: 90vh;
       overflow-y: auto;
-      padding: 24px;
+      padding: 22px 24px;
       position: relative;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
     }
 
     .modal-close {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       cursor: pointer;
+      line-height: 1;
+      padding: 4px 6px;
+      border-radius: var(--radius-xs);
+      transition: color var(--transition-fast), background var(--transition-fast);
+    }
+    .modal-close:hover {
+      color: var(--text-main);
+      background: var(--bg-hover);
     }
 
-    /* Table */
+    /* Table & Admin UI */
     .table-container {
       overflow-x: auto;
     }
@@ -665,45 +809,50 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
     }
 
     th {
       text-align: left;
-      padding: 10px 12px;
-      color: var(--text-muted);
+      padding: 9px 12px;
+      color: var(--text-dim);
       border-bottom: 1px solid var(--border-subtle);
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     td {
-      padding: 12px;
+      padding: 10px 12px;
       border-bottom: 1px solid var(--border-subtle);
+    }
+    tbody tr:hover {
+      background: var(--bg-elevated);
     }
 
     .stat-card {
-      background: var(--bg-card);
+      background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 16px;
-      text-align: center;
+      padding: 14px 16px;
+      text-align: left;
     }
 
     .stat-val {
       font-family: var(--font-mono);
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      color: var(--accent-primary);
+      color: var(--text-main);
       margin-top: 4px;
     }
 
     .stat-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      font-size: 0.72rem;
+      color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
+      font-weight: 600;
     }
 
     .hidden {
@@ -715,36 +864,30 @@
       position: fixed;
       top: 0;
       left: 0;
-      height: 3px;
+      height: 2px;
       width: 0%;
-      background: linear-gradient(90deg, #58a6ff, #bc8cff, #3fb950);
-      background-size: 200% 100%;
+      background: var(--accent-primary);
       z-index: 99999;
       transition: width 0.2s ease-out, opacity 0.3s ease;
       opacity: 0;
       pointer-events: none;
-      animation: shimmer-bar 1.5s infinite linear;
     }
     #global-loader.active {
       opacity: 1;
-    }
-    @keyframes shimmer-bar {
-      0% { background-position: 100% 0; }
-      100% { background-position: -100% 0; }
     }
 
     /* Boot Splash Loader */
     #app-boot-splash {
       position: fixed;
       inset: 0;
-      background: #0d1117;
+      background: var(--bg-canvas);
       z-index: 99998;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      transition: opacity 0.35s ease, visibility 0.35s ease;
+      gap: 14px;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
     }
     #app-boot-splash.hidden-splash {
       opacity: 0;
@@ -752,37 +895,32 @@
       pointer-events: none;
     }
     .splash-logo {
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(135deg, #58a6ff, #bc8cff);
-      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      background: var(--accent-primary);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      color: #000;
+      font-weight: 700;
+      color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 24px;
-      animation: logo-pulse 1.8s infinite ease-in-out;
-      box-shadow: 0 0 25px rgba(88, 166, 255, 0.4);
-    }
-    @keyframes logo-pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(88, 166, 255, 0.3); }
-      50% { transform: scale(1.06); box-shadow: 0 0 35px rgba(188, 140, 255, 0.5); }
+      font-size: 22px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
     .splash-spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(88, 166, 255, 0.2);
-      border-top-color: #58a6ff;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-subtle);
+      border-top-color: var(--accent-primary);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
     .splash-text {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      letter-spacing: 0.3px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
     }
 
     /* Spinners & Button Loading */
@@ -791,64 +929,59 @@
     }
     .spinner-inline {
       display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255, 255, 255, 0.35);
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       border-top-color: currentColor;
       animation: spin 0.6s linear infinite;
       margin-right: 6px;
-      vertical-align: -2px;
-    }
-    .btn:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      pointer-events: none;
+      vertical-align: -1px;
     }
 
-    /* Skeleton Loading with Shimmer */
+    /* Skeleton Loading with Restrained Shimmer */
     @keyframes shimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
     .skeleton {
-      background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+      background: linear-gradient(90deg, #121820 25%, #17202c 50%, #121820 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite ease-in-out;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-xs);
     }
     .skeleton-card {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .skeleton-line {
-      height: 14px;
+      height: 12px;
     }
     .skeleton-line.title {
-      height: 20px;
-      width: 60%;
+      height: 16px;
+      width: 50%;
     }
     .skeleton-line.subtitle {
-      width: 85%;
+      width: 80%;
     }
     .skeleton-line.meta {
-      width: 40%;
-      height: 12px;
+      width: 35%;
+      height: 10px;
     }
     .skeleton-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 14px;
-      background: var(--bg-card);
+      padding: 10px 12px;
+      background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
   </style>
 </head>
@@ -868,11 +1001,11 @@
   <header>
     <div class="brand" onclick="navigateTo('groups')">
       <div class="brand-logo">÷</div>
-      <div class="brand-title">Splitter</div>
+      <div class="brand-title">Splitter <span class="brand-badge">Ledger</span></div>
     </div>
     <div class="header-nav">
       <div id="user-header-info" class="user-badge hidden" onclick="openProfileModal()" style="cursor: pointer;" title="Your Profile & Settings">
-        <span style="font-size: 0.95rem; opacity: 0.85;">👤</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.8;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         <span id="user-display-name">User</span>
         <span id="user-role-badge" class="role-tag">Member</span>
       </div>
@@ -888,7 +1021,7 @@
     <div id="sync-tracker">
       <div class="sync-header">
         <div class="sync-title">
-          <span>⚡ Local Storage Sync</span>
+          <span style="display:flex;align-items:center;gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Local Storage Sync</span>
           <span id="sync-status-badge" class="role-tag pending">2 Pending</span>
         </div>
         <button class="btn btn-primary btn-sm" onclick="syncOfflineQueue()">Sync Now</button>
@@ -949,7 +1082,7 @@
       <div class="card-header">
         <div>
           <h2 class="card-title">Your Expense Groups</h2>
-          <p class="form-help">Split expenses with roommates, trips, and projects (Cached locally)</p>
+          <p class="form-help">Active workspaces and shared expense ledgers</p>
         </div>
         <button class="btn btn-primary" onclick="openModal('modal-create-group')">+ Create Group</button>
       </div>
@@ -967,13 +1100,13 @@
           <h1 id="group-title" style="font-size: 1.6rem; font-weight: 700;">Group Name</h1>
           <p id="group-desc" style="color: var(--text-muted); font-size: 0.9rem;">Description</p>
           <div id="user-group-spent-badge" class="user-spent-badge hidden" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 139, 253, 0.12); border: 1px solid rgba(56, 139, 253, 0.3); border-radius: 6px; padding: 4px 10px; font-size: 0.85rem;">
-            <span>💳 <strong>Your Total Spent:</strong></span>
+            <span><strong>Your Total Spent:</strong></span>
             <span id="group-header-spent-val" style="font-family: var(--font-mono); font-weight: 700; color: #58a6ff;">₹0.00</span>
             <span class="role-tag" style="font-size: 0.68rem; padding: 1px 5px; background: rgba(56, 139, 253, 0.2); color: #79c0ff;">Visible only to you</span>
           </div>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button id="group-activity-btn" class="btn btn-secondary hidden" onclick="openActivityLogModal()">📜 Activity Log</button>
+          <button id="group-activity-btn" class="btn btn-secondary hidden" onclick="openActivityLogModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Activity Log</button>
           <button class="btn btn-secondary" onclick="openModal('modal-add-member')">+ Add Member</button>
           <button class="btn btn-primary" onclick="openAddExpenseModal()">+ Add Expense</button>
         </div>
@@ -984,7 +1117,7 @@
         <div class="user-spent-wrapper">
           <div class="user-spent-main">
             <div class="user-spent-header">
-              <span class="user-spent-icon">💳</span>
+              <span class="user-spent-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></span>
               <span class="user-spent-title">Your Total Spent</span>
               <span class="role-tag user-spent-private-badge">Visible only to you</span>
             </div>
@@ -1026,7 +1159,7 @@
           <div class="card-header" style="margin-bottom: 8px;">
             <div>
               <h3 class="card-title">Final Statements</h3>
-              <p class="form-help" id="statements-card-desc">Direct pairwise settlements between members</p>
+              <p class="form-help" id="statements-card-desc">Pairwise debt settlement ledger</p>
             </div>
             <span id="statements-sync-badge" class="role-tag">Direct</span>
           </div>
@@ -1209,7 +1342,7 @@
         <div class="form-group" style="background: var(--bg-surface); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-subtle);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <label class="form-label" style="margin-bottom: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
-              📸 Bill Scanning & Attachments
+              Bill Scanning & Receipt Attachments
             </label>
             <span style="font-size: 0.72rem; color: #58a6ff; font-weight: 600;">AI OCR Enabled</span>
           </div>
@@ -1220,10 +1353,10 @@
           <!-- Action Buttons -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="attachment-buttons-container">
             <button type="button" class="btn btn-secondary btn-sm" style="justify-content: center; gap: 6px; font-size: 0.8rem;" onclick="triggerCameraCapture()">
-              <span>📸</span> Scan Bill (Camera)
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> Scan Bill (Camera)
             </button>
             <button type="button" class="btn btn-secondary btn-sm" style="justify-content: center; gap: 6px; font-size: 0.8rem;" onclick="triggerFileSelect()">
-              <span>📎</span> Attach Image / Bill
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px;"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> Attach File
             </button>
           </div>
 
@@ -1242,7 +1375,7 @@
                 <div id="attachment-ocr-badge" style="font-size: 0.75rem; margin-top: 2px; color: #3fb950; font-weight: 600;">✓ OCR Total Detected</div>
               </div>
               <div style="display: flex; gap: 6px;">
-                <button type="button" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.75rem;" onclick="toggleOcrRawText()">🔍 OCR</button>
+                <button type="button" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.75rem;" onclick="toggleOcrRawText()">OCR Data</button>
                 <button type="button" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.75rem; color: #f85149;" onclick="clearActiveAttachment()">✕</button>
               </div>
             </div>
@@ -1285,8 +1418,8 @@
     <div class="modal-dialog" style="max-width: 680px;">
       <button class="modal-close" onclick="closeModal('modal-activity-log')">&times;</button>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-        <h3 class="card-title" style="margin-bottom: 0;">📜 Group Activity Log</h3>
-        <button class="btn btn-secondary btn-sm" onclick="loadActivityLogs(true)">↻ Refresh</button>
+        <h3 class="card-title" style="margin-bottom: 0;">Group Activity Log</h3>
+        <button class="btn btn-secondary btn-sm" onclick="loadActivityLogs(true)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Refresh</button>
       </div>
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
         Audit trail of expenses, splits, settlements, and membership updates.
@@ -1327,7 +1460,7 @@
     <div class="modal-dialog" style="max-width: 480px;">
       <button class="modal-close" onclick="closeModal('modal-transaction-summary')">&times;</button>
       <div style="text-align: center; margin-bottom: 14px;">
-        <div id="tx-summary-icon" style="font-size: 2.2rem; margin-bottom: 4px;">🎉</div>
+        <div id="tx-summary-icon" style="display:flex; justify-content:center; margin-bottom:8px;"></div>
         <h3 id="tx-summary-title" class="card-title" style="margin-bottom: 4px;">Transaction Recorded!</h3>
         <p id="tx-summary-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
           Share the split summary with your group members.
@@ -1342,15 +1475,15 @@
       <!-- Action Buttons Grid -->
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <button id="btn-share-native" class="btn btn-primary" style="justify-content: center; width: 100%; font-size: 0.95rem; padding: 10px;" onclick="triggerActiveShare()">
-          <span style="margin-right: 6px;">📤</span> Share to Apps (WhatsApp, Telegram...)
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg> Share to Apps
         </button>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
           <button id="btn-share-whatsapp" class="btn btn-secondary" style="justify-content: center; font-size: 0.85rem;" onclick="shareViaWhatsApp()">
-            <span style="margin-right: 4px;">💬</span> WhatsApp
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> WhatsApp
           </button>
           <button id="btn-copy-summary" class="btn btn-secondary" style="justify-content: center; font-size: 0.85rem;" onclick="copyActiveSummary()">
-            <span style="margin-right: 4px;">📋</span> Copy Text
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy Text
           </button>
         </div>
 
@@ -1366,9 +1499,9 @@
     <div class="modal-dialog" style="max-width: 650px;">
       <button class="modal-close" onclick="closeModal('modal-attachment-viewer')">&times;</button>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 id="att-viewer-title" class="card-title" style="margin-bottom: 0;">📎 Receipt / Attachment</h3>
+        <h3 id="att-viewer-title" class="card-title" style="margin-bottom: 0;">Receipt / Attachment</h3>
         <a id="att-viewer-download" href="#" target="_blank" download class="btn btn-secondary btn-sm" style="gap: 4px;">
-          <span>📥</span> Download
+          Download
         </a>
       </div>
       <div id="att-viewer-content" style="text-align: center; margin-bottom: 14px; background: #000; border-radius: 8px; overflow: hidden; max-height: 480px; display: flex; align-items: center; justify-content: center;">
@@ -1404,7 +1537,7 @@
       <!-- Profile Information Section -->
       <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
         <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-          <span>👤</span> Personal Details
+          Personal Details
         </h4>
         <form onsubmit="handleUpdateProfile(event)">
           <div class="form-group" style="margin-bottom: 12px;">
@@ -1415,7 +1548,7 @@
           <div class="form-group" style="margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
               <label class="form-label" for="profile-email" style="margin-bottom: 0;">Email Address</label>
-              <span class="role-tag" style="font-size: 0.7rem; padding: 2px 6px; background: rgba(255,255,255,0.06); color: var(--text-dim);">🔒 Immutable</span>
+              <span class="role-tag" style="font-size: 0.7rem; padding: 2px 6px; background: rgba(255,255,255,0.06); color: var(--text-dim);">Immutable</span>
             </div>
             <input type="email" id="profile-email" class="form-input" readonly disabled style="opacity: 0.75; cursor: not-allowed; background: rgba(0,0,0,0.2);" />
             <div class="form-help" style="margin-top: 4px; font-size: 0.76rem; color: var(--text-dim);">
@@ -1438,7 +1571,7 @@
       <!-- Security / Change Password Section -->
       <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
         <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-          <span>🔑</span> Security & Password Reset
+          Security & Password
         </h4>
         <form onsubmit="handleChangePassword(event)">
           <div class="form-group" style="margin-bottom: 10px;">
@@ -1463,7 +1596,7 @@
       <!-- App Reset & Maintenance Options -->
       <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px;">
         <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-          <span>⚙️</span> Device Reset & Maintenance
+          Device Maintenance
         </h4>
         <p class="form-help" style="margin-bottom: 12px; font-size: 0.78rem;">
           Resolve local caching discrepancies or clear device data:
@@ -1475,7 +1608,7 @@
               <div style="font-size: 0.85rem; font-weight: 600;">Refresh Local Cache</div>
               <div style="font-size: 0.75rem; color: var(--text-dim);">Purges cached groups and re-downloads fresh server data</div>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="resetLocalCache()">🔄 Refresh</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="resetLocalCache()">Refresh</button>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(0,0,0,0.12); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
@@ -1483,7 +1616,7 @@
               <div style="font-size: 0.85rem; font-weight: 600;">Clear Offline Queue</div>
               <div style="font-size: 0.75rem; color: var(--text-dim);"><span id="profile-queue-count" style="font-weight: 700;">0</span> pending offline mutations</div>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="resetOfflineQueue()">🧹 Clear</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="resetOfflineQueue()">Clear</button>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(248, 81, 73, 0.08); border: 1px solid rgba(248, 81, 73, 0.25); border-radius: var(--radius-sm); margin-top: 4px;">
@@ -1491,7 +1624,7 @@
               <div style="font-size: 0.85rem; font-weight: 600; color: #f85149;">Full App Reset</div>
               <div style="font-size: 0.75rem; color: var(--text-dim);">Wipes local credentials, token, cached ledgers, and logs out</div>
             </div>
-            <button type="button" class="btn btn-danger btn-sm" onclick="fullAppReset()">⚠️ Reset & Logout</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="fullAppReset()">Reset & Logout</button>
           </div>
         </div>
       </div>
@@ -1537,7 +1670,7 @@
       <p class="form-help" style="margin-bottom: 16px;">Assistance for recovering access or resolving app issues</p>
 
       <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; font-size: 0.85rem; line-height: 1.5;">
-        <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">🔐 Forgotten Password?</div>
+        <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Forgotten Password?</div>
         <div style="color: var(--text-muted); margin-bottom: 8px;">
           Splitter instances are self-hosted. To reset a forgotten password:
         </div>
@@ -1548,7 +1681,7 @@
       </div>
 
       <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.5;">
-        <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">🧹 Stuck or Corrupted App Cache?</div>
+        <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Stuck or Corrupted App Cache?</div>
         <div style="color: var(--text-muted); margin-bottom: 10px;">
           If the application fails to open or encounters stored state conflicts:
         </div>
@@ -1564,6 +1697,24 @@
   </div>
 
   <script>
+
+    // Unified SVG Icon System (Structured Ledger)
+    const ICONS = {
+      user: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
+      users: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+      wallet: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>',
+      receipt: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path><line x1="8" y1="7" x2="16" y2="7"></line><line x1="8" y1="11" x2="16" y2="11"></line><line x1="8" y1="15" x2="12" y2="15"></line></svg>',
+      paperclip: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>',
+      share: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>',
+      copy: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
+      check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+      refresh: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>',
+      lock: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>',
+      activity: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>',
+      camera: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>',
+      arrowRight: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>',
+      key: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="m21 2-2 2m-1.5 1.5L14 9M3 13a7 7 0 1 0 14 0 7 7 0 0 0-14 0Z"></path><path d="m15.5 8.5 2 2"></path></svg>'
+    };
     // State
     let currentUser = null;
     let token = localStorage.getItem('splitter_token');
@@ -1827,7 +1978,7 @@
       } else if (isSyncing) {
         ongoingEl.innerHTML = `<span class="spinner-inline" style="border-top-color: var(--accent-primary); width: 12px; height: 12px;"></span> <strong>Ongoing:</strong> Uploading batch to server...`;
       } else if (!navigator.onLine) {
-        ongoingEl.textContent = `⏸️ Offline: Waiting for network reconnection`;
+        ongoingEl.textContent = `Offline: Waiting for network reconnection`;
       } else {
         ongoingEl.textContent = `Ready to sync ${queue.length} action${queue.length > 1 ? 's' : ''}`;
       }
@@ -1842,7 +1993,7 @@
         const isExp = item.action === 'create_expense';
         row.innerHTML = `
           <span>
-            <strong>${isExp ? '➕ Expense' : '💸 Settlement'}:</strong>
+            <strong>${isExp ? 'Expense' : 'Settlement'}:</strong>
             ${escapeHtml(item.title)}
             <span style="font-family: var(--font-mono); margin-left: 6px;">(${formatMoney(item.amount_cents)})</span>
           </span>
@@ -2356,10 +2507,10 @@
           <div class="group-name">${escapeHtml(g.name)}</div>
           <div class="group-desc">${escapeHtml(g.description || 'No description')}</div>
           <div class="group-meta">
-            <span>👥 ${g.member_count} member${g.member_count > 1 ? 's' : ''}</span>
+            <span>${ICONS.users} ${g.member_count} member${g.member_count > 1 ? 's' : ''}</span>
             ${hasSpent ? `
               <span class="role-tag" style="background: rgba(56, 139, 253, 0.15); color: #58a6ff; font-weight: 600;" title="Your personal total spent in this group (visible only to you)">
-                💳 Total Spent: ${formatMoney(g.user_spent_cents, g.default_currency)}
+                ${ICONS.wallet} Spent: ${formatMoney(g.user_spent_cents, g.default_currency)}
               </span>
             ` : ''}
             <span class="role-tag">${g.user_role}</span>
@@ -2652,7 +2803,7 @@
         : (summary.simplified_debts || []);
 
       if (!debts || debts.length === 0) {
-        dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">🎉 Everyone is completely settled up!</div>`;
+        dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">All balances settled. No outstanding debts.</div>`;
         return;
       }
 
@@ -2664,10 +2815,7 @@
         item.className = 'debt-item';
         item.innerHTML = `
           <div class="debt-desc">
-            <span class="debt-highlight">${escapeHtml(d.from_user_name)}</span> ${isPayerMe ? '(You)' : ''}
-            owes
-            <span class="debt-highlight">${escapeHtml(d.to_user_name)}</span> ${isPayeeMe ? '(You)' : ''}
-            <strong style="margin-left: 6px; font-family: var(--font-mono);">${formatMoney(d.amount_cents, summary.currency)}</strong>
+            <span class="debt-highlight">${escapeHtml(d.from_user_name)}</span> ${isPayerMe ? '<span class="role-tag" style="font-size: 0.65rem;">You</span>' : ''} <span style="color: var(--text-dim); margin: 0 4px;">${ICONS.arrowRight} owes</span> <span class="debt-highlight">${escapeHtml(d.to_user_name)}</span> ${isPayeeMe ? '<span class="role-tag" style="font-size: 0.65rem;">You</span>' : ''} <strong style="margin-left: 8px; font-family: var(--font-mono); color: var(--text-main);">${formatMoney(d.amount_cents, summary.currency)}</strong>
           </div>
           <div>
             ${(isPayerMe || isPayeeMe) ? `
@@ -2730,7 +2878,7 @@
               ${splitsHtml}
               ${exp.attachment_url ? `
                 <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 7px; font-size: 0.72rem; gap: 4px; border-color: rgba(88, 166, 255, 0.4); color: #58a6ff;" onclick="openAttachmentViewer('${exp.id}')">
-                  <span>📎</span> ${escapeHtml(exp.attachment_name || 'Receipt')}
+                  ${ICONS.paperclip} ${escapeHtml(exp.attachment_name || 'Receipt')}
                 </button>
               ` : ''}
             </div>
@@ -2739,9 +2887,9 @@
             <div class="expense-amount">${formatMoney(exp.amount_cents, currency)}</div>
             <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;">
               ${exp.attachment_url ? `
-                <button class="btn btn-secondary btn-sm" style="color: #58a6ff;" onclick="openAttachmentViewer('${exp.id}')">📎 Bill</button>
+                <button class="btn btn-secondary btn-sm" onclick="openAttachmentViewer('${exp.id}')">${ICONS.paperclip} Bill</button>
               ` : ''}
-              <button class="btn btn-secondary btn-sm" onclick="shareExpenseById('${exp.id}')">📤 Share</button>
+              <button class="btn btn-secondary btn-sm" onclick="shareExpenseById('${exp.id}')">${ICONS.share} Share</button>
               ${canEdit ? `
                 <button class="btn btn-secondary btn-sm" onclick="openEditExpenseModal('${exp.id}')">Edit</button>
               ` : ''}
@@ -2771,7 +2919,7 @@
         const isPending = s.is_pending;
         item.innerHTML = `
           <div>
-            <strong>${escapeHtml(s.payer_name)}</strong> paid <strong>${escapeHtml(s.payee_name)}</strong>
+            <strong>${escapeHtml(s.payer_name)}</strong> <span style="color: var(--text-dim); margin: 0 4px;">${ICONS.arrowRight} paid</span> <strong>${escapeHtml(s.payee_name)}</strong>
             ${isPending ? '<span class="role-tag pending" style="margin-left: 6px;">Pending Sync</span>' : ''}
             <span style="color: var(--text-dim); font-size: 0.78rem; margin-left: 8px;">${new Date(s.settled_at || Date.now()).toLocaleDateString()}</span>
           </div>
@@ -2779,7 +2927,7 @@
             <div class="cents-positive" style="font-family: var(--font-mono); font-weight: 700;">
               ${formatMoney(s.amount_cents, currency)}
             </div>
-            <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.75rem;" onclick="shareSettlementById('${s.id}')">📤 Share</button>
+            <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.75rem;" onclick="shareSettlementById('${s.id}')">${ICONS.share} Share</button>
           </div>
         `;
         container.appendChild(item);
@@ -2961,7 +3109,7 @@
 
       if (currentSplitType === 'EQUAL') {
         if (checkedCount === 0) {
-          statusEl.textContent = '⚠️ Select at least one participant';
+          statusEl.textContent = 'Select at least one participant';
           statusEl.style.color = '#f85149';
           return;
         }
@@ -3226,7 +3374,7 @@
       const exp = cached.find(e => e.id === expId);
       if (!exp || !exp.attachment_url) return;
 
-      document.getElementById('att-viewer-title').textContent = `📎 ${exp.attachment_name || 'Receipt / Attachment'}`;
+      document.getElementById('att-viewer-title').textContent = `${exp.attachment_name || 'Receipt / Attachment'}`;
       const dlBtn = document.getElementById('att-viewer-download');
       dlBtn.href = exp.attachment_url;
       dlBtn.download = exp.attachment_name || 'receipt';
@@ -3241,7 +3389,7 @@
       } else {
         contentBox.innerHTML = `
           <div style="padding: 40px 20px; text-align: center; color: var(--text-muted);">
-            <div style="font-size: 3rem; margin-bottom: 8px;">📄</div>
+            <div style="display:flex; justify-content:center; margin-bottom:12px; color:var(--text-dim);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
             <div style="font-size: 1rem; color: var(--text-main); font-weight: 600; margin-bottom: 12px;">${escapeHtml(exp.attachment_name || 'Document')}</div>
             <a href="${exp.attachment_url}" target="_blank" class="btn btn-primary" style="display: inline-flex;">Open File in Browser</a>
           </div>
@@ -3359,12 +3507,13 @@
       const totalStr = formatMoney(exp.amount_cents, currency);
       const dateStr = new Date(exp.expense_date || Date.now()).toLocaleDateString();
 
-      let plain = `🧾 Expense: ${exp.description}\n`;
-      plain += `💰 Amount: ${totalStr}\n`;
-      plain += `👤 Paid by: ${payerName}\n`;
-      if (groupName) plain += `🏷️ Group: ${groupName}\n`;
-      if (exp.attachment_url) plain += `📎 Receipt: Attached\n`;
-      plain += `📅 Date: ${dateStr}\n\n`;
+      let plain = `[SPLITTER LEDGER] Expense Entry\n`;
+      plain += `Description : ${exp.description}\n`;
+      plain += `Amount      : ${totalStr}\n`;
+      plain += `Paid by     : ${payerName}\n`;
+      if (groupName) plain += `Group       : ${groupName}\n`;
+      if (exp.attachment_url) plain += `Receipt     : Attached\n`;
+      plain += `Date        : ${dateStr}\n\n`;
       if (splits.length > 0) {
         plain += `Split Breakdown:\n`;
         splits.forEach(s => {
@@ -3394,7 +3543,7 @@
             ${groupName ? `<div style="margin-top: 4px;"><span class="role-tag" style="font-size: 0.75rem;">${escapeHtml(groupName)}</span></div>` : ''}
             ${exp.attachment_url ? `
               <div style="margin-top: 6px; font-size: 0.78rem; color: #58a6ff; display: flex; align-items: center; gap: 4px;">
-                <span>📎</span> Receipt Attached: ${escapeHtml(exp.attachment_name || 'Bill')}
+                Receipt Attached: ${escapeHtml(exp.attachment_name || 'Bill')}
               </div>
             ` : ''}
           </div>
@@ -3423,12 +3572,12 @@
       const totalStr = formatMoney(settle.amount_cents, currency);
       const dateStr = new Date(settle.settled_at || Date.now()).toLocaleDateString();
 
-      let plain = `💸 Payment Settlement\n`;
-      plain += `👤 ${payerName} paid ${payeeName}\n`;
-      plain += `💰 Amount: ${totalStr}\n`;
-      if (groupName) plain += `🏷️ Group: ${groupName}\n`;
-      plain += `📅 Date: ${dateStr}\n`;
-      plain += `🎉 Status: Settled Up\n\n`;
+      let plain = `[SPLITTER LEDGER] Settlement Entry\n`;
+      plain += `Transfer    : ${payerName} -> ${payeeName}\n`;
+      plain += `Amount      : ${totalStr}\n`;
+      if (groupName) plain += `Group       : ${groupName}\n`;
+      plain += `Date        : ${dateStr}\n`;
+      plain += `Status      : Settled Up\n\n`;
       plain += `Shared via Splitter: https://splitter.algosculptor.com`;
 
       const html = `
@@ -3443,7 +3592,7 @@
           </div>
         </div>
         <div style="border-top: 1px solid var(--border-subtle); margin-top: 8px; padding-top: 8px; font-size: 0.85rem; color: #3fb950; display: flex; align-items: center; gap: 6px;">
-          <span>✓</span> Successfully Settled Up
+          Settlement Verified
         </div>
       `;
 
@@ -3461,22 +3610,23 @@
       const subtitleEl = document.getElementById('tx-summary-subtitle');
       const cardEl = document.getElementById('tx-summary-card');
 
+      const badgeColor = type === 'settlement' ? 'var(--cents-positive)' : 'var(--accent-primary)';
+      const badgeBg = type === 'settlement' ? 'var(--cents-positive-subtle)' : 'var(--accent-subtle)';
+      const badgeIcon = type === 'settlement' ? ICONS.check : (type === 'create_expense' ? ICONS.receipt : ICONS.wallet);
+      iconEl.innerHTML = `<div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: ${badgeBg}; color: ${badgeColor}; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); margin-bottom: 4px;">${badgeIcon}</div>`;
+
       if (type === 'create_expense') {
-        iconEl.textContent = '🎉';
-        titleEl.textContent = 'Expense Added!';
-        subtitleEl.textContent = 'Split recorded. Share the breakdown with your group.';
+        titleEl.textContent = 'Expense Recorded';
+        subtitleEl.textContent = 'Split entry logged. Share breakdown with group members.';
       } else if (type === 'update_expense') {
-        iconEl.textContent = '✏️';
-        titleEl.textContent = 'Expense Updated!';
-        subtitleEl.textContent = 'Changes saved. Share the updated breakdown with your group.';
+        titleEl.textContent = 'Expense Updated';
+        subtitleEl.textContent = 'Changes saved to ledger. Share updated breakdown.';
       } else if (type === 'settlement') {
-        iconEl.textContent = '💸';
-        titleEl.textContent = 'Settlement Recorded!';
-        subtitleEl.textContent = 'Payment recorded and group balance settled.';
+        titleEl.textContent = 'Settlement Recorded';
+        subtitleEl.textContent = 'Payment confirmed and ledger balances updated.';
       } else {
-        iconEl.textContent = '🧾';
         titleEl.textContent = 'Transaction Summary';
-        subtitleEl.textContent = 'Share this transaction with your group.';
+        subtitleEl.textContent = 'Share transaction entry with group members.';
       }
 
       cardEl.innerHTML = summaryObj.htmlPreview;
@@ -3960,7 +4110,7 @@
                   ${u.is_admin ? 'Demote' : 'Promote'}
                 </button>
                 <button class="btn btn-secondary btn-sm" onclick="openAdminResetPasswordModal('${u.id}', '${escapeHtml(u.display_name).replace(/'/g, "\\'")}', '${escapeHtml(u.email).replace(/'/g, "\\'")}')" title="Reset this user's password">
-                  🔑 Reset
+                  Reset
                 </button>
                 ${!isSelf ? `
                   <button class="btn btn-danger btn-sm" onclick="toggleUserStatus('${u.id}', ${!u.is_active}, this)">
