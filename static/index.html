@@ -2278,15 +2278,16 @@
   <div id="modal-transaction-summary" class="modal-overlay">
     <div class="modal-dialog" style="max-width: 440px;">
       <button class="modal-close" onclick="closeModal('modal-transaction-summary')">&times;</button>
-      <div id="tx-summary-card" style="text-align: center; padding: 10px 0;">
+      <div style="text-align: center; padding: 10px 0 14px 0;">
         <div id="tx-summary-icon" style="font-size: 2.2rem; margin-bottom: 8px;">✓</div>
         <h3 id="tx-summary-title" class="card-title" style="margin-bottom: 4px;">Transaction Created</h3>
-        <p id="tx-summary-subtitle" class="form-help" style="margin-bottom: 16px;">Expense successfully recorded to group ledger</p>
-        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-          <button type="button" id="btn-share-native" class="btn btn-primary btn-sm" onclick="triggerActiveShare()">Share to Apps</button>
-          <button type="button" id="btn-share-whatsapp" class="btn btn-secondary btn-sm" onclick="shareViaWhatsApp()">WhatsApp</button>
-          <button type="button" id="btn-copy-summary" class="btn btn-secondary btn-sm" onclick="copyActiveSummary()">Copy Summary</button>
-        </div>
+        <p id="tx-summary-subtitle" class="form-help" style="margin-bottom: 12px;">Expense successfully recorded to group ledger</p>
+      </div>
+      <div id="tx-summary-card" style="margin-bottom: 16px;"></div>
+      <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" id="btn-share-native" class="btn btn-primary btn-sm" onclick="triggerActiveShare()">Share to Apps</button>
+        <button type="button" id="btn-share-whatsapp" class="btn btn-secondary btn-sm" onclick="shareViaWhatsApp()">WhatsApp</button>
+        <button type="button" id="btn-copy-summary" class="btn btn-secondary btn-sm" onclick="copyActiveSummary()">Copy Summary</button>
       </div>
     </div>
   </div>
@@ -2783,42 +2784,44 @@
       setButtonLoading(syncBtn, true, 'Syncing...');
       isSyncing = true;
       const totalItems = queue.length;
-      updateSyncUI(`Starting sync for ${totalItems} item(s)...`, 10);
+      updateSyncUI(`Starting sync for ${totalItems} item(s)...`, 15);
 
       try {
-        // Step through items to provide granular ongoing feedback
-        for (let i = 0; i < totalItems; i++) {
-          const item = queue[i];
-          const pct = Math.round(((i + 1) / totalItems) * 80);
-          updateSyncUI(`Syncing "${item.title}" (${i + 1}/${totalItems})...`, pct);
-          await new Promise(r => setTimeout(r, 150)); // Visual smooth feedback
-        }
-
         const res = await apiFetch('/sync/batch', {
           method: 'POST',
           body: JSON.stringify({ mutations: queue })
         });
 
-        // Set to 100%
-        updateSyncUI(`All ${totalItems} items successfully synced!`, 100);
-        localStorage.removeItem('splitter_offline_queue');
+        // Determine which mutations succeeded
+        const appliedKeys = new Set(
+          (res.results || [])
+            .filter(r => r.status === 'applied' || r.status === 'already_processed')
+            .map(r => r.idempotency_key)
+        );
 
-        setTimeout(() => {
-          isSyncing = false;
-          updateSyncUI();
-          if (currentGroupId) {
-            loadGroupDetails(currentGroupId, false);
-          } else {
-            loadGroups(false);
-          }
-        }, 1200);
+        if (appliedKeys.size === 0 && Array.isArray(res.results) && res.results.length === queue.length) {
+          queue.forEach(q => appliedKeys.add(q.idempotency_key));
+        }
 
+        // Prune only processed items from offline storage to protect newly enqueued mutations
+        const freshQueue = getOfflineQueue();
+        const remaining = freshQueue.filter(item => !appliedKeys.has(item.idempotency_key));
+        saveOfflineQueue(remaining);
+
+        updateSyncUI(remaining.length === 0 ? 'All items synced!' : `${appliedKeys.size} item(s) synced`, 100);
+
+        if (currentGroupId) {
+          loadGroupDetails(currentGroupId, false);
+        } else {
+          loadGroups(false);
+        }
       } catch (e) {
         console.error('Offline sync failed:', e);
-        isSyncing = false;
         updateSyncUI('Sync paused due to connection issue.', 0);
       } finally {
+        isSyncing = false;
         setButtonLoading(syncBtn, false);
+        updateSyncUI();
       }
     }
 
@@ -4495,23 +4498,29 @@
       const badgeColor = type === 'settlement' ? 'var(--cents-positive)' : 'var(--accent-primary)';
       const badgeBg = type === 'settlement' ? 'var(--cents-positive-subtle)' : 'var(--accent-subtle)';
       const badgeIcon = type === 'settlement' ? ICONS.check : (type === 'create_expense' ? ICONS.receipt : ICONS.wallet);
-      iconEl.innerHTML = `<div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: ${badgeBg}; color: ${badgeColor}; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); margin-bottom: 4px;">${badgeIcon}</div>`;
-
-      if (type === 'create_expense') {
-        titleEl.textContent = 'Expense Recorded';
-        subtitleEl.textContent = 'Split entry logged. Share breakdown with group members.';
-      } else if (type === 'update_expense') {
-        titleEl.textContent = 'Expense Updated';
-        subtitleEl.textContent = 'Changes saved to ledger. Share updated breakdown.';
-      } else if (type === 'settlement') {
-        titleEl.textContent = 'Settlement Recorded';
-        subtitleEl.textContent = 'Payment confirmed and ledger balances updated.';
-      } else {
-        titleEl.textContent = 'Transaction Summary';
-        subtitleEl.textContent = 'Share transaction entry with group members.';
+      if (iconEl) {
+        iconEl.innerHTML = `<div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: ${badgeBg}; color: ${badgeColor}; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); margin-bottom: 4px;">${badgeIcon}</div>`;
       }
 
-      cardEl.innerHTML = summaryObj.htmlPreview;
+      if (titleEl && subtitleEl) {
+        if (type === 'create_expense') {
+          titleEl.textContent = 'Expense Recorded';
+          subtitleEl.textContent = 'Split entry logged. Share breakdown with group members.';
+        } else if (type === 'update_expense') {
+          titleEl.textContent = 'Expense Updated';
+          subtitleEl.textContent = 'Changes saved to ledger. Share updated breakdown.';
+        } else if (type === 'settlement') {
+          titleEl.textContent = 'Settlement Recorded';
+          subtitleEl.textContent = 'Payment confirmed and ledger balances updated.';
+        } else {
+          titleEl.textContent = 'Transaction Summary';
+          subtitleEl.textContent = 'Share transaction entry with group members.';
+        }
+      }
+
+      if (cardEl) {
+        cardEl.innerHTML = summaryObj.htmlPreview;
+      }
       openModal('modal-transaction-summary');
     }
 
@@ -4529,10 +4538,25 @@
         }
       }
 
-      // 2. Web Share API
+      // 2. Web Share API (iOS Safari, Android Chrome, Edge)
+      const shareData = { title: title, text: plainText };
       if (navigator.share) {
-        navigator.share({ title: title, text: plainText }).catch(err => {
-          if (err.name !== 'AbortError') {
+        if (navigator.canShare) {
+          try {
+            if (navigator.canShare(shareData)) {
+              navigator.share(shareData).catch(err => {
+                if (err && err.name !== 'AbortError') {
+                  copyActiveSummary();
+                }
+              });
+              return;
+            }
+          } catch (e) {
+            // canShare can throw on older WebKit versions
+          }
+        }
+        navigator.share(shareData).catch(err => {
+          if (err && err.name !== 'AbortError') {
             copyActiveSummary();
           }
         });
@@ -4543,22 +4567,64 @@
 
     function shareViaWhatsApp() {
       if (!activeShareData) return;
-      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(activeShareData.plainText)}`;
-      window.open(url, '_blank');
+      const text = encodeURIComponent(activeShareData.plainText);
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        // Universal Link / direct scheme avoids iOS Safari popup blocker
+        window.location.href = `https://api.whatsapp.com/send?text=${text}`;
+      } else {
+        window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank', 'noopener,noreferrer');
+      }
+    }
+
+    function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).catch(() => {
+          if (fallbackCopy(text)) return Promise.resolve();
+          return Promise.reject(new Error('Copy failed'));
+        });
+      }
+      if (fallbackCopy(text)) return Promise.resolve();
+      return Promise.reject(new Error('Copy failed'));
+    }
+
+    function fallbackCopy(text) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.setAttribute('readonly', '');
+      el.style.position = 'fixed';
+      el.style.left = '-9999px';
+      el.style.top = '0';
+      document.body.appendChild(el);
+      el.focus();
+      el.select();
+      el.setSelectionRange(0, 99999);
+      let success = false;
+      try {
+        success = document.execCommand('copy');
+      } catch (e) {
+        success = false;
+      }
+      document.body.removeChild(el);
+      return success;
     }
 
     function copyActiveSummary() {
       if (!activeShareData) return;
       const btn = document.getElementById('btn-copy-summary');
-      navigator.clipboard.writeText(activeShareData.plainText).then(() => {
-        if (btn) {
-          const orig = btn.innerHTML;
-          btn.innerHTML = `<span style="color: #3fb950;">✓ Copied!</span>`;
-          setTimeout(() => { btn.innerHTML = orig; }, 2000);
-        }
-      }).catch(() => {
-        alert('Summary copied to clipboard!');
-      });
+      const orig = btn ? btn.innerHTML : 'Copy Summary';
+      copyTextToClipboard(activeShareData.plainText)
+        .then(() => {
+          if (btn) {
+            btn.innerHTML = `<span style="color: var(--cents-positive, #3fb950);">✓ Copied!</span>`;
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
+          } else {
+            alert('Summary copied to clipboard!');
+          }
+        })
+        .catch(() => {
+          alert('Could not copy automatically. Please copy the summary manually.');
+        });
     }
 
     function shareExpenseById(expId) {
@@ -4765,7 +4831,11 @@
       recomputeAndRenderGroupState(currentGroupId);
 
       // Display transaction summary with sharing options
-      showTransactionSummary(isEdit ? 'update_expense' : 'create_expense', summaryObj);
+      try {
+        showTransactionSummary(isEdit ? 'update_expense' : 'create_expense', summaryObj);
+      } catch (sumErr) {
+        console.warn('Could not display summary modal:', sumErr);
+      }
       resetAttachmentUI();
 
       try {
@@ -4970,8 +5040,11 @@
 
       const groupName = currentGroupDetail ? currentGroupDetail.group.name : '';
       const currency = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
-      const summaryObj = formatSettlementSummary(optimisticSettle, groupName, currency);
-      showTransactionSummary('settlement', summaryObj);
+      try {
+        showTransactionSummary('settlement', summaryObj);
+      } catch (sumErr) {
+        console.warn('Could not display settlement summary modal:', sumErr);
+      }
 
       // 2. Transmit or queue
       if (!navigator.onLine) {
