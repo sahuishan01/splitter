@@ -1,6 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+
+    // === MULTI-THEME ENGINE ===
+    const THEMES = [
+      { id: 'obsidian', name: 'Obsidian', color: '#388bfd' },
+      { id: 'warmth', name: 'Warmth', color: '#f59e0b' },
+      { id: 'slate', name: 'Slate', color: '#00f0ff' },
+      { id: 'frost', name: 'Frost', color: '#2dd4bf' },
+      { id: 'light', name: 'Light', color: '#2563eb' }
+    ];
+
+    function selectTheme(themeId) {
+      document.documentElement.setAttribute('data-theme', themeId);
+      try {
+        localStorage.setItem('splitter_theme', themeId);
+      } catch (e) {}
+      updateThemeUI(themeId);
+      const menu = document.getElementById('theme-dropdown-menu');
+      if (menu) menu.classList.add('hidden');
+    }
+
+    function toggleThemeDropdown(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('theme-dropdown-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function updateThemeUI(activeThemeId) {
+      const activeObj = THEMES.find(t => t.id === activeThemeId) || THEMES[0];
+      const label = document.getElementById('header-theme-label');
+      if (label) label.textContent = activeObj.name;
+
+      // Update active classes across all theme buttons
+      document.querySelectorAll('.theme-option-btn').forEach(btn => {
+        const isCurrent = btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(activeThemeId);
+        btn.classList.toggle('active', !!isCurrent);
+      });
+    }
+
+    // Close theme dropdown on outside click
+    document.addEventListener('click', (e) => {
+      const wrapper = document.querySelector('.theme-dropdown-wrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+        const menu = document.getElementById('theme-dropdown-menu');
+        if (menu) menu.classList.add('hidden');
+      }
+    });
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        const menu = document.getElementById('theme-dropdown-menu');
+        if (menu) menu.classList.add('hidden');
+      }
+    });
+
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    // === USER-FRIENDLY GROUPS SEARCH & OVERVIEW ===
+    let allGroupsCache = [];
+
+    function handleGroupsSearch(e) {
+      const q = (e.target.value || '').trim().toLowerCase();
+      const countEl = document.getElementById('groups-filter-count');
+      if (!q) {
+        renderGroupsList(allGroupsCache);
+        if (countEl) countEl.textContent = `Showing all ${allGroupsCache.length} groups`;
+        return;
+      }
+      const filtered = allGroupsCache.filter(g => {
+        return (g.name && g.name.toLowerCase().includes(q)) ||
+               (g.description && g.description.toLowerCase().includes(q)) ||
+               (g.default_currency && g.default_currency.toLowerCase().includes(q));
+      });
+      renderGroupsList(filtered);
+      if (countEl) countEl.textContent = `Found ${filtered.length} of ${allGroupsCache.length} groups`;
+    }
+
+    function updateGroupsOverviewStats(groups) {
+      allGroupsCache = groups || [];
+      const countEl = document.getElementById('overview-groups-count');
+      const volEl = document.getElementById('overview-total-volume');
+      if (countEl) countEl.textContent = allGroupsCache.length;
+
+      if (volEl) {
+        const totalVolumeCents = allGroupsCache.reduce((sum, g) => sum + (g.total_expense_cents || 0), 0);
+        const cur = allGroupsCache.length > 0 ? allGroupsCache[0].default_currency : 'USD';
+        volEl.textContent = formatMoney(totalVolumeCents, cur);
+      }
+    }
+
+    // === USER-FRIENDLY EXPENSE SEARCH, FILTER & SORT ===
+    let activeGroupExpenses = [];
+
+    function applyExpenseFilters() {
+      const query = (document.getElementById('expense-search-input')?.value || '').trim().toLowerCase();
+      const cat = document.getElementById('expense-category-filter')?.value || '';
+      const sort = document.getElementById('expense-sort-filter')?.value || 'newest';
+      const cur = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+
+      let filtered = [...activeGroupExpenses];
+
+      if (cat) {
+        filtered = filtered.filter(e => e.category === cat);
+      }
+      if (query) {
+        filtered = filtered.filter(e => {
+          const inDesc = e.description && e.description.toLowerCase().includes(query);
+          const inPayer = e.paid_by_name && e.paid_by_name.toLowerCase().includes(query);
+          const inSplits = (e.splits || []).some(s => s.display_name && s.display_name.toLowerCase().includes(query));
+          return inDesc || inPayer || inSplits;
+        });
+      }
+
+      if (sort === 'oldest') {
+        filtered.sort((a, b) => new Date(a.expense_date || 0) - new Date(b.expense_date || 0));
+      } else if (sort === 'highest') {
+        filtered.sort((a, b) => (b.amount_cents || 0) - (a.amount_cents || 0));
+      } else {
+        filtered.sort((a, b) => new Date(b.expense_date || 0) - new Date(a.expense_date || 0));
+      }
+
+      renderExpensesDOM(filtered, cur);
+    }
+
+    // === GROUP DETAIL RESPONSIVE SECTION TABS ===
+    let activeGroupTab = 'all';
+
+    function switchGroupViewTab(tab) {
+      activeGroupTab = tab;
+      document.querySelectorAll('.group-tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tab);
+      });
+
+      const secBalances = document.getElementById('section-balances');
+      const secExpenses = document.getElementById('section-expenses');
+      const secSettlements = document.getElementById('section-settlements');
+
+      if (tab === 'all') {
+        if (secBalances) secBalances.classList.remove('hidden');
+        if (secExpenses) secExpenses.classList.remove('hidden');
+        if (secSettlements) secSettlements.classList.remove('hidden');
+      } else if (tab === 'balances') {
+        if (secBalances) secBalances.classList.remove('hidden');
+        if (secExpenses) secExpenses.classList.add('hidden');
+        if (secSettlements) secSettlements.classList.add('hidden');
+      } else if (tab === 'expenses') {
+        if (secBalances) secBalances.classList.add('hidden');
+        if (secExpenses) secExpenses.classList.remove('hidden');
+        if (secSettlements) secSettlements.classList.add('hidden');
+      } else if (tab === 'settlements') {
+        if (secBalances) secBalances.classList.add('hidden');
+        if (secExpenses) secExpenses.classList.add('hidden');
+        if (secSettlements) secSettlements.classList.remove('hidden');
+      }
+    }
+    (function() {
+      try {
+        var saved = localStorage.getItem('splitter_theme') || 'obsidian';
+        document.documentElement.setAttribute('data-theme', saved);
+      } catch (e) {}
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Splitter - Expense Splitting & Debt Settlement</title>
@@ -8,6 +176,290 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    
+    /* === MULTI-THEME DEFINITIONS === */
+    :root, [data-theme="obsidian"] {
+      --bg-canvas: #0b0f14;
+      --bg-surface: #121820;
+      --bg-elevated: #17202c;
+      --bg-input: #0d1218;
+      --bg-hover: #1c2635;
+      --bg-active: #222f42;
+      --bg-overlay: rgba(11, 15, 20, 0.88);
+
+      --border-subtle: #1f2937;
+      --border-muted: #2d3748;
+      --border-focus: #388bfd;
+
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --text-dim: #656d76;
+
+      --accent-primary: #388bfd;
+      --accent-hover: #4a96ff;
+      --accent-active: #2f74d0;
+      --accent-subtle: rgba(56, 139, 253, 0.12);
+      --accent-border: rgba(56, 139, 253, 0.35);
+
+      --cents-positive: #2ea043;
+      --cents-positive-subtle: rgba(46, 160, 67, 0.12);
+      --cents-negative: #f85149;
+      --cents-negative-subtle: rgba(248, 81, 73, 0.12);
+      --warning: #d29922;
+      --warning-subtle: rgba(210, 153, 34, 0.12);
+      --shadow-dropdown: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    [data-theme="warmth"] {
+      --bg-canvas: #14171d;
+      --bg-surface: #1c2029;
+      --bg-elevated: #242a36;
+      --bg-input: #11141a;
+      --bg-hover: #2c3342;
+      --bg-active: #343d4e;
+      --bg-overlay: rgba(20, 23, 29, 0.88);
+
+      --border-subtle: #2d3443;
+      --border-muted: #3d4659;
+      --border-focus: #f59e0b;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --accent-primary: #f59e0b;
+      --accent-hover: #fbbf24;
+      --accent-active: #d97706;
+      --accent-subtle: rgba(245, 158, 11, 0.12);
+      --accent-border: rgba(245, 158, 11, 0.35);
+
+      --cents-positive: #10b981;
+      --cents-positive-subtle: rgba(16, 185, 129, 0.12);
+      --cents-negative: #f43f5e;
+      --cents-negative-subtle: rgba(244, 63, 94, 0.12);
+      --warning: #f59e0b;
+      --warning-subtle: rgba(245, 158, 11, 0.12);
+      --shadow-dropdown: 0 12px 32px rgba(0, 0, 0, 0.55);
+    }
+
+    [data-theme="slate"] {
+      --bg-canvas: #080d1a;
+      --bg-surface: #0f172a;
+      --bg-elevated: #1e293b;
+      --bg-input: #0b1120;
+      --bg-hover: #243247;
+      --bg-active: #2e3e57;
+      --bg-overlay: rgba(8, 13, 26, 0.88);
+
+      --border-subtle: #1e293b;
+      --border-muted: #334155;
+      --border-focus: #00f0ff;
+
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --accent-primary: #00f0ff;
+      --accent-hover: #38f4ff;
+      --accent-active: #00c7d4;
+      --accent-subtle: rgba(0, 240, 255, 0.12);
+      --accent-border: rgba(0, 240, 255, 0.35);
+
+      --cents-positive: #05ffb0;
+      --cents-positive-subtle: rgba(5, 255, 176, 0.12);
+      --cents-negative: #ff2a6d;
+      --cents-negative-subtle: rgba(255, 42, 109, 0.12);
+      --warning: #facc15;
+      --warning-subtle: rgba(250, 204, 21, 0.12);
+      --shadow-dropdown: 0 12px 32px rgba(0, 0, 0, 0.65);
+    }
+
+    [data-theme="frost"] {
+      --bg-canvas: #081218;
+      --bg-surface: #0d1e28;
+      --bg-elevated: #152a37;
+      --bg-input: #0a1720;
+      --bg-hover: #1d3748;
+      --bg-active: #254459;
+      --bg-overlay: rgba(8, 18, 24, 0.88);
+
+      --border-subtle: #193342;
+      --border-muted: #26495d;
+      --border-focus: #2dd4bf;
+
+      --text-main: #f0fdfa;
+      --text-muted: #99f6e4;
+      --text-dim: #5eead4a0;
+
+      --accent-primary: #2dd4bf;
+      --accent-hover: #5eead4;
+      --accent-active: #14b8a6;
+      --accent-subtle: rgba(45, 212, 191, 0.12);
+      --accent-border: rgba(45, 212, 191, 0.35);
+
+      --cents-positive: #34d399;
+      --cents-positive-subtle: rgba(52, 211, 153, 0.12);
+      --cents-negative: #fb7185;
+      --cents-negative-subtle: rgba(251, 113, 133, 0.12);
+      --warning: #fbbf24;
+      --warning-subtle: rgba(251, 191, 36, 0.12);
+      --shadow-dropdown: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    [data-theme="light"] {
+      --bg-canvas: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-elevated: #f1f5f9;
+      --bg-input: #ffffff;
+      --bg-hover: #e2e8f0;
+      --bg-active: #cbd5e1;
+      --bg-overlay: rgba(15, 23, 42, 0.55);
+
+      --border-subtle: #e2e8f0;
+      --border-muted: #cbd5e1;
+      --border-focus: #2563eb;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+
+      --accent-primary: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-active: #1e40af;
+      --accent-subtle: rgba(37, 99, 235, 0.08);
+      --accent-border: rgba(37, 99, 235, 0.25);
+
+      --cents-positive: #16a34a;
+      --cents-positive-subtle: rgba(22, 163, 74, 0.1);
+      --cents-negative: #dc2626;
+      --cents-negative-subtle: rgba(220, 38, 38, 0.1);
+      --warning: #d97706;
+      --warning-subtle: rgba(217, 119, 6, 0.1);
+      --shadow-dropdown: 0 16px 36px rgba(15, 23, 42, 0.12);
+    }
+
+    /* Common Theme Transition */
+    body, header, .card, .group-card, .btn, .form-input, .modal-dialog, .balance-row, .debt-item, .expense-row {
+      transition: background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.15s ease;
+    }
+
+    /* Modern Theme Switcher UI */
+    .theme-dropdown-wrapper {
+      position: relative;
+    }
+    .theme-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px;
+      min-width: 175px;
+      z-index: 250;
+      box-shadow: var(--shadow-dropdown);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .theme-menu.hidden {
+      display: none !important;
+    }
+    .theme-option-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 6px 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-xs);
+      color: var(--text-main);
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all var(--transition-fast);
+    }
+    .theme-option-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-subtle);
+    }
+    .theme-option-btn.active {
+      background: var(--bg-elevated);
+      border-color: var(--accent-primary);
+      font-weight: 600;
+    }
+    .theme-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+    }
+
+    /* Section Tabs for Mobile/Responsive Navigation */
+    .group-view-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .group-tab-btn {
+      flex: 1;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+    .group-tab-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-elevated);
+    }
+    .group-tab-btn.active {
+      color: var(--text-main);
+      background: var(--bg-elevated);
+      border-color: var(--border-muted);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Search & Filter Controls */
+    .search-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+    }
+    .search-box input {
+      padding-left: 30px;
+    }
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
     :root {
       /* Deep Obsidian Financial Ledger Theme */
       --bg-canvas: #0b0f14;
@@ -1061,8 +1513,16 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="auth-password">Password</label>
-          <input type="password" id="auth-password" class="form-input" placeholder="Minimum 6 characters" required />
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <label class="form-label" for="auth-password" style="margin-bottom: 0;">Password</label>
+            <span style="font-size: 0.72rem; color: var(--text-dim);">Min. 6 chars</span>
+          </div>
+          <div style="position: relative;">
+            <input type="password" id="auth-password" class="form-input" placeholder="Enter your password" style="padding-right: 36px;" required />
+            <button type="button" onclick="togglePasswordVisibility('auth-password')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 4px; display: flex; align-items: center;" title="Show or hide password">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
         </div>
 
         <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
@@ -1094,6 +1554,13 @@
 
     <!-- Group Detail View -->
     <div id="view-group-detail" class="hidden">
+      <!-- Responsive Section Navigator for Mobile & Tablet -->
+      <div id="group-nav-tabs" class="group-view-tabs">
+        <button type="button" class="group-tab-btn active" data-tab="all" onclick="switchGroupViewTab('all')">Complete Overview</button>
+        <button type="button" class="group-tab-btn" data-tab="balances" onclick="switchGroupViewTab('balances')">Balances & Statements</button>
+        <button type="button" class="group-tab-btn" data-tab="expenses" onclick="switchGroupViewTab('expenses')">Expense Ledger</button>
+        <button type="button" class="group-tab-btn" data-tab="settlements" onclick="switchGroupViewTab('settlements')">Settlements</button>
+      </div>
       <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div>
           <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')" style="margin-bottom: 8px;">← Back to Groups</button>
@@ -1152,7 +1619,7 @@
       </div>
 
       <!-- Balances and Debt Simplification Cards -->
-      <div class="grid-cols-2">
+      <div id="section-balances" class="grid-cols-2">
         <!-- Member Balances Card -->
         <div class="card">
           <div class="card-header" style="margin-bottom: 12px;">
@@ -1188,15 +1655,41 @@
       </div>
 
       <!-- Expense History -->
-      <div class="card">
-        <h3 class="card-title" style="margin-bottom: 16px;">Expense History</h3>
+      <div id="section-expenses" class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h3 class="card-title" style="margin-bottom: 0;">Expense Ledger</h3>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            <select id="expense-category-filter" class="form-select" style="padding: 4px 8px; font-size: 0.76rem; width: auto;" onchange="applyExpenseFilters()">
+              <option value="">All Categories</option>
+              <option value="General">General</option>
+              <option value="Food & Drinks">Food & Drinks</option>
+              <option value="Groceries">Groceries</option>
+              <option value="Travel & Transit">Travel & Transit</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Shopping">Shopping</option>
+            </select>
+            <select id="expense-sort-filter" class="form-select" style="padding: 4px 8px; font-size: 0.76rem; width: auto;" onchange="applyExpenseFilters()">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="highest">Highest Amount</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Expense Live Search -->
+        <div class="search-box" style="margin-bottom: 12px;">
+          <input type="text" id="expense-search-input" class="form-input" placeholder="Search expense description, payer, or member..." oninput="applyExpenseFilters()" style="padding-left: 28px; font-size: 0.8rem;" />
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+
         <div id="expenses-list" class="expense-list">
           <!-- Expenses rendered here -->
         </div>
       </div>
 
       <!-- Settlement History -->
-      <div class="card">
+      <div id="section-settlements" class="card">
         <h3 class="card-title" style="margin-bottom: 16px;">Settlement Payments</h3>
         <div id="settlements-list">
           <!-- Settlements rendered here -->
@@ -1601,6 +2094,30 @@
             <button type="submit" id="btn-change-pwd" class="btn btn-secondary btn-sm">Update Password</button>
           </div>
         </form>
+      </div>
+
+      <!-- Theme Appearance Selector -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 14px;">
+        <h4 style="font-size: 0.88rem; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">
+          Interface Theme & Appearance
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px;">
+          <button type="button" class="theme-option-btn" onclick="selectTheme('obsidian')">
+            <span class="theme-swatch" style="background: #388bfd;"></span> Obsidian
+          </button>
+          <button type="button" class="theme-option-btn" onclick="selectTheme('warmth')">
+            <span class="theme-swatch" style="background: #f59e0b;"></span> Warmth
+          </button>
+          <button type="button" class="theme-option-btn" onclick="selectTheme('slate')">
+            <span class="theme-swatch" style="background: #00f0ff;"></span> Slate
+          </button>
+          <button type="button" class="theme-option-btn" onclick="selectTheme('frost')">
+            <span class="theme-swatch" style="background: #2dd4bf;"></span> Frost
+          </button>
+          <button type="button" class="theme-option-btn" onclick="selectTheme('light')">
+            <span class="theme-swatch" style="background: #2563eb; border-color: #cbd5e1;"></span> Light
+          </button>
+        </div>
       </div>
 
       <!-- App Reset & Maintenance Options -->
@@ -2493,7 +3010,8 @@
       try {
         const groups = await apiFetch('/groups');
         cacheSet('groups', groups);
-        renderGroupsList(groups);
+        updateGroupsOverviewStats(groups);
+      renderGroupsList(groups);
       } catch (err) {
         console.warn('Network groups fetch failed, relying on local storage cache:', err.message);
       }
@@ -2933,6 +3451,11 @@
     }
 
     function renderExpensesUI(expenses, currency) {
+      activeGroupExpenses = expenses || [];
+      applyExpenseFilters();
+    }
+
+    function renderExpensesDOM(expenses, currency) {
       const container = document.getElementById('expenses-list');
       container.innerHTML = '';
 
