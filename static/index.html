@@ -1115,6 +1115,44 @@
       transform: scale(0.96);
     }
 
+    /* Splitwise Ledger Quick Filters */
+    .expense-filter-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 2px 0;
+    }
+    .expense-filter-pills::-webkit-scrollbar {
+      display: none;
+    }
+    .expense-filter-pill {
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+      user-select: none;
+      line-height: 1.4;
+    }
+    .expense-filter-pill:hover {
+      color: var(--text-main);
+      background: var(--bg-hover);
+      border-color: var(--border-muted);
+    }
+    .expense-filter-pill.active {
+      color: #ffffff !important;
+      background: var(--accent-primary) !important;
+      border-color: var(--accent-primary) !important;
+      box-shadow: 0 2px 8px rgba(28, 194, 159, 0.35);
+    }
+
     /* === AUTH VIEW === */
     .auth-container {
       max-width: 400px;
@@ -1896,31 +1934,56 @@
 
       <!-- Expense Ledger Section -->
       <div id="section-expenses" class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
-          <h3 class="card-title" style="margin-bottom: 0;">Expense Ledger</h3>
-          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-            <select id="expense-category-filter" class="form-select" style="padding: 4px 8px; font-size: 0.76rem; width: auto;" onchange="applyExpenseFilters()">
-              <option value="">All Categories</option>
-              <option value="General">General</option>
-              <option value="Food & Drinks">Food & Drinks</option>
-              <option value="Groceries">Groceries</option>
-              <option value="Travel & Transit">Travel & Transit</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Utilities">Utilities</option>
-              <option value="Shopping">Shopping</option>
-            </select>
-            <select id="expense-sort-filter" class="form-select" style="padding: 4px 8px; font-size: 0.76rem; width: auto;" onchange="applyExpenseFilters()">
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="highest">Highest Amount</option>
-            </select>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h3 class="card-title" style="margin-bottom: 0;">Expense Ledger</h3>
+            <span id="expense-count-badge" class="role-tag" style="font-size: 0.72rem; padding: 2px 7px;">0 total</span>
+          </div>
+          <!-- Quick Filter Pills -->
+          <div class="expense-filter-pills">
+            <button type="button" class="expense-filter-pill active" data-filter="all" onclick="setExpenseFilterPill('all')">All</button>
+            <button type="button" class="expense-filter-pill" data-filter="paid_by_me" onclick="setExpenseFilterPill('paid_by_me')">Paid by you</button>
+            <button type="button" class="expense-filter-pill" data-filter="lent" onclick="setExpenseFilterPill('lent')">You lent</button>
+            <button type="button" class="expense-filter-pill" data-filter="borrowed" onclick="setExpenseFilterPill('borrowed')">You borrowed</button>
           </div>
         </div>
 
-        <!-- Expense Live Search -->
-        <div class="search-box" style="margin-bottom: 14px;">
-          <input type="text" id="expense-search-input" class="form-input" placeholder="Search expense description, payer, or member..." oninput="applyExpenseFilters()" style="padding-left: 28px; font-size: 0.82rem;" />
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <!-- Filter Controls Bar -->
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px;">
+          <!-- Expense Live Search -->
+          <div class="search-box" style="flex: 1; min-width: 170px; margin-bottom: 0;">
+            <input type="text" id="expense-search-input" class="form-input" placeholder="Search description, payer..." oninput="applyExpenseFilters()" style="padding-left: 28px; font-size: 0.82rem;" />
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+
+          <!-- Paid By Filter -->
+          <select id="expense-payer-filter" class="form-select" style="padding: 5px 9px; font-size: 0.78rem; width: auto; min-width: 110px;" onchange="applyExpenseFilters()">
+            <option value="">All Payers</option>
+            <option value="me">Paid by You</option>
+          </select>
+
+          <!-- Category Filter -->
+          <select id="expense-category-filter" class="form-select" style="padding: 5px 9px; font-size: 0.78rem; width: auto;" onchange="applyExpenseFilters()">
+            <option value="">All Categories</option>
+            <option value="General">General</option>
+            <option value="Food & Drinks">Food & Drinks</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Travel & Transit">Travel & Transit</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Shopping">Shopping</option>
+          </select>
+
+          <!-- Sort Filter -->
+          <select id="expense-sort-filter" class="form-select" style="padding: 5px 9px; font-size: 0.78rem; width: auto;" onchange="applyExpenseFilters()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="highest">Highest Amount</option>
+            <option value="lowest">Lowest Amount</option>
+          </select>
+
+          <!-- Reset Filter Button -->
+          <button type="button" id="expense-filter-reset-btn" class="btn btn-secondary btn-sm hidden" onclick="resetExpenseFilters()" title="Reset all filters" style="padding: 5px 9px; font-size: 0.75rem;">Reset</button>
         </div>
 
         <div id="expenses-list" class="expense-list">
@@ -2550,18 +2613,102 @@
 
     // === USER-FRIENDLY EXPENSE SEARCH, FILTER & SORT ===
     let activeGroupExpenses = [];
+    let activeExpenseFilterPill = 'all';
+
+    function setExpenseFilterPill(pill) {
+      activeExpenseFilterPill = pill;
+      document.querySelectorAll('.expense-filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === pill);
+      });
+      applyExpenseFilters();
+    }
+
+    function resetExpenseFilters() {
+      activeExpenseFilterPill = 'all';
+      document.querySelectorAll('.expense-filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === 'all');
+      });
+      const searchInput = document.getElementById('expense-search-input');
+      if (searchInput) searchInput.value = '';
+      const payerSelect = document.getElementById('expense-payer-filter');
+      if (payerSelect) payerSelect.value = '';
+      const catSelect = document.getElementById('expense-category-filter');
+      if (catSelect) catSelect.value = '';
+      const sortSelect = document.getElementById('expense-sort-filter');
+      if (sortSelect) sortSelect.value = 'newest';
+      applyExpenseFilters();
+    }
+
+    function updateExpenseFilterMembers(members) {
+      const payerSelect = document.getElementById('expense-payer-filter');
+      if (!payerSelect) return;
+      const currentVal = payerSelect.value;
+      const myId = currentUser ? currentUser.id : null;
+      payerSelect.innerHTML = '<option value="">All Payers</option><option value="me">Paid by You</option>';
+      (members || []).forEach(m => {
+        if (m.user_id !== myId) {
+          const opt = document.createElement('option');
+          opt.value = m.user_id;
+          opt.textContent = `Paid by ${m.display_name}`;
+          payerSelect.appendChild(opt);
+        }
+      });
+      if (Array.from(payerSelect.options).some(o => o.value === currentVal)) {
+        payerSelect.value = currentVal;
+      } else {
+        payerSelect.value = '';
+      }
+    }
 
     function applyExpenseFilters() {
-      const query = (document.getElementById('expense-search-input')?.value || '').trim().toLowerCase();
+      const searchInput = document.getElementById('expense-search-input');
+      const query = (searchInput?.value || '').trim().toLowerCase();
       const cat = document.getElementById('expense-category-filter')?.value || '';
+      const payer = document.getElementById('expense-payer-filter')?.value || '';
       const sort = document.getElementById('expense-sort-filter')?.value || 'newest';
       const cur = currentGroupDetail ? currentGroupDetail.group.default_currency : 'USD';
+      const myId = currentUser ? currentUser.id : null;
+
+      // Toggle Reset button visibility
+      const isFiltered = Boolean(query || cat || payer || activeExpenseFilterPill !== 'all' || sort !== 'newest');
+      const resetBtn = document.getElementById('expense-filter-reset-btn');
+      if (resetBtn) resetBtn.classList.toggle('hidden', !isFiltered);
 
       let filtered = [...activeGroupExpenses];
 
+      // 1. Quick Pill Filter
+      if (activeExpenseFilterPill === 'paid_by_me') {
+        filtered = filtered.filter(e => e.paid_by === myId);
+      } else if (activeExpenseFilterPill === 'lent') {
+        filtered = filtered.filter(e => {
+          if (e.paid_by !== myId) return false;
+          const mySplit = (e.splits || []).find(s => s.user_id === myId);
+          const myShare = mySplit ? (mySplit.amount_cents || 0) : 0;
+          return (e.amount_cents - myShare) > 0;
+        });
+      } else if (activeExpenseFilterPill === 'borrowed') {
+        filtered = filtered.filter(e => {
+          if (e.paid_by === myId) return false;
+          const mySplit = (e.splits || []).find(s => s.user_id === myId);
+          return mySplit && (mySplit.amount_cents || 0) > 0;
+        });
+      }
+
+      // 2. Paid By Selector Filter
+      if (payer) {
+        if (payer === 'me') {
+          filtered = filtered.filter(e => e.paid_by === myId);
+        } else {
+          filtered = filtered.filter(e => e.paid_by === payer);
+        }
+      }
+
+      // 3. Category Filter
       if (cat) {
         filtered = filtered.filter(e => e.category === cat);
       }
+
+      // 4. Live Search Filter
       if (query) {
         filtered = filtered.filter(e => {
           const inDesc = e.description && e.description.toLowerCase().includes(query);
@@ -2571,12 +2718,27 @@
         });
       }
 
+      // 5. Sorting
       if (sort === 'oldest') {
         filtered.sort((a, b) => new Date(a.expense_date || 0) - new Date(b.expense_date || 0));
       } else if (sort === 'highest') {
         filtered.sort((a, b) => (b.amount_cents || 0) - (a.amount_cents || 0));
+      } else if (sort === 'lowest') {
+        filtered.sort((a, b) => (a.amount_cents || 0) - (b.amount_cents || 0));
       } else {
         filtered.sort((a, b) => new Date(b.expense_date || 0) - new Date(a.expense_date || 0));
+      }
+
+      // 6. Update Counter Badge
+      const countBadge = document.getElementById('expense-count-badge');
+      if (countBadge) {
+        if (activeGroupExpenses.length === 0) {
+          countBadge.textContent = '0 total';
+        } else if (filtered.length === activeGroupExpenses.length) {
+          countBadge.textContent = `${activeGroupExpenses.length} total`;
+        } else {
+          countBadge.textContent = `${filtered.length} of ${activeGroupExpenses.length}`;
+        }
       }
 
       renderExpensesDOM(filtered, cur);
@@ -3508,6 +3670,19 @@
     // Group Details Logic (with Local Storage Cache & Auto-Adjust Statements)
     async function openGroup(groupId) {
       currentGroupId = groupId;
+      activeExpenseFilterPill = 'all';
+      document.querySelectorAll('.expense-filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === 'all');
+      });
+      const searchInput = document.getElementById('expense-search-input');
+      if (searchInput) searchInput.value = '';
+      const payerSelect = document.getElementById('expense-payer-filter');
+      if (payerSelect) payerSelect.value = '';
+      const catSelect = document.getElementById('expense-category-filter');
+      if (catSelect) catSelect.value = '';
+      const sortSelect = document.getElementById('expense-sort-filter');
+      if (sortSelect) sortSelect.value = 'newest';
+
       try {
         localStorage.setItem('splitter_active_group_id', groupId);
         if (window.location.hash !== '#group=' + groupId) {
@@ -3907,6 +4082,9 @@
 
     function renderExpensesUI(expenses, currency) {
       activeGroupExpenses = expenses || [];
+      if (currentGroupDetail && currentGroupDetail.members) {
+        updateExpenseFilterMembers(currentGroupDetail.members);
+      }
       applyExpenseFilters();
     }
 
@@ -3915,14 +4093,25 @@
       container.innerHTML = '';
 
       if (!expenses || expenses.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; color: var(--text-muted); padding: 36px 16px;">
-            <div style="font-size: 2.2rem; margin-bottom: 8px; opacity: 0.6;">🧾</div>
-            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 4px;">No expenses recorded yet</div>
-            <div style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 16px;">Add an expense to start tracking splits in this group.</div>
-            <button class="btn btn-primary btn-sm" onclick="openAddExpenseModal()">+ Add an expense</button>
-          </div>
-        `;
+        if (activeGroupExpenses && activeGroupExpenses.length > 0) {
+          container.innerHTML = `
+            <div style="text-align: center; color: var(--text-muted); padding: 36px 16px;">
+              <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.7;">🔍</div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 4px;">No matching expenses</div>
+              <div style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 14px;">No expenses match the selected filter criteria.</div>
+              <button class="btn btn-secondary btn-sm" onclick="resetExpenseFilters()">Clear filters</button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div style="text-align: center; color: var(--text-muted); padding: 36px 16px;">
+              <div style="font-size: 2.2rem; margin-bottom: 8px; opacity: 0.6;">🧾</div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 4px;">No expenses recorded yet</div>
+              <div style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 16px;">Add an expense to start tracking splits in this group.</div>
+              <button class="btn btn-primary btn-sm" onclick="openAddExpenseModal()">+ Add an expense</button>
+            </div>
+          `;
+        }
         return;
       }
 

@@ -2068,7 +2068,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.22"
+      "version": "0.1.23"
     },
     {
       "id": "sqlitepool",
@@ -12436,5 +12436,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "93d32408c0672c04514f516dbc4d853c7f2f8cd4"
+  "built_at_commit": "2ff88c3af37f67512fc173785a0fbc0a2d6d1dfb"
 }
