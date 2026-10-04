@@ -185,6 +185,87 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                val uri = request?.url ?: return false
+                return handleUri(uri)
+            }
+
+            @Deprecated("Deprecated in Java")
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                val uri = url?.let { Uri.parse(it) } ?: return false
+                return handleUri(uri)
+            }
+
+            private fun handleUri(uri: Uri): Boolean {
+                val scheme = uri.scheme?.lowercase() ?: return false
+                val host = uri.host?.lowercase() ?: ""
+
+                // Handle external WhatsApp links (api.whatsapp.com, wa.me, chat.whatsapp.com)
+                if (host.contains("whatsapp.com") || host == "wa.me") {
+                    return try {
+                        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        startActivity(intent)
+                        true
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        true
+                    }
+                }
+
+                // If scheme is standard http/https for internal app domain or host, load inside WebView
+                if (scheme == "http" || scheme == "https") {
+                    if (host.isEmpty() || host.endsWith("algosculptor.com") || host == "127.0.0.1" || host == "localhost") {
+                        return false
+                    }
+                    // For other external http/https domains, open in external browser
+                    return try {
+                        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        startActivity(intent)
+                        true
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        false
+                    }
+                }
+
+                // Handle custom schemes: whatsapp://, intent://, mailto:, tel:, etc.
+                return try {
+                    if (scheme == "intent") {
+                        val intent = Intent.parseUri(uri.toString(), Intent.URI_INTENT_SCHEME)
+                        if (intent != null) {
+                            val packageManager = packageManager
+                            val info = packageManager.resolveActivity(intent, 0)
+                            if (info != null) {
+                                startActivity(intent)
+                                return true
+                            }
+                            val fallbackUrl = intent.getStringExtra("browser_fallback_url")
+                            if (!fallbackUrl.isNullOrEmpty()) {
+                                webView.loadUrl(fallbackUrl)
+                                return true
+                            }
+                        }
+                    } else {
+                        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        startActivity(intent)
+                        return true
+                    }
+                    true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    true // Always consume non-http/https schemes so WebView does not trigger net::ERR_UNKNOWN_URL_SCHEME!
+                }
+            }
+
             override fun onReceivedSslError(
                 view: WebView?,
                 handler: SslErrorHandler?,
@@ -203,6 +284,10 @@ class MainActivity : AppCompatActivity() {
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
+                val scheme = request?.url?.scheme?.lowercase() ?: ""
+                if (scheme != "http" && scheme != "https") {
+                    return
+                }
                 if (request?.isForMainFrame == true) {
                     offlineBanner.visibility = View.VISIBLE
                 }
@@ -290,6 +375,49 @@ class MainActivity : AppCompatActivity() {
                     context.startActivity(shareIntent)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun shareWhatsApp(text: String) {
+            runOnUiThread {
+                try {
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, text)
+                        type = "text/plain"
+                        `package` = "com.whatsapp"
+                    }
+                    context.startActivity(sendIntent)
+                } catch (e: Exception) {
+                    try {
+                        val bizIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, text)
+                            type = "text/plain"
+                            `package` = "com.whatsapp.w4b"
+                        }
+                        context.startActivity(bizIntent)
+                    } catch (e2: Exception) {
+                        try {
+                            val uri = Uri.parse("whatsapp://send?text=" + Uri.encode(text))
+                            val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                            context.startActivity(intent)
+                        } catch (e3: Exception) {
+                            try {
+                                val uri = Uri.parse("https://wa.me/?text=" + Uri.encode(text))
+                                val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                                context.startActivity(intent)
+                            } catch (e4: Exception) {
+                                shareText("Share via Splitter", text)
+                            }
+                        }
+                    }
                 }
             }
         }

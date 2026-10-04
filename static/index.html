@@ -4835,12 +4835,26 @@
 
     function shareViaWhatsApp() {
       if (!activeShareData) return;
-      const text = encodeURIComponent(activeShareData.plainText);
+      const rawText = activeShareData.plainText;
+      const text = encodeURIComponent(rawText);
+
+      // 1. Android Native app bridge (directly triggers native WhatsApp Intent)
+      if (window.AndroidNative && typeof window.AndroidNative.shareWhatsApp === 'function') {
+        try {
+          window.AndroidNative.shareWhatsApp(rawText);
+          return;
+        } catch (e) {
+          console.warn('AndroidNative.shareWhatsApp failed, falling back:', e);
+        }
+      }
+
+      // 2. Mobile web (iOS Safari & Android Chrome)
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {
-        // Universal Link / direct scheme avoids iOS Safari popup blocker
-        window.location.href = `https://api.whatsapp.com/send?text=${text}`;
+        // Universal link wa.me opens WhatsApp directly without failing on custom scheme redirects
+        window.location.href = `https://wa.me/?text=${text}`;
       } else {
+        // Desktop web
         window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank', 'noopener,noreferrer');
       }
     }
