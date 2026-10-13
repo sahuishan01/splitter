@@ -2009,20 +2009,12 @@
           <div class="card-header" style="margin-bottom: 8px;">
             <div>
               <h3 class="card-title">Final Statements</h3>
-              <p class="form-help" id="statements-card-desc">Pairwise debt settlement ledger</p>
+              <p class="form-help" id="statements-card-desc">Optimized settlements minimizing total transactions needed</p>
             </div>
-            <span id="statements-sync-badge" class="role-tag">Direct</span>
-          </div>
-          <div class="settlement-toggle-container">
-            <button type="button" id="toggle-mode-direct" class="toggle-mode-btn active" onclick="setSettlementMode('direct')">
-              Direct Debts (Default)
-            </button>
-            <button type="button" id="toggle-mode-simplified" class="toggle-mode-btn" onclick="setSettlementMode('simplified')">
-              Simplified (Min-Cash-Flow)
-            </button>
+            <span id="statements-sync-badge" class="role-tag">Simplified</span>
           </div>
           <div id="simplified-debts-list">
-            <!-- Simplified/Direct debts rendered here -->
+            <!-- Simplified debts rendered here -->
           </div>
         </div>
       </div>
@@ -2803,7 +2795,8 @@
     let currentBalancesSummary = null;
     let authMode = 'login';
     let isSyncing = false;
-    let settlementMode = localStorage.getItem('splitter_settlement_mode') || 'direct';
+    let settlementMode = 'simplified';
+    try { localStorage.removeItem('splitter_settlement_mode'); } catch (e) {}
 
     const API_BASE = '/api';
 
@@ -2957,8 +2950,7 @@
     }
 
     function setSettlementMode(mode) {
-      settlementMode = mode;
-      localStorage.setItem('splitter_settlement_mode', mode);
+      settlementMode = 'simplified';
       updateSettlementToggleUI();
       if (currentBalancesSummary) {
         renderDebtsListUI(currentBalancesSummary);
@@ -2966,22 +2958,13 @@
     }
 
     function updateSettlementToggleUI() {
-      const btnDirect = document.getElementById('toggle-mode-direct');
-      const btnSimp = document.getElementById('toggle-mode-simplified');
       const badge = document.getElementById('statements-sync-badge');
       const desc = document.getElementById('statements-card-desc');
-
-      if (btnDirect && btnSimp) {
-        btnDirect.classList.toggle('active', settlementMode === 'direct');
-        btnSimp.classList.toggle('active', settlementMode === 'simplified');
-      }
       if (badge) {
-        badge.textContent = settlementMode === 'direct' ? 'Direct' : 'Min-Cash-Flow';
+        badge.textContent = 'Simplified';
       }
       if (desc) {
-        desc.textContent = settlementMode === 'direct'
-          ? 'Direct pairwise settlements between members'
-          : 'Optimized minimum cash flow transactions to settle all debts';
+        desc.textContent = 'Optimized settlements minimizing total transactions needed';
       }
     }
 
@@ -4021,9 +4004,7 @@
       const dContainer = document.getElementById('simplified-debts-list');
       dContainer.innerHTML = '';
 
-      const debts = settlementMode === 'direct'
-        ? (summary.direct_debts || [])
-        : (summary.simplified_debts || []);
+      const debts = (summary && summary.simplified_debts) || [];
 
       if (!debts || debts.length === 0) {
         dContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 16px 0;">All balances settled. No outstanding debts.</div>`;
@@ -4065,7 +4046,7 @@
 
     function quickSettleUp() {
       if (!currentGroupDetail) return;
-      const debts = (currentBalancesSummary && (settlementMode === 'simplified' ? currentBalancesSummary.simplified_debts : currentBalancesSummary.direct_debts)) || [];
+      const debts = (currentBalancesSummary && currentBalancesSummary.simplified_debts) || [];
       const myId = currentUser ? currentUser.id : null;
       const myDebt = debts.find(d => d.from_user_id === myId || d.to_user_id === myId) || debts[0];
       if (myDebt) {
