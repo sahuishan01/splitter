@@ -84,10 +84,12 @@ class MainActivity : AppCompatActivity() {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 cacheMode = WebSettings.LOAD_DEFAULT
-                useWideViewPort = true
-                loadWithOverviewMode = true
+                useWideViewPort = false
+                loadWithOverviewMode = false
                 mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
+            isHorizontalScrollBarEnabled = false
+            overScrollMode = View.OVER_SCROLL_NEVER
             addJavascriptInterface(WebAppInterface(this@MainActivity), "AndroidNative")
         }
 

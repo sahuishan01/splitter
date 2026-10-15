@@ -3,12 +3,14 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group android:translateX="22" android:translateY="22">
-        <path
-            android:fillColor="#6C5CE7"
-            android:pathData="M32,0C14.33,0 0,14.33 0,32s14.33,32 32,32 32,-14.33 32,-32S49.67,0 32,0z"/>
-        <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M24,18L40,18L40,22L29,22L29,26L38,26L38,30L29,30L29,36L24,36L24,30L21,30L21,26L24,26Z"/>
-    </group>
+    <!-- Division symbol ÷ in crisp white -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,27a7,7 0 1,0 0.001,0z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,50h40a4,4 0 0,1 4,4a4,4 0 0,1 -4,4h-40a4,4 0 0,1 -4,-4a4,4 0 0,1 4,-4z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,67a7,7 0 1,0 0.001,0z"/>
 </vector>

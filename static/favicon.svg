@@ -1,27 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="splitterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22d3aa"/>
-      <stop offset="60%" stop-color="#1cc29f"/>
-      <stop offset="100%" stop-color="#0d9488"/>
+    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf" />
+      <stop offset="40%" stop-color="#14b8a6" />
+      <stop offset="75%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#0f766e" />
     </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#042f2e" flood-opacity="0.25"/>
+    <radialGradient id="favGlow" cx="25%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <filter id="favShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#042f2e" flood-opacity="0.3" />
     </filter>
   </defs>
-  <!-- Squircle Base -->
-  <rect width="512" height="512" rx="116" fill="url(#splitterGrad)"/>
-  
-  <!-- Subtle inner highlight / depth -->
-  <rect x="4" y="4" width="504" height="504" rx="112" fill="none" stroke="#ffffff" stroke-width="4" stroke-opacity="0.2"/>
-  
-  <!-- Division Sign ÷ in Crisp White -->
-  <g fill="#ffffff" filter="url(#shadow)">
-    <!-- Top Dot -->
-    <circle cx="256" cy="140" r="44"/>
-    <!-- Divider Bar -->
-    <rect x="126" y="234" width="260" height="44" rx="22"/>
-    <!-- Bottom Dot -->
-    <circle cx="256" cy="372" r="44"/>
+
+  <!-- Modern Squircle Base -->
+  <rect width="512" height="512" rx="116" fill="url(#favGrad)" />
+  <rect width="512" height="512" rx="116" fill="url(#favGlow)" />
+  <rect x="2" y="2" width="508" height="508" rx="114" fill="none" stroke="#ffffff" stroke-width="3" stroke-opacity="0.25" />
+
+  <!-- Crisp Division Symbol ÷ -->
+  <g fill="#ffffff" filter="url(#favShadow)">
+    <circle cx="256" cy="148" r="38" />
+    <rect x="124" y="234" width="264" height="44" rx="22" />
+    <circle cx="256" cy="364" r="38" />
   </g>
 </svg>

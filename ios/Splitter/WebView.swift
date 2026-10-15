@@ -28,6 +28,8 @@ struct WebView: UIViewRepresentable {
         webView.isOpaque = false
         webView.backgroundColor = UIColor(red: 13/255.0, green: 17/255.0, blue: 23/255.0, alpha: 1.0)
         webView.scrollView.backgroundColor = webView.backgroundColor
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.alwaysBounceHorizontal = false
 
         // Pull to refresh
         let refreshControl = UIRefreshControl()
