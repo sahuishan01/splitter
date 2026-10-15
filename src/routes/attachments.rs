@@ -1,19 +1,44 @@
 use axum::{
-    extract::{Multipart, Path, State},
+    extract::{Multipart, Path, Query, State},
     http::{header, HeaderMap, HeaderValue, StatusCode},
     response::IntoResponse,
     Json,
 };
+use serde::Deserialize;
 use sqlx::SqlitePool;
 use std::path::Path as FsPath;
 use uuid::Uuid;
 
 use crate::{
-    auth::AuthUser,
+    auth::{jwt::verify_token, AuthUser},
     error::AppError,
     models::{Attachment, AttachmentResponse},
+    routes::groups::check_group_membership,
     services::ocr::{self, OcrResult},
 };
+
+#[derive(Debug, Deserialize)]
+pub struct AttachmentQuery {
+    pub token: Option<String>,
+}
+
+async fn check_attachment_access(
+    pool: &SqlitePool,
+    att: &Attachment,
+    user_id: &str,
+    is_admin: bool,
+) -> Result<(), AppError> {
+    if is_admin || att.uploaded_by == user_id {
+        return Ok(());
+    }
+
+    if let Some(ref gid) = att.group_id {
+        check_group_membership(pool, gid, user_id).await?;
+        return Ok(());
+    }
+
+    Err(AppError::Forbidden("You do not have permission to access this attachment".to_string()))
+}
 
 /// Maximum file upload size: 20 MB
 const MAX_UPLOAD_SIZE: usize = 20 * 1024 * 1024;
@@ -84,6 +109,13 @@ pub async fn upload_attachment(
             "application/pdf" => "pdf".into(),
             _ => "bin".into(),
         });
+
+    const ALLOWED_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png", "webp", "gif", "pdf"];
+    if !ALLOWED_EXTENSIONS.contains(&ext.as_str()) {
+        return Err(AppError::BadRequest(
+            "Unsupported file format. Only JPEG, PNG, WEBP, GIF, and PDF files are allowed.".to_string(),
+        ));
+    }
 
     let attachment_id = Uuid::new_v4().to_string();
     let stored_file_name = format!("{}.{}", attachment_id, ext);
@@ -166,12 +198,31 @@ pub async fn upload_attachment(
 pub async fn get_attachment_file(
     State(pool): State<SqlitePool>,
     Path(id): Path<String>,
+    Query(query): Query<AttachmentQuery>,
+    headers: HeaderMap,
 ) -> Result<impl IntoResponse, AppError> {
+    let token = if let Some(auth_val) = headers.get(header::AUTHORIZATION).and_then(|v| v.to_str().ok()) {
+        if auth_val.starts_with("Bearer ") {
+            Some(&auth_val["Bearer ".len()..])
+        } else {
+            None
+        }
+    } else {
+        query.token.as_deref()
+    };
+
+    let token = token.ok_or_else(|| {
+        AppError::Unauthorized("Authentication token required to view attachment".to_string())
+    })?;
+    let claims = verify_token(token)?;
+
     let att: Attachment = sqlx::query_as("SELECT * FROM attachments WHERE id = ?")
         .bind(&id)
         .fetch_optional(&pool)
         .await?
         .ok_or_else(|| AppError::NotFound("Attachment not found".to_string()))?;
+
+    check_attachment_access(&pool, &att, &claims.sub, claims.is_admin).await?;
 
     let bytes = tokio::fs::read(&att.file_path)
         .await
@@ -189,6 +240,14 @@ pub async fn get_attachment_file(
     if let Ok(disp_val) = disposition.parse::<HeaderValue>() {
         headers.insert(header::CONTENT_DISPOSITION, disp_val);
     }
+    headers.insert(
+        header::HeaderName::from_static("x-content-type-options"),
+        HeaderValue::from_static("nosniff"),
+    );
+    headers.insert(
+        header::HeaderName::from_static("content-security-policy"),
+        HeaderValue::from_static("default-src 'none'; sandbox"),
+    );
 
     Ok((headers, bytes))
 }
@@ -196,6 +255,7 @@ pub async fn get_attachment_file(
 /// Retrieve attachment metadata and OCR findings.
 pub async fn get_attachment_info(
     State(pool): State<SqlitePool>,
+    auth: AuthUser,
     Path(id): Path<String>,
 ) -> Result<Json<AttachmentResponse>, AppError> {
     let att: Attachment = sqlx::query_as("SELECT * FROM attachments WHERE id = ?")
@@ -203,6 +263,8 @@ pub async fn get_attachment_info(
         .fetch_optional(&pool)
         .await?
         .ok_or_else(|| AppError::NotFound("Attachment not found".to_string()))?;
+
+    check_attachment_access(&pool, &att, &auth.0.sub, auth.0.is_admin).await?;
 
     let resp = AttachmentResponse {
         id: att.id.clone(),

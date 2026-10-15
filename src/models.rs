@@ -8,6 +8,7 @@ pub struct User {
     pub display_name: String,
     pub is_admin: bool,
     pub is_active: bool,
+    pub must_change_password: bool,
     pub created_at: String,
 }
 
@@ -18,6 +19,7 @@ pub struct UserResponse {
     pub display_name: String,
     pub is_admin: bool,
     pub is_active: bool,
+    pub must_change_password: bool,
     pub created_at: String,
 }
 
@@ -29,6 +31,7 @@ impl From<User> for UserResponse {
             display_name: u.display_name,
             is_admin: u.is_admin,
             is_active: u.is_active,
+            must_change_password: u.must_change_password,
             created_at: u.created_at,
         }
     }

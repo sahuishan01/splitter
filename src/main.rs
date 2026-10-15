@@ -58,6 +58,11 @@ async fn main() -> anyhow::Result<()> {
 
     tracing_subscriber::fmt::init();
 
+    let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_default();
+    if jwt_secret.trim().is_empty() || jwt_secret == splitter::auth::jwt::JWT_SECRET_DEFAULT {
+        tracing::warn!("SECURITY WARNING: Running with default or empty JWT_SECRET. Configure a strong secret in .env for production.");
+    }
+
     let database_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite://splitter.db".into());
     let pool = splitter::db::init_pool(&database_url).await?;
     tracing::info!("Database initialized and migrations applied");

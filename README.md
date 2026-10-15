@@ -29,9 +29,15 @@ High-performance, lightweight expense splitting server and clients built with **
   - Incremental changes endpoint (`GET /api/sync/changes?group_id=<ID>&since=<TIMESTAMP>`).
 - **Minimal Web Dashboard**:
   - Single-page application embedded and served directly at `http://127.0.0.1:8088/`.
+  - Dynamic server URL selector to connect to any self-hosted Splitter instance.
   - Space Mono accents, crisp dark aesthetic, and browser offline queue support.
-- **Android Client**:
-  - WorkManager + Room offline queuing architecture with optimistic UI updates in `android/`.
+- **Admin-Only Onboarding & Mandatory Password Reset**:
+  - Toggle public registration on/off dynamically via Admin Dashboard or `DISABLE_SIGNUP=true`.
+  - Admin user provisioning with temporary passwords and non-dismissible first-login password update prompt.
+- **Cross-Platform Mobile Clients (Android & iOS)**:
+  - **Android**: Room + WorkManager offline queuing with dynamic server selector in `android/`.
+  - **iOS**: SwiftUI + WKWebView native client with dynamic server URL in `ios/`.
+  - Complete automated CI/CD release paths documented in [`docs/RELEASES.md`](docs/RELEASES.md).
 
 ---
 

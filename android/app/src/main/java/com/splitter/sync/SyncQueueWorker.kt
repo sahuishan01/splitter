@@ -26,7 +26,10 @@ class SyncQueueWorker(
         val sharedPrefs = applicationContext.getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
         val token = sharedPrefs.getString("jwt_token", null)
 
-        val serverBaseUrl = BuildConfig.API_BASE_URL
+        val serverBaseUrl = sharedPrefs.getString("server_url", null)
+            ?.takeIf { it.isNotBlank() }
+            ?.removeSuffix("/")
+            ?: BuildConfig.API_BASE_URL.removeSuffix("/")
 
         // Construct JSON batch payload
         val batchJson = JSONObject()

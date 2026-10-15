@@ -3,6 +3,10 @@ splitter.db
 splitter.db-wal
 splitter.db-shm
 .env
+.env*
+*.pem
+*.key
+*.credentials
 *.log
 
 # Android & Gradle

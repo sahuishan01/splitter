@@ -1,0 +1,191 @@
+name: Release Mobile Apps (Android & iOS)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    name: Build Android (APK & AAB)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Setup release signing keystore
+        working-directory: android
+        env:
+          UPLOAD_KEYSTORE_B64: ${{ secrets.UPLOAD_KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ vars.KEY_ALIAS }}
+        run: |
+          if [ -z "$UPLOAD_KEYSTORE_B64" ]; then
+            echo "::error::UPLOAD_KEYSTORE_B64 secret is not configured; refusing to build release with ephemeral keys to prevent signature conflicts." >&2
+            exit 1
+          fi
+          echo "Restoring persistent release keystore from secrets..."
+          echo "$UPLOAD_KEYSTORE_B64" | tr -d '\r\n ' | base64 -d > app/upload.keystore
+          cat > keystore.properties <<EOF
+          storeFile=upload.keystore
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=${KEY_ALIAS:-splitter-upload}
+          keyPassword=$KEY_PASSWORD
+          EOF
+
+      - name: Build release APK and AAB
+        working-directory: android
+        run: |
+          ./gradlew assembleRelease bundleRelease --no-daemon --stacktrace
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "main" ]; then
+            VERSION="0.1.25"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Package Android Artifacts
+        working-directory: android
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/splitter-v${{ steps.version.outputs.version }}-release.apk"
+          if [ -f app/build/outputs/bundle/release/app-release.aab ]; then
+            cp app/build/outputs/bundle/release/app-release.aab "dist/splitter-v${{ steps.version.outputs.version }}-release.aab"
+          fi
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-artifacts
+          path: android/dist/*
+
+  build-ios:
+    name: Build iOS Archive
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "main" ]; then
+            VERSION="0.1.25"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build iOS Archive (Unsigned / Distribution-ready)
+        run: |
+          mkdir -p ios/build ios/dist
+          xcodebuild archive \
+            -project ios/Splitter.xcodeproj \
+            -scheme Splitter \
+            -archivePath ios/build/Splitter.xcarchive \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            MARKETING_VERSION=${{ steps.version.outputs.version }}
+
+      - name: Package iOS Archive and IPA
+        run: |
+          cd ios/build
+          zip -r "../dist/splitter-v${{ steps.version.outputs.version }}-ios.xcarchive.zip" Splitter.xcarchive
+          mkdir -p Payload
+          cp -r Splitter.xcarchive/Products/Applications/Splitter.app Payload/
+          zip -r "../dist/splitter-v${{ steps.version.outputs.version }}-ios.ipa" Payload
+
+      - name: Upload iOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-artifacts
+          path: ios/dist/*
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: [build-android, build-ios]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-artifacts
+          path: dist/
+
+      - name: Download iOS Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-release-artifacts
+          path: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Splitter v${{ steps.version.outputs.version }}
+          fail_on_unmatched_files: false
+          body: |
+            ## Splitter v${{ steps.version.outputs.version }} Mobile Release
+
+            Cross-platform mobile client releases supporting dynamic self-hosted servers, admin onboarding with forced initial password reset, and background offline transaction queueing.
+
+            ### What's New:
+            - **Dynamic Server URL**: Connect to [splitter.algosculptor.com](https://splitter.algosculptor.com) or any custom self-hosted server directly from the app.
+            - **Admin-Only Onboarding**: Configurable public registration toggle and secure admin user creation.
+            - **Mandatory Password Reset**: New admin-created users are prompted on initial login to set a permanent password.
+            - **Offline Queue**: Background SQLite/Room + WorkManager sync with strict idempotency protection.
+
+            ### Downloads:
+            - **Android APK**: Direct install package for Android devices.
+            - **Android AAB**: Google Play Store submission app bundle.
+            - **iOS xcarchive**: Distribution archive ready for TestFlight / App Store Connect signing.
+          files: |
+            dist/*

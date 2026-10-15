@@ -607,16 +607,35 @@ async fn test_attachment_upload_and_expense_attachment() {
     let file_url = upload_resp["file_url"].as_str().unwrap().to_string();
     assert_eq!(upload_resp["file_name"], "receipt.jpg");
 
-    // 4. Download Attachment
+    // 4. Download Attachment (Unauthenticated attempt must fail with 401)
     let res = ctx
         .client
         .get(format!("{}{}", ctx.base_url, file_url))
         .send()
         .await
         .unwrap();
+    assert_eq!(res.status(), 401);
+
+    // 4b. Download Attachment with Bearer token (Must succeed with 200)
+    let res = ctx
+        .client
+        .get(format!("{}{}", ctx.base_url, file_url))
+        .bearer_auth(&user_token)
+        .send()
+        .await
+        .unwrap();
     assert_eq!(res.status(), 200);
     let bytes = res.bytes().await.unwrap();
     assert_eq!(bytes.as_ref(), b"Mock receipt image content");
+
+    // 4c. Download Attachment with Query parameter token (Must succeed with 200)
+    let res = ctx
+        .client
+        .get(format!("{}{}?token={}", ctx.base_url, file_url, user_token))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
 
     // 5. Create Expense with Attachment
     let res = ctx
@@ -768,6 +787,184 @@ async fn test_profile_update_and_password_resets() {
         .json(&json!({
             "email": "bob@example.com",
             "password": "adminresetpass456"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let reset_login: Value = res.json().await.unwrap();
+    assert_eq!(reset_login["user"]["must_change_password"], true);
+}
+
+#[tokio::test]
+async fn test_disable_signup_admin_onboarding_and_first_login_password_reset() {
+    let ctx = setup_test_app().await;
+
+    // 1. Initial config check before any users exist
+    let res = ctx
+        .client
+        .get(format!("{}/api/auth/config", ctx.base_url))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let cfg: Value = res.json().await.unwrap();
+    assert_eq!(cfg["first_run"], true);
+    assert_eq!(cfg["allow_signup"], true);
+
+    // 2. Register initial admin user
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "admin@example.com",
+            "password": "adminpassword123",
+            "display_name": "Admin"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let admin_body: Value = res.json().await.unwrap();
+    let admin_token = admin_body["token"].as_str().unwrap().to_string();
+    assert_eq!(admin_body["user"]["is_admin"], true);
+    assert_eq!(admin_body["user"]["must_change_password"], false);
+
+    // 3. Admin disables public signup
+    let res = ctx
+        .client
+        .patch(format!("{}/api/admin/settings", ctx.base_url))
+        .bearer_auth(&admin_token)
+        .json(&json!({ "allow_signup": false }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let settings_body: Value = res.json().await.unwrap();
+    assert_eq!(settings_body["allow_signup"], false);
+
+    // 4. Verify auth config now reports allow_signup = false and first_run = false
+    let res = ctx
+        .client
+        .get(format!("{}/api/auth/config", ctx.base_url))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let cfg: Value = res.json().await.unwrap();
+    assert_eq!(cfg["first_run"], false);
+    assert_eq!(cfg["allow_signup"], false);
+
+    // 5. Public registration should now be rejected with 403 Forbidden
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "stranger@example.com",
+            "password": "strangerpassword123",
+            "display_name": "Stranger"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 403);
+
+    // 6. Admin creates a user directly
+    let res = ctx
+        .client
+        .post(format!("{}/api/admin/users", ctx.base_url))
+        .bearer_auth(&admin_token)
+        .json(&json!({
+            "email": "invited@example.com",
+            "display_name": "Invited User"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let created: Value = res.json().await.unwrap();
+    let temp_password = created["temporary_password"].as_str().unwrap().to_string();
+    assert!(temp_password.starts_with("Splitter#"));
+    assert_eq!(created["user"]["must_change_password"], true);
+
+    // 7. Invited user logs in with temporary password
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/login", ctx.base_url))
+        .json(&json!({
+            "email": "invited@example.com",
+            "password": temp_password
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let user_login: Value = res.json().await.unwrap();
+    let user_token = user_login["token"].as_str().unwrap().to_string();
+    assert_eq!(user_login["user"]["must_change_password"], true);
+
+    // 8. User sets permanent initial password
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/set-initial-password", ctx.base_url))
+        .bearer_auth(&user_token)
+        .json(&json!({
+            "new_password": "permanentpassword123"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let updated: Value = res.json().await.unwrap();
+    assert_eq!(updated["user"]["must_change_password"], false);
+
+    // 9. Old temporary password fails to log in
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/login", ctx.base_url))
+        .json(&json!({
+            "email": "invited@example.com",
+            "password": temp_password
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 401);
+
+    // 10. New permanent password succeeds to log in
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/login", ctx.base_url))
+        .json(&json!({
+            "email": "invited@example.com",
+            "password": "permanentpassword123"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+    let login_again: Value = res.json().await.unwrap();
+    assert_eq!(login_again["user"]["must_change_password"], false);
+
+    // 11. Admin re-enables signup
+    let res = ctx
+        .client
+        .patch(format!("{}/api/admin/settings", ctx.base_url))
+        .bearer_auth(&admin_token)
+        .json(&json!({ "allow_signup": true }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 200);
+
+    // 12. Stranger can now register
+    let res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "stranger@example.com",
+            "password": "strangerpassword123",
+            "display_name": "Stranger"
         }))
         .send()
         .await

@@ -28,6 +28,38 @@ pub struct AuthResponse {
     pub user: UserResponse,
 }
 
+#[derive(Debug, Serialize)]
+pub struct AuthConfigResponse {
+    pub allow_signup: bool,
+    pub first_run: bool,
+}
+
+pub async fn get_auth_config(
+    State(pool): State<SqlitePool>,
+) -> Result<Json<AuthConfigResponse>, AppError> {
+    let (count,): (i64,) = sqlx::query_as("SELECT COUNT(*) FROM users")
+        .fetch_one(&pool)
+        .await?;
+    let first_run = count == 0;
+
+    let allow_signup = if first_run {
+        true
+    } else {
+        let row: Option<(String,)> = sqlx::query_as("SELECT value FROM system_settings WHERE key = 'allow_signup'")
+            .fetch_optional(&pool)
+            .await?;
+        match row {
+            Some((val,)) => val == "true" || val == "1",
+            None => std::env::var("DISABLE_SIGNUP").map(|v| v != "true" && v != "1").unwrap_or(true),
+        }
+    };
+
+    Ok(Json(AuthConfigResponse {
+        allow_signup,
+        first_run,
+    }))
+}
+
 pub async fn register(
     State(pool): State<SqlitePool>,
     Json(payload): Json<RegisterRequest>,
@@ -56,6 +88,22 @@ pub async fn register(
         .await?;
     let is_first_user = count.0 == 0;
 
+    if !is_first_user {
+        let row: Option<(String,)> = sqlx::query_as("SELECT value FROM system_settings WHERE key = 'allow_signup'")
+            .fetch_optional(&pool)
+            .await?;
+        let allow_signup = match row {
+            Some((val,)) => val == "true" || val == "1",
+            None => std::env::var("DISABLE_SIGNUP").map(|v| v != "true" && v != "1").unwrap_or(true),
+        };
+
+        if !allow_signup {
+            return Err(AppError::Forbidden(
+                "Public registration is disabled. Please contact an administrator to create your account.".to_string(),
+            ));
+        }
+    }
+
     let admin_email = std::env::var("ADMIN_EMAIL").unwrap_or_else(|_| "admin@splitter.local".into());
     let is_admin = is_first_user || email == admin_email.to_lowercase();
 
@@ -66,8 +114,8 @@ pub async fn register(
     let now = chrono::Utc::now().to_rfc3339();
 
     sqlx::query(
-        "INSERT INTO users (id, email, password_hash, display_name, is_admin, is_active, created_at)
-         VALUES (?, ?, ?, ?, ?, 1, ?)"
+        "INSERT INTO users (id, email, password_hash, display_name, is_admin, is_active, must_change_password, created_at)
+         VALUES (?, ?, ?, ?, ?, 1, 0, ?)"
     )
     .bind(&user_id)
     .bind(&email)
@@ -86,6 +134,7 @@ pub async fn register(
         display_name: display_name.to_string(),
         is_admin,
         is_active: true,
+        must_change_password: false,
         created_at: now,
     };
 
@@ -207,5 +256,50 @@ pub async fn change_password(
     Ok(Json(serde_json::json!({
         "message": "Password updated successfully"
     })))
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SetInitialPasswordRequest {
+    pub new_password: String,
+}
+
+pub async fn set_initial_password(
+    State(pool): State<SqlitePool>,
+    auth: AuthUser,
+    Json(payload): Json<SetInitialPasswordRequest>,
+) -> Result<Json<AuthResponse>, AppError> {
+    if payload.new_password.len() < 6 {
+        return Err(AppError::BadRequest("New password must be at least 6 characters".to_string()));
+    }
+
+    let user: User = sqlx::query_as("SELECT * FROM users WHERE id = ?")
+        .bind(&auth.0.sub)
+        .fetch_optional(&pool)
+        .await?
+        .ok_or_else(|| AppError::NotFound("User not found".to_string()))?;
+
+    let new_hash = hash_password(&payload.new_password)
+        .map_err(|e| AppError::Internal(anyhow::anyhow!("Password hashing failed: {}", e)))?;
+
+    sqlx::query("UPDATE users SET password_hash = ?, must_change_password = 0 WHERE id = ?")
+        .bind(&new_hash)
+        .bind(&user.id)
+        .execute(&pool)
+        .await?;
+
+    let mut updated_user = user;
+    updated_user.must_change_password = false;
+
+    let token = issue_token(
+        &updated_user.id,
+        &updated_user.email,
+        &updated_user.display_name,
+        updated_user.is_admin,
+    )?;
+
+    Ok(Json(AuthResponse {
+        token,
+        user: updated_user.into(),
+    }))
 }
 

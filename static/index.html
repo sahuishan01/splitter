@@ -1760,6 +1760,7 @@
         <span id="user-display-name">User</span>
         <span id="user-role-badge" class="role-tag">Member</span>
       </div>
+      <button id="server-nav-btn" class="btn btn-secondary btn-sm" onclick="openServerSettingsModal()" title="Server Settings" style="padding: 4px 8px; font-size: 0.8rem;">🌐 Server</button>
       <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')">Admin</button>
       <button id="logout-btn" class="btn btn-danger btn-sm hidden" onclick="logout()">Logout</button>
     </div>
@@ -1800,6 +1801,10 @@
         <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Create Account</div>
       </div>
 
+      <div id="auth-signup-disabled-notice" class="hidden" style="margin-bottom: 14px; padding: 10px 12px; background: rgba(210, 153, 34, 0.15); border: 1px solid rgba(210, 153, 34, 0.4); border-radius: 6px; font-size: 0.8rem; color: var(--text-main); text-align: center;">
+        🔒 Public signup is disabled on this server.<br><span style="color: var(--text-dim); font-size: 0.75rem;">Please contact an administrator to provision your account.</span>
+      </div>
+
       <form id="auth-form" onsubmit="handleAuthSubmit(event)">
         <div id="display-name-group" class="form-group hidden">
           <label class="form-label" for="auth-name">Your Full Name</label>
@@ -1832,6 +1837,13 @@
           <a href="javascript:void(0)" onclick="openModal('modal-reset-help')" style="color: var(--text-dim); font-size: 0.8rem; text-decoration: none; cursor: pointer;">
             Forgot Password / Reset Options?
           </a>
+        </div>
+
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+          <span id="auth-server-indicator" style="color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px;" title="Current connected server">Server: default</span>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openServerSettingsModal()" style="padding: 4px 10px; font-size: 0.75rem;">
+            ⚙️ Server URL
+          </button>
         </div>
       </form>
     </div>
@@ -2068,8 +2080,29 @@
         </div>
       </div>
 
+      <!-- Server Registration Policy -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Public Registration Policy</div>
+            <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 2px;">
+              When disabled, new users cannot self-register; only administrators can provision accounts.
+            </div>
+          </div>
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="admin-allow-signup-toggle" onchange="togglePublicSignup(this)" style="cursor: pointer; width: 18px; height: 18px;" />
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);" id="admin-signup-toggle-label">Public Signup Enabled</span>
+          </label>
+        </div>
+      </div>
+
       <div class="card">
-        <h3 class="card-title" style="margin-bottom: 14px;">Platform Users</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <h3 class="card-title" style="margin-bottom: 0;">Platform Users</h3>
+          <button class="btn btn-primary btn-sm" onclick="openAdminAddUserModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add New User
+          </button>
+        </div>
         <div style="overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
             <thead>
@@ -2485,6 +2518,146 @@
     </div>
   </div>
 
+  <!-- Server Configuration Modal -->
+  <div id="modal-server-settings" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modal-server-settings')">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+        <span style="font-size: 1.25rem;">🌐</span>
+        <h3 class="card-title" style="margin-bottom: 0;">Server Configuration</h3>
+      </div>
+      <p class="form-help" style="margin-bottom: 16px;">
+        Connect this app to any self-hosted Splitter instance or custom server.
+      </p>
+
+      <form onsubmit="handleSaveServerUrl(event)">
+        <div class="form-group">
+          <label class="form-label" for="input-server-url">Server Base URL</label>
+          <input type="url" id="input-server-url" class="form-input" placeholder="https://splitter.algosculptor.com" required />
+          <span class="form-help">Enter the full HTTP/HTTPS URL (e.g. https://expenses.example.com or http://192.168.1.50:8088)</span>
+        </div>
+
+        <div id="server-test-result" class="hidden" style="margin-bottom: 14px; padding: 10px 12px; border-radius: 6px; font-size: 0.82rem;"></div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary" onclick="handleTestServerConnection(this)">
+            🔍 Test Connection
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="handleResetServerUrl()">
+            Reset Default
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-save-server">
+            Save & Connect
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mandatory First-Login Password Change Modal (Non-Dismissible) -->
+  <div id="modal-first-password-change" class="modal-overlay" style="z-index: 10000; background: rgba(0,0,0,0.88);">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div style="text-align: center; margin-bottom: 18px;">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">🔑</div>
+        <h3 class="card-title" style="margin-bottom: 6px;">Set Permanent Password</h3>
+        <p class="form-help" style="margin: 0 auto; max-width: 340px;">
+          Your account was provisioned with a temporary password. Please set a new permanent password to secure your account and continue.
+        </p>
+      </div>
+
+      <form onsubmit="handleSetFirstPassword(event)">
+        <div class="form-group">
+          <label class="form-label" for="first-new-password">New Password</label>
+          <div style="position: relative;">
+            <input type="password" id="first-new-password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required style="padding-right: 36px;" />
+            <button type="button" onclick="togglePasswordVisibility('first-new-password')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 4px; display: flex; align-items: center;" title="Show or hide password">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="first-confirm-password">Confirm New Password</label>
+          <div style="position: relative;">
+            <input type="password" id="first-confirm-password" class="form-input" placeholder="Re-enter password" minlength="6" required style="padding-right: 36px;" />
+            <button type="button" onclick="togglePasswordVisibility('first-confirm-password')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 4px; display: flex; align-items: center;" title="Show or hide password">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="first-password-error" class="form-help cents-negative" style="margin-bottom: 12px; text-align: center;"></div>
+
+        <button type="submit" id="btn-set-first-password" class="btn btn-primary" style="width: 100%; justify-content: center;">
+          Update Password & Enter Splitter
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Add New User Modal -->
+  <div id="modal-admin-add-user" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modal-admin-add-user')">&times;</button>
+      <h3 class="card-title" style="margin-bottom: 16px;">Add New Platform User</h3>
+      
+      <div id="admin-add-user-form-container">
+        <form onsubmit="handleAdminAddUser(event)">
+          <div class="form-group">
+            <label class="form-label" for="admin-add-name">Display Name</label>
+            <input type="text" id="admin-add-name" class="form-input" placeholder="e.g. John Doe" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="admin-add-email">Email Address</label>
+            <input type="email" id="admin-add-email" class="form-input" placeholder="user@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="admin-add-password">Temporary Password (Optional)</label>
+            <input type="text" id="admin-add-password" class="form-input" placeholder="Leave empty to auto-generate" />
+            <span class="form-help">Leave empty to auto-generate a temporary password. User will set their permanent password on first login.</span>
+          </div>
+
+          <div class="form-group" style="margin-top: 14px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="admin-add-is-admin" style="width: 16px; height: 16px; cursor: pointer;" />
+              <span style="font-size: 0.85rem; color: var(--text-main);">Grant Administrator Privileges</span>
+            </label>
+          </div>
+
+          <div id="admin-add-user-error" class="form-help cents-negative" style="margin-bottom: 12px;"></div>
+
+          <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modal-admin-add-user')">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btn-admin-add-user">Create User</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Result Box with Temporary Password -->
+      <div id="admin-add-user-success" class="hidden" style="text-align: center; padding: 10px 0;">
+        <div style="font-size: 2rem; margin-bottom: 8px;">🎉</div>
+        <h4 style="font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin-bottom: 6px;">User Account Created</h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">
+          Share these credentials with the user. They will be required to set a new password upon first sign-in.
+        </p>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 12px 14px; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 16px;">
+          <div style="margin-bottom: 6px; color: var(--text-dim);">Email: <span id="admin-created-user-email" style="color: var(--text-main); font-weight: 600;"></span></div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>Password: <span id="admin-created-user-pass" style="color: var(--accent-primary); font-weight: 700;"></span></div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="copyTemporaryPassword()">📋 Copy</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="closeAdminAddUserSuccess()">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Transaction Summary Modal -->
   <div id="modal-transaction-summary" class="modal-overlay">
     <div class="modal-dialog" style="max-width: 440px;">
@@ -2565,7 +2738,9 @@
     // Close modals on Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.modal-overlay.active').forEach(m => {
+          if (m.id !== 'modal-first-password-change') m.classList.remove('active');
+        });
         const menu = document.getElementById('theme-dropdown-menu');
         if (menu) menu.classList.add('hidden');
       }
@@ -2796,7 +2971,12 @@
     };
     // State
     let currentUser = null;
-    let token = localStorage.getItem('splitter_token');
+    let token = null;
+    try {
+      token = localStorage.getItem('splitter_token');
+    } catch (e) {
+      console.warn('Storage access restricted:', e);
+    }
     let currentGroupId = null;
     let currentGroupDetail = null;
     let currentBalancesSummary = null;
@@ -2805,7 +2985,26 @@
     let settlementMode = 'simplified';
     try { localStorage.removeItem('splitter_settlement_mode'); } catch (e) {}
 
-    const API_BASE = '/api';
+    function getCustomServerUrl() {
+      const stored = localStorage.getItem('splitter_server_url');
+      if (stored && stored.trim()) {
+        return stored.trim().replace(/\/+$/, '');
+      }
+      if (window.AndroidNative && typeof window.AndroidNative.getServerUrl === 'function') {
+        try {
+          const nativeUrl = window.AndroidNative.getServerUrl();
+          if (nativeUrl && nativeUrl.trim()) return nativeUrl.trim().replace(/\/+$/, '');
+        } catch (e) {}
+      }
+      if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+        return window.location.origin;
+      }
+      return 'https://splitter.algosculptor.com';
+    }
+
+    function getApiBaseUrl() {
+      return `${getCustomServerUrl()}/api`;
+    }
 
     // Local Storage Cache Helpers
     function cacheSet(key, data) {
@@ -2985,7 +3184,9 @@
     }
 
     function saveOfflineQueue(queue) {
-      localStorage.setItem('splitter_offline_queue', JSON.stringify(queue));
+      try {
+        localStorage.setItem('splitter_offline_queue', JSON.stringify(queue));
+      } catch (e) {}
       updateSyncUI();
     }
 
@@ -3256,7 +3457,7 @@
       }
 
       try {
-        const res = await fetch(`${API_BASE}${endpoint}`, {
+        const res = await fetch(`${getApiBaseUrl()}${endpoint}`, {
           ...options,
           headers
         });
@@ -3354,7 +3555,12 @@
         currentUser = res.user;
         cacheSet('user', currentUser);
         renderUserHeader();
-        navigateTo('groups');
+
+        if (currentUser && currentUser.must_change_password) {
+          openFirstPasswordChangeModal();
+        } else {
+          navigateTo('groups');
+        }
       } catch (err) {
         errorEl.textContent = err.message;
       } finally {
@@ -4658,7 +4864,7 @@
         if (currentGroupId) formData.append('group_id', currentGroupId);
 
         const token = localStorage.getItem('splitter_token');
-        const res = await fetch('/api/upload', {
+        const res = await fetch(`${getApiBaseUrl()}/upload`, {
           method: 'POST',
           headers: token ? { 'Authorization': `Bearer ${token}` } : {},
           body: formData
@@ -4704,9 +4910,14 @@
       const exp = cached.find(e => e.id === expId);
       if (!exp || !exp.attachment_url) return;
 
+      let fullAttachmentUrl = exp.attachment_url;
+      if (fullAttachmentUrl.startsWith('/api') || fullAttachmentUrl.startsWith('/')) {
+        fullAttachmentUrl = `${getCustomServerUrl()}${fullAttachmentUrl}`;
+      }
+      const authedUrl = token ? `${fullAttachmentUrl}?token=${encodeURIComponent(token)}` : fullAttachmentUrl;
       document.getElementById('att-viewer-title').textContent = `${exp.attachment_name || 'Receipt / Attachment'}`;
       const dlBtn = document.getElementById('att-viewer-download');
-      dlBtn.href = exp.attachment_url;
+      dlBtn.href = authedUrl;
       dlBtn.download = exp.attachment_name || 'receipt';
 
       const contentBox = document.getElementById('att-viewer-content');
@@ -4715,13 +4926,13 @@
 
       const isImg = exp.attachment_url.match(/\.(jpeg|jpg|png|webp|gif|bmp)/i) || !exp.attachment_url.includes('.');
       if (isImg) {
-        contentBox.innerHTML = `<img src="${exp.attachment_url}" alt="Attachment" style="max-width: 100%; max-height: 480px; object-fit: contain; border-radius: 6px;" />`;
+        contentBox.innerHTML = `<img src="${escapeHtml(authedUrl)}" alt="Attachment" style="max-width: 100%; max-height: 480px; object-fit: contain; border-radius: 6px;" />`;
       } else {
         contentBox.innerHTML = `
           <div style="padding: 40px 20px; text-align: center; color: var(--text-muted);">
             <div style="display:flex; justify-content:center; margin-bottom:12px; color:var(--text-dim);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
             <div style="font-size: 1rem; color: var(--text-main); font-weight: 600; margin-bottom: 12px;">${escapeHtml(exp.attachment_name || 'Document')}</div>
-            <a href="${exp.attachment_url}" target="_blank" class="btn btn-primary" style="display: inline-flex;">Open File in Browser</a>
+            <a href="${escapeHtml(authedUrl)}" target="_blank" class="btn btn-primary" style="display: inline-flex;">Open File in Browser</a>
           </div>
         `;
       }
@@ -5553,6 +5764,21 @@
         document.getElementById('admin-stat-volume').textContent = formatMoney(stats.total_volume_cents, 'USD');
         document.getElementById('admin-stat-settlements').textContent = stats.total_settlements;
 
+        try {
+          const settings = await apiFetch('/admin/settings');
+          const signupToggle = document.getElementById('admin-allow-signup-toggle');
+          const toggleLabel = document.getElementById('admin-signup-toggle-label');
+          if (signupToggle) {
+            signupToggle.checked = settings.allow_signup;
+            if (toggleLabel) {
+              toggleLabel.textContent = settings.allow_signup ? 'Public Signup Enabled' : 'Public Signup Disabled (Admin Only)';
+              toggleLabel.style.color = settings.allow_signup ? 'var(--success)' : 'var(--danger)';
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to load admin settings:', e);
+        }
+
         const users = await apiFetch('/admin/users');
         const tbody = document.getElementById('admin-users-table');
         tbody.innerHTML = '';
@@ -5679,12 +5905,296 @@
       }
     }
 
+    async function togglePublicSignup(checkbox) {
+      const label = document.getElementById('admin-signup-toggle-label');
+      const prev = !checkbox.checked;
+      try {
+        const res = await apiFetch('/admin/settings', {
+          method: 'PATCH',
+          body: JSON.stringify({ allow_signup: checkbox.checked })
+        });
+        if (label) {
+          label.textContent = res.allow_signup ? 'Public Signup Enabled' : 'Public Signup Disabled (Admin Only)';
+          label.style.color = res.allow_signup ? 'var(--success)' : 'var(--danger)';
+        }
+        showToast(res.allow_signup ? 'Public signup enabled' : 'Public signup disabled (Admin only)');
+      } catch (err) {
+        checkbox.checked = prev;
+        alert('Failed to update registration policy: ' + err.message);
+      }
+    }
+
+    function openAdminAddUserModal() {
+      document.getElementById('admin-add-name').value = '';
+      document.getElementById('admin-add-email').value = '';
+      document.getElementById('admin-add-password').value = '';
+      document.getElementById('admin-add-is-admin').checked = false;
+      const errEl = document.getElementById('admin-add-user-error');
+      if (errEl) errEl.textContent = '';
+      document.getElementById('admin-add-user-form-container').classList.remove('hidden');
+      document.getElementById('admin-add-user-success').classList.add('hidden');
+      openModal('modal-admin-add-user');
+    }
+
+    let lastCreatedUserTempPass = '';
+
+    async function handleAdminAddUser(e) {
+      e.preventDefault();
+      const displayName = document.getElementById('admin-add-name').value.trim();
+      const email = document.getElementById('admin-add-email').value.trim();
+      const password = document.getElementById('admin-add-password').value.trim();
+      const isAdmin = document.getElementById('admin-add-is-admin').checked;
+      const errEl = document.getElementById('admin-add-user-error');
+      errEl.textContent = '';
+
+      const btn = document.getElementById('btn-admin-add-user');
+      setButtonLoading(btn, true, 'Creating...');
+
+      try {
+        const payload = {
+          display_name: displayName,
+          email: email,
+          is_admin: isAdmin
+        };
+        if (password) payload.password = password;
+
+        const res = await apiFetch('/admin/users', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        lastCreatedUserTempPass = res.temporary_password;
+        document.getElementById('admin-created-user-email').textContent = res.user.email;
+        document.getElementById('admin-created-user-pass').textContent = res.temporary_password;
+
+        document.getElementById('admin-add-user-form-container').classList.add('hidden');
+        document.getElementById('admin-add-user-success').classList.remove('hidden');
+
+        loadAdminData();
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    function closeAdminAddUserSuccess() {
+      closeModal('modal-admin-add-user');
+      document.getElementById('admin-add-user-form-container').classList.remove('hidden');
+      document.getElementById('admin-add-user-success').classList.add('hidden');
+    }
+
+    function copyTemporaryPassword() {
+      if (!lastCreatedUserTempPass) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lastCreatedUserTempPass).then(() => {
+          showToast('Temporary password copied to clipboard!');
+        }).catch(() => {
+          prompt('Copy password:', lastCreatedUserTempPass);
+        });
+      } else {
+        prompt('Copy password:', lastCreatedUserTempPass);
+      }
+    }
+
+    function updateServerIndicator() {
+      const cur = getCustomServerUrl();
+      const label = document.getElementById('auth-server-indicator');
+      if (label) {
+        try {
+          const u = new URL(cur);
+          label.textContent = `Server: ${u.host}`;
+          label.title = cur;
+        } catch (e) {
+          label.textContent = `Server: ${cur}`;
+          label.title = cur;
+        }
+      }
+      const navBtn = document.getElementById('server-nav-btn');
+      if (navBtn) {
+        try {
+          const u = new URL(cur);
+          navBtn.textContent = `🌐 ${u.hostname}`;
+          navBtn.title = `Connected Server: ${cur}`;
+        } catch (e) {
+          navBtn.textContent = `🌐 Server`;
+        }
+      }
+    }
+
+    function openServerSettingsModal() {
+      const input = document.getElementById('input-server-url');
+      if (input) input.value = getCustomServerUrl();
+      const testBox = document.getElementById('server-test-result');
+      if (testBox) {
+        testBox.className = 'hidden';
+        testBox.textContent = '';
+      }
+      openModal('modal-server-settings');
+    }
+
+    async function handleTestServerConnection(btn) {
+      const input = document.getElementById('input-server-url');
+      let url = (input.value || '').trim().replace(/\/+$/, '');
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+        input.value = url;
+      }
+      const testBox = document.getElementById('server-test-result');
+      testBox.className = '';
+      testBox.style.background = 'var(--bg-surface)';
+      testBox.style.color = 'var(--text-dim)';
+      testBox.style.border = '1px solid var(--border-subtle)';
+      testBox.textContent = `Testing connection to ${url}...`;
+      if (btn) setButtonLoading(btn, true, 'Testing...');
+
+      try {
+        const res = await fetch(`${url}/api/auth/config`, { signal: AbortSignal.timeout(6000) });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        testBox.style.background = 'rgba(46, 160, 67, 0.15)';
+        testBox.style.color = 'var(--success)';
+        testBox.style.border = '1px solid var(--success)';
+        testBox.innerHTML = `✅ <strong>Server Online!</strong> Splitter backend reached.<br><span style="font-size:0.75rem;">Registration: ${data.allow_signup ? 'Enabled' : 'Disabled (Admin Only)'}</span>`;
+      } catch (err) {
+        testBox.style.background = 'rgba(248, 81, 73, 0.15)';
+        testBox.style.color = 'var(--danger)';
+        testBox.style.border = '1px solid var(--danger)';
+        testBox.textContent = `❌ Connection failed: ${err.message}. Ensure URL is reachable.`;
+      } finally {
+        if (btn) setButtonLoading(btn, false);
+      }
+    }
+
+    function handleSaveServerUrl(e) {
+      e.preventDefault();
+      const input = document.getElementById('input-server-url');
+      let url = (input.value || '').trim().replace(/\/+$/, '');
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      localStorage.setItem('splitter_server_url', url);
+      if (window.AndroidNative && typeof window.AndroidNative.setServerUrl === 'function') {
+        try { window.AndroidNative.setServerUrl(url); } catch (e) {}
+      }
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.setServerUrl) {
+        try { window.webkit.messageHandlers.setServerUrl.postMessage(url); } catch (e) {}
+      }
+
+      // Reset authentication to prevent token conflicts across distinct servers
+      localStorage.removeItem('splitter_token');
+      localStorage.removeItem('splitter_cache_user');
+      token = null;
+      currentUser = null;
+
+      closeModal('modal-server-settings');
+      showToast('Server URL configured! Reloading...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 350);
+    }
+
+    function handleResetServerUrl() {
+      localStorage.removeItem('splitter_server_url');
+      if (window.AndroidNative && typeof window.AndroidNative.setServerUrl === 'function') {
+        try { window.AndroidNative.setServerUrl(''); } catch (e) {}
+      }
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.setServerUrl) {
+        try { window.webkit.messageHandlers.setServerUrl.postMessage(''); } catch (e) {}
+      }
+      localStorage.removeItem('splitter_token');
+      token = null;
+      currentUser = null;
+      closeModal('modal-server-settings');
+      showToast('Reset to default server. Reloading...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 350);
+    }
+
+    let serverAuthConfig = { allow_signup: true, first_run: false };
+
+    async function checkAuthConfig() {
+      try {
+        serverAuthConfig = await apiFetch('/auth/config');
+        updateAuthTabsVisibility();
+      } catch (err) {
+        console.warn('Failed to load server auth config:', err);
+      }
+    }
+
+    function updateAuthTabsVisibility() {
+      const regTab = document.getElementById('tab-register');
+      const notice = document.getElementById('auth-signup-disabled-notice');
+      if (!serverAuthConfig.allow_signup && !serverAuthConfig.first_run) {
+        if (regTab) regTab.style.display = 'none';
+        if (notice) notice.classList.remove('hidden');
+        if (authMode === 'register') {
+          switchAuthTab('login');
+        }
+      } else {
+        if (regTab) regTab.style.display = '';
+        if (notice) notice.classList.add('hidden');
+      }
+    }
+
+    function openFirstPasswordChangeModal() {
+      document.getElementById('first-new-password').value = '';
+      document.getElementById('first-confirm-password').value = '';
+      const errEl = document.getElementById('first-password-error');
+      if (errEl) errEl.textContent = '';
+      openModal('modal-first-password-change');
+    }
+
+    async function handleSetFirstPassword(e) {
+      e.preventDefault();
+      const p1 = document.getElementById('first-new-password').value;
+      const p2 = document.getElementById('first-confirm-password').value;
+      const errEl = document.getElementById('first-password-error');
+      errEl.textContent = '';
+
+      if (p1.length < 6) {
+        errEl.textContent = 'Password must be at least 6 characters.';
+        return;
+      }
+      if (p1 !== p2) {
+        errEl.textContent = 'Passwords do not match.';
+        return;
+      }
+
+      const btn = document.getElementById('btn-set-first-password');
+      setButtonLoading(btn, true, 'Updating...');
+
+      try {
+        const res = await apiFetch('/auth/set-initial-password', {
+          method: 'POST',
+          body: JSON.stringify({ new_password: p1 })
+        });
+        token = res.token;
+        localStorage.setItem('splitter_token', token);
+        currentUser = res.user;
+        cacheSet('user', currentUser);
+        closeModal('modal-first-password-change', true);
+        showToast('Password updated successfully! Welcome to Splitter.');
+        navigateTo('groups');
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
     // Modal Helpers
     function openModal(id) {
-      document.getElementById(id).classList.add('active');
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
     }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+    function closeModal(id, force = false) {
+      if (id === 'modal-first-password-change' && !force && currentUser && currentUser.must_change_password) {
+        return;
+      }
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
     }
 
     function escapeHtml(str) {
@@ -5712,6 +6222,8 @@
     // Init with Local Storage Cache
     async function init() {
       try {
+        updateServerIndicator();
+        checkAuthConfig();
         updateSyncUI();
 
         // Read cached user
@@ -5719,11 +6231,15 @@
         if (cachedUser) {
           currentUser = cachedUser;
           renderUserHeader();
-          const targetGroupId = getTargetGroupId();
-          if (targetGroupId) {
-            openGroup(targetGroupId);
+          if (currentUser.must_change_password) {
+            openFirstPasswordChangeModal();
           } else {
-            navigateTo('groups');
+            const targetGroupId = getTargetGroupId();
+            if (targetGroupId) {
+              openGroup(targetGroupId);
+            } else {
+              navigateTo('groups');
+            }
           }
         }
 
@@ -5732,7 +6248,9 @@
             currentUser = await apiFetch('/auth/me');
             cacheSet('user', currentUser);
             renderUserHeader();
-            if (!cachedUser) {
+            if (currentUser.must_change_password) {
+              openFirstPasswordChangeModal();
+            } else if (!cachedUser) {
               const targetGroupId = getTargetGroupId();
               if (targetGroupId) {
                 openGroup(targetGroupId);

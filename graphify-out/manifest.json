@@ -175,8 +175,8 @@
   },
   "migrations/0001_initial.sql": {
     "mtime": 1790772647.9753268,
-    "seen": 1791097211.186292,
-    "ast_hash": "",
+    "seen": 1792036978.6910782,
+    "ast_hash": "9ec65950bc11ac2d445d66238e6a6f15",
     "semantic_hash": ""
   },
   ".agents/rules/graphify.md": {
@@ -210,9 +210,9 @@
     "semantic_hash": ""
   },
   "static/index.html": {
-    "mtime": 1791906181.084797,
-    "seen": 1791906395.7229242,
-    "ast_hash": "3e8e478d1b4012552157604580c12f52",
+    "mtime": 1792036853.4346764,
+    "seen": 1792036978.691119,
+    "ast_hash": "8faacecf5097c09435203763a2a001b5",
     "semantic_hash": ""
   },
   "src/services/activity.rs": {
@@ -223,8 +223,8 @@
   },
   "migrations/0002_add_created_by_and_activity_logs.sql": {
     "mtime": 1790784643.9222388,
-    "seen": 1791097211.1862934,
-    "ast_hash": "",
+    "seen": 1792036978.6910799,
+    "ast_hash": "1b422266d01a245765d7ef5b537b5c4c",
     "semantic_hash": ""
   },
   "src/routes/attachments.rs": {
@@ -241,8 +241,8 @@
   },
   "migrations/0003_add_attachments.sql": {
     "mtime": 1790844785.8991847,
-    "seen": 1791097211.1862948,
-    "ast_hash": "",
+    "seen": 1792036978.6910813,
+    "ast_hash": "da5c8869fa195306a0c48863b4fe104d",
     "semantic_hash": ""
   },
   "static/manifest.json": {
@@ -250,5 +250,41 @@
     "seen": 1792036970.0629706,
     "ast_hash": "f93a44acd6ff904f7fcff3fcf346fa5d",
     "semantic_hash": "f93a44acd6ff904f7fcff3fcf346fa5d"
+  },
+  "static/apple-touch-icon.png": {
+    "mtime": 1792036822.726548,
+    "seen": 1792036978.6911201,
+    "ast_hash": "015a4dc02ad0289cf46f5169d1f18879",
+    "semantic_hash": ""
+  },
+  "static/favicon-16x16.png": {
+    "mtime": 1792036822.7505481,
+    "seen": 1792036978.6911218,
+    "ast_hash": "c40e70650672fa32653b4482e4c10017",
+    "semantic_hash": ""
+  },
+  "static/favicon-32x32.png": {
+    "mtime": 1792036822.738548,
+    "seen": 1792036978.691123,
+    "ast_hash": "3c998d6101fa93c83cc969df8c64bb4f",
+    "semantic_hash": ""
+  },
+  "static/favicon.svg": {
+    "mtime": 1792036815.99852,
+    "seen": 1792036978.691124,
+    "ast_hash": "2907001e96adfa4351ffbf7225fb92fe",
+    "semantic_hash": ""
+  },
+  "static/icon-192.png": {
+    "mtime": 1792036822.7145479,
+    "seen": 1792036978.6911252,
+    "ast_hash": "d904685880b630d3da2b98fa5ad3c133",
+    "semantic_hash": ""
+  },
+  "static/icon-512.png": {
+    "mtime": 1792036822.694548,
+    "seen": 1792036978.6911263,
+    "ast_hash": "921b4c00f58d96a946b67cb8ccb176a5",
+    "semantic_hash": ""
   }
 }

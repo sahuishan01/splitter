@@ -132,13 +132,56 @@ class MainActivity : AppCompatActivity() {
         rootLayout.addView(offlineBanner)
         setContentView(rootLayout)
 
+        offlineBanner.setOnClickListener {
+            showServerConfigDialog()
+        }
+
         setupWebViewClients()
         setupNetworkMonitoring()
 
-        val targetUrl = BuildConfig.API_BASE_URL
+        val targetUrl = getServerBaseUrl()
         webView.loadUrl(targetUrl)
 
         triggerSyncSafely()
+    }
+
+    private fun getServerBaseUrl(): String {
+        val prefs = getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
+        val custom = prefs.getString("server_url", null)?.trim()
+        if (!custom.isNullOrEmpty()) {
+            return custom.removeSuffix("/")
+        }
+        return BuildConfig.API_BASE_URL.removeSuffix("/")
+    }
+
+    private fun showServerConfigDialog() {
+        val input = android.widget.EditText(this).apply {
+            setText(getServerBaseUrl())
+            hint = "https://splitter.algosculptor.com"
+            setSingleLine(true)
+        }
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Configure Server URL")
+            .setMessage("Enter the URL of your Splitter backend:")
+            .setView(input)
+            .setPositiveButton("Connect") { _, _ ->
+                var newUrl = input.text.toString().trim()
+                if (newUrl.isNotEmpty()) {
+                    if (!newUrl.startsWith("http://") && !newUrl.startsWith("https://")) {
+                        newUrl = "https://$newUrl"
+                    }
+                    val prefs = getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
+                    prefs.edit().putString("server_url", newUrl).apply()
+                    webView.loadUrl(newUrl)
+                }
+            }
+            .setNegativeButton("Reset Default") { _, _ ->
+                val prefs = getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
+                prefs.edit().remove("server_url").apply()
+                webView.loadUrl(BuildConfig.API_BASE_URL)
+            }
+            .setNeutralButton("Cancel", null)
+            .show()
     }
 
     private fun triggerSyncSafely() {
@@ -219,7 +262,8 @@ class MainActivity : AppCompatActivity() {
 
                 // If scheme is standard http/https for internal app domain or host, load inside WebView
                 if (scheme == "http" || scheme == "https") {
-                    if (host.isEmpty() || host.endsWith("algosculptor.com") || host == "127.0.0.1" || host == "localhost") {
+                    val configuredServerHost = try { Uri.parse(getServerBaseUrl()).host?.lowercase() ?: "" } catch (e: Exception) { "" }
+                    if (host.isEmpty() || host == configuredServerHost || host.endsWith("algosculptor.com") || host == "127.0.0.1" || host == "localhost") {
                         return false
                     }
                     // For other external http/https domains, open in external browser
@@ -271,12 +315,8 @@ class MainActivity : AppCompatActivity() {
                 handler: SslErrorHandler?,
                 error: SslError?
             ) {
-                val host = error?.url?.let { android.net.Uri.parse(it).host } ?: ""
-                if (host.endsWith("algosculptor.com")) {
-                    handler?.proceed()
-                } else {
-                    super.onReceivedSslError(view, handler, error)
-                }
+                // Fail-Closed: Strictly reject invalid certificates to prevent MITM attacks
+                handler?.cancel()
             }
 
             override fun onReceivedError(
@@ -420,6 +460,24 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        @JavascriptInterface
+        fun setServerUrl(url: String) {
+            val clean = url.trim().removeSuffix("/")
+            val prefs = context.getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
+            prefs.edit().putString("server_url", clean).apply()
+            runOnUiThread {
+                val currentUrl = webView.url ?: ""
+                if (clean.isNotEmpty() && !currentUrl.startsWith(clean)) {
+                    webView.loadUrl(clean)
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun getServerUrl(): String {
+            return getServerBaseUrl()
         }
     }
 }

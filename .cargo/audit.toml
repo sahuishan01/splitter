@@ -1,0 +1,5 @@
+[advisories]
+ignore = [
+    # Marvin attack on rsa 0.9.10; unused transitive dependency of sqlx, no upstream fix available
+    "RUSTSEC-2023-0071",
+]
