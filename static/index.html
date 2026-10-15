@@ -247,10 +247,11 @@
     }
 
     /* Global Transitions & Reset */
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html {
@@ -275,15 +276,6 @@
       box-sizing: border-box;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* Prevent mobile GPU tile dropouts & blacked out elements on scroll */
-    .container, .card, .group-card, .expense-row, .overview-hero-bar, .admin-kpi-card, .admin-users-card, header {
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
     }
 
     /* === MODERN GLASS HEADER === */
@@ -327,9 +319,11 @@
       font-size: 1.2rem;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .brand:hover .brand-logo {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px var(--accent-subtle);
+    @media (hover: hover) and (pointer: fine) {
+      .brand:hover .brand-logo {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px var(--accent-subtle);
+      }
     }
     .brand-title {
       font-size: 1.05rem;
@@ -754,14 +748,16 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 14px;
-      transition: all var(--transition-fast);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
       box-shadow: var(--shadow-sm);
     }
-    .group-card:hover {
-      background: var(--bg-elevated);
-      border-color: var(--accent-border);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+    @media (hover: hover) and (pointer: fine) {
+      .group-card:hover {
+        background: var(--bg-elevated);
+        border-color: var(--accent-border);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
     }
     .group-card-header {
       display: flex;
@@ -842,9 +838,11 @@
       color: var(--text-dim);
       transition: transform var(--transition-fast), color var(--transition-fast);
     }
-    .group-card:hover .group-arrow-indicator {
-      color: var(--accent-primary);
-      transform: translateX(3px);
+    @media (hover: hover) and (pointer: fine) {
+      .group-card:hover .group-arrow-indicator {
+        color: var(--accent-primary);
+        transform: translateX(3px);
+      }
     }
 
     /* === RESPONSIVE SECTION TABS (GROUP DETAIL) === */
@@ -991,14 +989,16 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      transition: all var(--transition-fast);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
       gap: 16px;
     }
-    .expense-row:hover {
-      background: var(--bg-hover);
-      border-color: var(--border-muted);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
+    @media (hover: hover) and (pointer: fine) {
+      .expense-row:hover {
+        background: var(--bg-hover);
+        border-color: var(--border-muted);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
     }
     .splitwise-expense-main {
       display: flex;
@@ -1892,14 +1892,26 @@
       height: 7px;
       border-radius: 50%;
       background: var(--cents-positive);
-      box-shadow: 0 0 0 0 rgba(91, 197, 167, 0.5);
-      animation: status-pulse-anim 2s infinite;
       display: inline-block;
+      position: relative;
+    }
+    .status-pulse-dot::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      border-radius: 50%;
+      background: var(--cents-positive);
+      opacity: 0.6;
+      animation: status-pulse-anim 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+      pointer-events: none;
     }
     @keyframes status-pulse-anim {
-      0% { box-shadow: 0 0 0 0 rgba(91, 197, 167, 0.6); }
-      70% { box-shadow: 0 0 0 6px rgba(91, 197, 167, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(91, 197, 167, 0); }
+      0% { transform: scale(1); opacity: 0.6; }
+      70% { transform: scale(2.4); opacity: 0; }
+      100% { transform: scale(2.4); opacity: 0; }
     }
     .admin-identity-pill {
       font-family: var(--font-mono);
@@ -1931,14 +1943,16 @@
       padding: 16px 18px;
       position: relative;
       overflow: hidden;
-      transition: transform var(--transition-fast), border-color var(--transition-fast);
+      transition: border-color var(--transition-fast);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-    .admin-kpi-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-muted);
+    @media (hover: hover) and (pointer: fine) {
+      .admin-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--border-muted);
+      }
     }
     .admin-kpi-header {
       display: flex;
@@ -4644,9 +4658,11 @@
 
       // 1. Immediately render cached groups if available
       let hasRendered = false;
+      let cachedJson = null;
       if (useCache) {
         const cachedGroups = cacheGet('groups');
         if (cachedGroups) {
+          cachedJson = JSON.stringify(cachedGroups);
           renderGroupsList(cachedGroups);
           hasRendered = true;
         }
@@ -4660,7 +4676,9 @@
         const groups = await apiFetch('/groups');
         cacheSet('groups', groups);
         updateGroupsOverviewStats(groups);
-      renderGroupsList(groups);
+        if (!hasRendered || JSON.stringify(groups) !== cachedJson) {
+          renderGroupsList(groups);
+        }
       } catch (err) {
         console.warn('Network groups fetch failed, relying on local storage cache:', err.message);
       }
@@ -4875,6 +4893,10 @@
       const cachedBalances = cacheGet(`balances_${groupId}`);
       const cachedSettlements = cacheGet(`settlements_${groupId}`);
 
+      let cachedExpensesJson = null;
+      let cachedBalancesJson = null;
+      let cachedSettlementsJson = null;
+
       // 1. Immediately render cached data without skeleton flash
       if (cachedDetail) {
         currentGroupDetail = cachedDetail;
@@ -4884,9 +4906,18 @@
         const actBtn = document.getElementById('group-activity-btn');
         if (actBtn) actBtn.classList.toggle('hidden', !isGrpAdmin);
 
-        if (cachedBalances) renderBalancesUI(cachedBalances);
-        if (cachedExpenses) renderExpensesUI(cachedExpenses, cachedDetail.group.default_currency);
-        if (cachedSettlements) renderSettlementsUI(cachedSettlements, cachedDetail.group.default_currency);
+        if (cachedBalances) {
+          cachedBalancesJson = JSON.stringify(cachedBalances);
+          renderBalancesUI(cachedBalances);
+        }
+        if (cachedExpenses) {
+          cachedExpensesJson = JSON.stringify(cachedExpenses);
+          renderExpensesUI(cachedExpenses, cachedDetail.group.default_currency);
+        }
+        if (cachedSettlements) {
+          cachedSettlementsJson = JSON.stringify(cachedSettlements);
+          renderSettlementsUI(cachedSettlements, cachedDetail.group.default_currency);
+        }
 
         const totalGrp = cachedDetail.total_expense_cents !== undefined
           ? cachedDetail.total_expense_cents
@@ -4919,9 +4950,15 @@
         cacheSet(`expenses_${groupId}`, expenses);
         cacheSet(`settlements_${groupId}`, settlements);
 
-        renderBalancesUI(balances);
-        renderExpensesUI(expenses, detail.group.default_currency);
-        renderSettlementsUI(settlements, detail.group.default_currency);
+        if (!cachedBalancesJson || JSON.stringify(balances) !== cachedBalancesJson) {
+          renderBalancesUI(balances);
+        }
+        if (!cachedExpensesJson || JSON.stringify(expenses) !== cachedExpensesJson) {
+          renderExpensesUI(expenses, detail.group.default_currency);
+        }
+        if (!cachedSettlementsJson || JSON.stringify(settlements) !== cachedSettlementsJson) {
+          renderSettlementsUI(settlements, detail.group.default_currency);
+        }
       } catch (err) {
         console.warn('Network group details fetch failed, relying on local storage cache:', err.message);
         if (!cacheGet(`group_${groupId}`)) {

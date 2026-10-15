@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 cacheMode = WebSettings.LOAD_DEFAULT
-                useWideViewPort = true
-                loadWithOverviewMode = true
+                useWideViewPort = false
+                loadWithOverviewMode = false
                 mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
             isVerticalScrollBarEnabled = false
@@ -125,6 +125,9 @@ class MainActivity : AppCompatActivity() {
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
             addView(webView)
+            setOnChildScrollUpCallback { _, _ ->
+                webView.scrollY > 0 || webView.canScrollVertically(-1)
+            }
             setOnRefreshListener {
                 triggerSyncSafely()
                 webView.reload()

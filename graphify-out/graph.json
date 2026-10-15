@@ -66,7 +66,7 @@
       "source_location": "L35"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
       "label": "ConnectivityManager",
       "_callable": true,
       "_callable_class": true,
@@ -75,10 +75,10 @@
       "file_type": "code",
       "norm_label": "connectivitymanager",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L361"
+      "source_location": "L364"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
       "label": "WebChromeClient",
       "_callable": true,
       "_callable_class": true,
@@ -87,10 +87,10 @@
       "file_type": "code",
       "norm_label": "webchromeclient",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L200"
+      "source_location": "L203"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
       "label": "WebViewClient",
       "_callable": true,
       "_callable_class": true,
@@ -99,7 +99,7 @@
       "file_type": "code",
       "norm_label": "webviewclient",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L234"
+      "source_location": "L237"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface",
@@ -111,7 +111,7 @@
       "file_type": "code",
       "norm_label": "webappinterface",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L406"
+      "source_location": "L409"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_splitterapplication_splitterapplication",
@@ -336,7 +336,7 @@
       "file_type": "code",
       "norm_label": ".getserverbaseurl()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L152"
+      "source_location": "L155"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_onbackpressed",
@@ -347,7 +347,7 @@
       "file_type": "code",
       "norm_label": ".onbackpressed()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L397"
+      "source_location": "L400"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_oncreate",
@@ -369,7 +369,7 @@
       "file_type": "code",
       "norm_label": ".ondestroy()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L384"
+      "source_location": "L387"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring",
@@ -380,10 +380,10 @@
       "file_type": "code",
       "norm_label": ".setupnetworkmonitoring()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L355"
+      "source_location": "L358"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onavailable",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onavailable",
       "label": ".onAvailable()",
       "_callable": true,
       "_origin": "ast",
@@ -391,10 +391,10 @@
       "file_type": "code",
       "norm_label": ".onavailable()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L362"
+      "source_location": "L365"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onlost",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onlost",
       "label": ".onLost()",
       "_callable": true,
       "_origin": "ast",
@@ -402,7 +402,7 @@
       "file_type": "code",
       "norm_label": ".onlost()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L369"
+      "source_location": "L372"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
@@ -413,10 +413,10 @@
       "file_type": "code",
       "norm_label": ".setupwebviewclients()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L199"
+      "source_location": "L202"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onprogresschanged",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onprogresschanged",
       "label": ".onProgressChanged()",
       "_callable": true,
       "_origin": "ast",
@@ -424,10 +424,10 @@
       "file_type": "code",
       "norm_label": ".onprogresschanged()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L201"
+      "source_location": "L204"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onshowfilechooser",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onshowfilechooser",
       "label": ".onShowFileChooser()",
       "_callable": true,
       "_origin": "ast",
@@ -435,10 +435,10 @@
       "file_type": "code",
       "norm_label": ".onshowfilechooser()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L211"
+      "source_location": "L214"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_handleuri",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_handleuri",
       "label": ".handleUri()",
       "_callable": true,
       "_origin": "ast",
@@ -446,10 +446,10 @@
       "file_type": "code",
       "norm_label": ".handleuri()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L249"
+      "source_location": "L252"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onpagefinished",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onpagefinished",
       "label": ".onPageFinished()",
       "_callable": true,
       "_origin": "ast",
@@ -457,10 +457,10 @@
       "file_type": "code",
       "norm_label": ".onpagefinished()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L340"
+      "source_location": "L343"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivederror",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivederror",
       "label": ".onReceivedError()",
       "_callable": true,
       "_origin": "ast",
@@ -468,10 +468,10 @@
       "file_type": "code",
       "norm_label": ".onreceivederror()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326"
+      "source_location": "L329"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivedsslerror",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivedsslerror",
       "label": ".onReceivedSslError()",
       "_callable": true,
       "_origin": "ast",
@@ -479,10 +479,10 @@
       "file_type": "code",
       "norm_label": ".onreceivedsslerror()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L317"
+      "source_location": "L320"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_shouldoverrideurlloading",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_shouldoverrideurlloading",
       "label": ".shouldOverrideUrlLoading()",
       "_callable": true,
       "_origin": "ast",
@@ -490,7 +490,7 @@
       "file_type": "code",
       "norm_label": ".shouldoverrideurlloading()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L235"
+      "source_location": "L238"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_showserverconfigdialog",
@@ -501,7 +501,7 @@
       "file_type": "code",
       "norm_label": ".showserverconfigdialog()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L161"
+      "source_location": "L164"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_triggersyncsafely",
@@ -512,7 +512,7 @@
       "file_type": "code",
       "norm_label": ".triggersyncsafely()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L191"
+      "source_location": "L194"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_getserverurl",
@@ -523,7 +523,7 @@
       "file_type": "code",
       "norm_label": ".getserverurl()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L482"
+      "source_location": "L485"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_setserverurl",
@@ -534,7 +534,7 @@
       "file_type": "code",
       "norm_label": ".setserverurl()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L469"
+      "source_location": "L472"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_sharetext",
@@ -545,7 +545,7 @@
       "file_type": "code",
       "norm_label": ".sharetext()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L407"
+      "source_location": "L410"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_sharewhatsapp",
@@ -556,7 +556,7 @@
       "file_type": "code",
       "norm_label": ".sharewhatsapp()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L426"
+      "source_location": "L429"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_splitterapplication_splitterapplication_oncreate",
@@ -1240,6 +1240,17 @@
       "community_name": "MainActivity.kt",
       "file_type": "code",
       "norm_label": "webresourcerequest",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "webview",
+      "label": "WebView",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "WebView",
+      "file_type": "code",
+      "norm_label": "webview",
       "source_file": "",
       "source_location": ""
     },
@@ -2424,17 +2435,6 @@
       "source_location": "L1"
     },
     {
-      "id": "from",
-      "label": "From",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "models.rs",
-      "file_type": "code",
-      "norm_label": "from",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "hashmap",
       "label": "HashMap",
       "_origin": "ast",
@@ -2686,17 +2686,6 @@
       "norm_label": "user",
       "source_file": "src/models.rs",
       "source_location": "L4"
-    },
-    {
-      "id": "src_models_userresponse",
-      "label": "UserResponse",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "models.rs",
-      "file_type": "code",
-      "norm_label": "userresponse",
-      "source_file": "src/models.rs",
-      "source_location": "L16"
     },
     {
       "id": "src_models_userresponse_from",
@@ -3303,7 +3292,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.29"
+      "version": "0.1.30"
     },
     {
       "id": "result",
@@ -3394,364 +3383,334 @@
       "source_location": ""
     },
     {
-      "id": "docs_releases",
-      "label": "RELEASES.md",
+      "id": "adminuser",
+      "label": "AdminUser",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "releases.md",
-      "source_file": "docs/RELEASES.md",
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "adminuser",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_routes_admin",
+      "label": "admin.rs",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "admin.rs",
+      "source_file": "src/routes/admin.rs",
       "source_location": "L1"
     },
     {
-      "id": "docs_releases_1_dynamic_server_url_architecture",
-      "label": "1. Dynamic Server URL Architecture",
+      "id": "src_routes_admin_admin_reset_user_password",
+      "label": "admin_reset_user_password()",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "1. dynamic server url architecture",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L7"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "admin_reset_user_password()",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L132"
     },
     {
-      "id": "docs_releases_2_admin_only_onboarding_forced_password_reset",
-      "label": "2. Admin-Only Onboarding & Forced Password Reset",
+      "id": "src_routes_admin_adminresetpasswordrequest",
+      "label": "AdminResetPasswordRequest",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "2. admin-only onboarding & forced password reset",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L29"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "adminresetpasswordrequest",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L128"
     },
     {
-      "id": "docs_releases_3_android_release_path",
-      "label": "3. Android Release Path",
+      "id": "src_routes_admin_adminstats",
+      "label": "AdminStats",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "3. android release path",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L55"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "adminstats",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L26"
     },
     {
-      "id": "docs_releases_4_ios_release_path",
-      "label": "4. iOS Release Path",
+      "id": "src_routes_admin_create_user_by_admin",
+      "label": "create_user_by_admin()",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "4. ios release path",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L94"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "create_user_by_admin()",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L177"
     },
     {
-      "id": "docs_releases_automated_github_actions_ci_workflow",
-      "label": "Automated GitHub Actions CI Workflow",
+      "id": "src_routes_admin_createuserbyadminrequest",
+      "label": "CreateUserByAdminRequest",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "automated github actions ci workflow",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L122"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "createuserbyadminrequest",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L164"
     },
     {
-      "id": "docs_releases_connecting_to_a_custom_server",
-      "label": "Connecting to a Custom Server",
+      "id": "src_routes_admin_createuserbyadminresponse",
+      "label": "CreateUserByAdminResponse",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "connecting to a custom server",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L11"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "createuserbyadminresponse",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L172"
     },
     {
-      "id": "docs_releases_deterministic_persistent_release_signing",
-      "label": "Deterministic Persistent Release Signing",
+      "id": "src_routes_admin_get_admin_stats",
+      "label": "get_admin_stats()",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "deterministic persistent release signing",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L57"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "get_admin_stats()",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L97"
     },
     {
-      "id": "docs_releases_disabling_public_registration",
-      "label": "Disabling Public Registration",
+      "id": "src_routes_admin_get_system_settings",
+      "label": "get_system_settings()",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "disabling public registration",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L33"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "get_system_settings()",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L252"
     },
     {
-      "id": "docs_releases_first_login_password_prompt",
-      "label": "First-Login Password Prompt",
+      "id": "src_routes_admin_list_users",
+      "label": "list_users()",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "first-login password prompt",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L47"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "list_users()",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L34"
     },
     {
-      "id": "docs_releases_github_actions_ci_cd_secrets",
-      "label": "GitHub Actions CI/CD Secrets",
+      "id": "src_routes_admin_rs_apperror",
+      "label": "AppError",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "github actions ci/cd secrets",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L80"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "apperror",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "docs_releases_local_build_archive_macos",
-      "label": "Local Build & Archive (macOS)",
+      "id": "src_routes_admin_rs_json",
+      "label": "Json",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "local build & archive (macos)",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L104"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "json",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "docs_releases_local_release_build_commands",
-      "label": "Local Release Build Commands",
+      "id": "src_routes_admin_rs_option",
+      "label": "Option",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "local release build commands",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L60"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "option",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "docs_releases_project_specifications",
-      "label": "Project Specifications",
+      "id": "src_routes_admin_rs_path",
+      "label": "Path",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "project specifications",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L98"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "docs_releases_provisioning_new_users",
-      "label": "Provisioning New Users",
+      "id": "src_routes_admin_rs_result",
+      "label": "Result",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "provisioning new users",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L40"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "result",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "docs_releases_splitter_mobile_release_self_hosting_guide",
-      "label": "Splitter Mobile Release & Self-Hosting Guide",
+      "id": "src_routes_admin_rs_sqlitepool",
+      "label": "SqlitePool",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "splitter mobile release & self-hosting guide",
-      "source_file": "docs/RELEASES.md",
-      "source_location": "L1"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "sqlitepool",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "readme",
-      "label": "README.md",
+      "id": "src_routes_admin_rs_state",
+      "label": "State",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "readme.md",
-      "source_file": "README.md",
-      "source_location": "L1"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "state",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "readme_1_requirements",
-      "label": "1. Requirements",
+      "id": "src_routes_admin_rs_string",
+      "label": "String",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "1. requirements",
-      "source_file": "README.md",
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "string",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_routes_admin_rs_value",
+      "label": "Value",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "value",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_routes_admin_rs_vec",
+      "label": "Vec",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "vec",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_routes_admin_systemsettingsresponse",
+      "label": "SystemSettingsResponse",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "systemsettingsresponse",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L243"
+    },
+    {
+      "id": "src_routes_admin_update_system_settings",
+      "label": "update_system_settings()",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "update_system_settings()",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L268"
+    },
+    {
+      "id": "src_routes_admin_update_user_role",
+      "label": "update_user_role()",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "update_user_role()",
+      "source_file": "src/routes/admin.rs",
       "source_location": "L46"
     },
     {
-      "id": "readme_2_configure_environment",
-      "label": "2. Configure Environment",
+      "id": "src_routes_admin_update_user_status",
+      "label": "update_user_status()",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "2. configure environment",
-      "source_file": "README.md",
-      "source_location": "L49"
-    },
-    {
-      "id": "readme_3_run_server",
-      "label": "3. Run Server",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "3. run server",
-      "source_file": "README.md",
-      "source_location": "L54"
-    },
-    {
-      "id": "readme_4_run_tests",
-      "label": "4. Run Tests",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "4. run tests",
-      "source_file": "README.md",
-      "source_location": "L60"
-    },
-    {
-      "id": "readme_admin_adminuser_only",
-      "label": "Admin (`AdminUser` only)",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "admin (`adminuser` only)",
-      "source_file": "README.md",
-      "source_location": "L74"
-    },
-    {
-      "id": "readme_api_reference",
-      "label": "API Reference",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "api reference",
-      "source_file": "README.md",
-      "source_location": "L67"
-    },
-    {
-      "id": "readme_authentication",
-      "label": "Authentication",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "authentication",
-      "source_file": "README.md",
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "update_user_status()",
+      "source_file": "src/routes/admin.rs",
       "source_location": "L69"
     },
     {
-      "id": "readme_expenses_settlements",
-      "label": "Expenses & Settlements",
+      "id": "src_routes_admin_updaterolerequest",
+      "label": "UpdateRoleRequest",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "expenses & settlements",
-      "source_file": "README.md",
-      "source_location": "L87"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "updaterolerequest",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L16"
     },
     {
-      "id": "readme_features",
-      "label": "Features",
+      "id": "src_routes_admin_updatestatusrequest",
+      "label": "UpdateStatusRequest",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "features",
-      "source_file": "README.md",
-      "source_location": "L7"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "updatestatusrequest",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L21"
     },
     {
-      "id": "readme_groups",
-      "label": "Groups",
+      "id": "src_routes_admin_updatesystemsettingsrequest",
+      "label": "UpdateSystemSettingsRequest",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "groups",
-      "source_file": "README.md",
-      "source_location": "L80"
+      "community_name": "admin.rs",
+      "file_type": "code",
+      "norm_label": "updatesystemsettingsrequest",
+      "source_file": "src/routes/admin.rs",
+      "source_location": "L248"
     },
     {
-      "id": "readme_offline_sync",
-      "label": "Offline Sync",
+      "id": "from",
+      "label": "From",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "offline sync",
-      "source_file": "README.md",
-      "source_location": "L95"
+      "community_name": "models.rs",
+      "file_type": "code",
+      "norm_label": "from",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "readme_quickstart",
-      "label": "Quickstart",
+      "id": "src_models_userresponse",
+      "label": "UserResponse",
       "_origin": "ast",
       "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "quickstart",
-      "source_file": "README.md",
-      "source_location": "L44"
-    },
-    {
-      "id": "readme_splitter",
-      "label": "Splitter",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "API Reference",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "splitter",
-      "source_file": "README.md",
-      "source_location": "L1"
+      "community_name": "models.rs",
+      "file_type": "code",
+      "norm_label": "userresponse",
+      "source_file": "src/models.rs",
+      "source_location": "L16"
     },
     {
       "id": "value",
@@ -3776,21 +3735,370 @@
       "source_location": ""
     },
     {
-      "id": "webview",
-      "label": "WebView",
+      "id": "docs_releases",
+      "label": "RELEASES.md",
       "_origin": "ast",
-      "community": 42,
-      "community_name": "WebView",
-      "file_type": "code",
-      "norm_label": "webview",
-      "source_file": "",
-      "source_location": ""
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "releases.md",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_releases_1_dynamic_server_url_architecture",
+      "label": "1. Dynamic Server URL Architecture",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "1. dynamic server url architecture",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "docs_releases_2_admin_only_onboarding_forced_password_reset",
+      "label": "2. Admin-Only Onboarding & Forced Password Reset",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2. admin-only onboarding & forced password reset",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L29"
+    },
+    {
+      "id": "docs_releases_3_android_release_path",
+      "label": "3. Android Release Path",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "3. android release path",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L55"
+    },
+    {
+      "id": "docs_releases_4_ios_release_path",
+      "label": "4. iOS Release Path",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "4. ios release path",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L94"
+    },
+    {
+      "id": "docs_releases_automated_github_actions_ci_workflow",
+      "label": "Automated GitHub Actions CI Workflow",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "automated github actions ci workflow",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L122"
+    },
+    {
+      "id": "docs_releases_connecting_to_a_custom_server",
+      "label": "Connecting to a Custom Server",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "connecting to a custom server",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L11"
+    },
+    {
+      "id": "docs_releases_deterministic_persistent_release_signing",
+      "label": "Deterministic Persistent Release Signing",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "deterministic persistent release signing",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L57"
+    },
+    {
+      "id": "docs_releases_disabling_public_registration",
+      "label": "Disabling Public Registration",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "disabling public registration",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L33"
+    },
+    {
+      "id": "docs_releases_first_login_password_prompt",
+      "label": "First-Login Password Prompt",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "first-login password prompt",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L47"
+    },
+    {
+      "id": "docs_releases_github_actions_ci_cd_secrets",
+      "label": "GitHub Actions CI/CD Secrets",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "github actions ci/cd secrets",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L80"
+    },
+    {
+      "id": "docs_releases_local_build_archive_macos",
+      "label": "Local Build & Archive (macOS)",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "local build & archive (macos)",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L104"
+    },
+    {
+      "id": "docs_releases_local_release_build_commands",
+      "label": "Local Release Build Commands",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "local release build commands",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L60"
+    },
+    {
+      "id": "docs_releases_project_specifications",
+      "label": "Project Specifications",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "project specifications",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L98"
+    },
+    {
+      "id": "docs_releases_provisioning_new_users",
+      "label": "Provisioning New Users",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "provisioning new users",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L40"
+    },
+    {
+      "id": "docs_releases_splitter_mobile_release_self_hosting_guide",
+      "label": "Splitter Mobile Release & Self-Hosting Guide",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "splitter mobile release & self-hosting guide",
+      "source_file": "docs/RELEASES.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "readme",
+      "label": "README.md",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "readme.md",
+      "source_file": "README.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "readme_1_requirements",
+      "label": "1. Requirements",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "1. requirements",
+      "source_file": "README.md",
+      "source_location": "L46"
+    },
+    {
+      "id": "readme_2_configure_environment",
+      "label": "2. Configure Environment",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2. configure environment",
+      "source_file": "README.md",
+      "source_location": "L49"
+    },
+    {
+      "id": "readme_3_run_server",
+      "label": "3. Run Server",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "3. run server",
+      "source_file": "README.md",
+      "source_location": "L54"
+    },
+    {
+      "id": "readme_4_run_tests",
+      "label": "4. Run Tests",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "4. run tests",
+      "source_file": "README.md",
+      "source_location": "L60"
+    },
+    {
+      "id": "readme_admin_adminuser_only",
+      "label": "Admin (`AdminUser` only)",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "admin (`adminuser` only)",
+      "source_file": "README.md",
+      "source_location": "L74"
+    },
+    {
+      "id": "readme_api_reference",
+      "label": "API Reference",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "api reference",
+      "source_file": "README.md",
+      "source_location": "L67"
+    },
+    {
+      "id": "readme_authentication",
+      "label": "Authentication",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "authentication",
+      "source_file": "README.md",
+      "source_location": "L69"
+    },
+    {
+      "id": "readme_expenses_settlements",
+      "label": "Expenses & Settlements",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "expenses & settlements",
+      "source_file": "README.md",
+      "source_location": "L87"
+    },
+    {
+      "id": "readme_features",
+      "label": "Features",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "features",
+      "source_file": "README.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "readme_groups",
+      "label": "Groups",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "groups",
+      "source_file": "README.md",
+      "source_location": "L80"
+    },
+    {
+      "id": "readme_offline_sync",
+      "label": "Offline Sync",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "offline sync",
+      "source_file": "README.md",
+      "source_location": "L95"
+    },
+    {
+      "id": "readme_quickstart",
+      "label": "Quickstart",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "quickstart",
+      "source_file": "README.md",
+      "source_location": "L44"
+    },
+    {
+      "id": "readme_splitter",
+      "label": "Splitter",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "API Reference",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "splitter",
+      "source_file": "README.md",
+      "source_location": "L1"
     },
     {
       "id": "src_auth_jwt_issue_token",
       "label": "issue_token()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "issue_token()",
@@ -3801,7 +4109,7 @@
       "id": "src_auth_password",
       "label": "password.rs",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "password.rs",
@@ -3812,7 +4120,7 @@
       "id": "src_auth_password_hash_password",
       "label": "hash_password()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "hash_password()",
@@ -3823,7 +4131,7 @@
       "id": "src_auth_password_rs_result",
       "label": "Result",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "result",
@@ -3834,7 +4142,7 @@
       "id": "src_auth_password_rs_string",
       "label": "String",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "string",
@@ -3845,7 +4153,7 @@
       "id": "src_auth_password_verify_password",
       "label": "verify_password()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "verify_password()",
@@ -3856,7 +4164,7 @@
       "id": "src_routes_auth",
       "label": "auth.rs",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "auth.rs",
@@ -3867,7 +4175,7 @@
       "id": "src_routes_auth_authconfigresponse",
       "label": "AuthConfigResponse",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "authconfigresponse",
@@ -3878,7 +4186,7 @@
       "id": "src_routes_auth_authresponse",
       "label": "AuthResponse",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "authresponse",
@@ -3889,7 +4197,7 @@
       "id": "src_routes_auth_change_password",
       "label": "change_password()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "change_password()",
@@ -3900,7 +4208,7 @@
       "id": "src_routes_auth_changepasswordrequest",
       "label": "ChangePasswordRequest",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "changepasswordrequest",
@@ -3911,7 +4219,7 @@
       "id": "src_routes_auth_get_auth_config",
       "label": "get_auth_config()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "get_auth_config()",
@@ -3922,7 +4230,7 @@
       "id": "src_routes_auth_login",
       "label": "login()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "login()",
@@ -3933,7 +4241,7 @@
       "id": "src_routes_auth_loginrequest",
       "label": "LoginRequest",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "loginrequest",
@@ -3944,7 +4252,7 @@
       "id": "src_routes_auth_me",
       "label": "me()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "me()",
@@ -3955,7 +4263,7 @@
       "id": "src_routes_auth_register",
       "label": "register()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "register()",
@@ -3966,7 +4274,7 @@
       "id": "src_routes_auth_registerrequest",
       "label": "RegisterRequest",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "registerrequest",
@@ -3977,7 +4285,7 @@
       "id": "src_routes_auth_rs_apperror",
       "label": "AppError",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "apperror",
@@ -3988,7 +4296,7 @@
       "id": "src_routes_auth_rs_authuser",
       "label": "AuthUser",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "authuser",
@@ -3999,7 +4307,7 @@
       "id": "src_routes_auth_rs_json",
       "label": "Json",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "json",
@@ -4010,7 +4318,7 @@
       "id": "src_routes_auth_rs_result",
       "label": "Result",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "result",
@@ -4021,7 +4329,7 @@
       "id": "src_routes_auth_rs_sqlitepool",
       "label": "SqlitePool",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "sqlitepool",
@@ -4032,7 +4340,7 @@
       "id": "src_routes_auth_rs_state",
       "label": "State",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "state",
@@ -4043,7 +4351,7 @@
       "id": "src_routes_auth_rs_string",
       "label": "String",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "string",
@@ -4054,7 +4362,7 @@
       "id": "src_routes_auth_rs_value",
       "label": "Value",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "value",
@@ -4065,7 +4373,7 @@
       "id": "src_routes_auth_set_initial_password",
       "label": "set_initial_password()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "set_initial_password()",
@@ -4076,7 +4384,7 @@
       "id": "src_routes_auth_setinitialpasswordrequest",
       "label": "SetInitialPasswordRequest",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "setinitialpasswordrequest",
@@ -4087,7 +4395,7 @@
       "id": "src_routes_auth_update_profile",
       "label": "update_profile()",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "update_profile()",
@@ -4098,320 +4406,12 @@
       "id": "src_routes_auth_updateprofilerequest",
       "label": "UpdateProfileRequest",
       "_origin": "ast",
-      "community": 5,
+      "community": 6,
       "community_name": "auth.rs",
       "file_type": "code",
       "norm_label": "updateprofilerequest",
       "source_file": "src/routes/auth.rs",
       "source_location": "L189"
-    },
-    {
-      "id": "adminuser",
-      "label": "AdminUser",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "adminuser",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin",
-      "label": "admin.rs",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "admin.rs",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_routes_admin_admin_reset_user_password",
-      "label": "admin_reset_user_password()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "admin_reset_user_password()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L132"
-    },
-    {
-      "id": "src_routes_admin_adminresetpasswordrequest",
-      "label": "AdminResetPasswordRequest",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "adminresetpasswordrequest",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L128"
-    },
-    {
-      "id": "src_routes_admin_adminstats",
-      "label": "AdminStats",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "adminstats",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L26"
-    },
-    {
-      "id": "src_routes_admin_create_user_by_admin",
-      "label": "create_user_by_admin()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "create_user_by_admin()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L177"
-    },
-    {
-      "id": "src_routes_admin_createuserbyadminrequest",
-      "label": "CreateUserByAdminRequest",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "createuserbyadminrequest",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L164"
-    },
-    {
-      "id": "src_routes_admin_createuserbyadminresponse",
-      "label": "CreateUserByAdminResponse",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "createuserbyadminresponse",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L172"
-    },
-    {
-      "id": "src_routes_admin_get_admin_stats",
-      "label": "get_admin_stats()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "get_admin_stats()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L97"
-    },
-    {
-      "id": "src_routes_admin_get_system_settings",
-      "label": "get_system_settings()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "get_system_settings()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L252"
-    },
-    {
-      "id": "src_routes_admin_list_users",
-      "label": "list_users()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "list_users()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L34"
-    },
-    {
-      "id": "src_routes_admin_rs_apperror",
-      "label": "AppError",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "apperror",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_json",
-      "label": "Json",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "json",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_option",
-      "label": "Option",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "option",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_path",
-      "label": "Path",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "path",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_result",
-      "label": "Result",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "result",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_sqlitepool",
-      "label": "SqlitePool",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "sqlitepool",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_state",
-      "label": "State",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "state",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_string",
-      "label": "String",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "string",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_value",
-      "label": "Value",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "value",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_rs_vec",
-      "label": "Vec",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "vec",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_routes_admin_systemsettingsresponse",
-      "label": "SystemSettingsResponse",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "systemsettingsresponse",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L243"
-    },
-    {
-      "id": "src_routes_admin_update_system_settings",
-      "label": "update_system_settings()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "update_system_settings()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L268"
-    },
-    {
-      "id": "src_routes_admin_update_user_role",
-      "label": "update_user_role()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "update_user_role()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L46"
-    },
-    {
-      "id": "src_routes_admin_update_user_status",
-      "label": "update_user_status()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "update_user_status()",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L69"
-    },
-    {
-      "id": "src_routes_admin_updaterolerequest",
-      "label": "UpdateRoleRequest",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "updaterolerequest",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_routes_admin_updatestatusrequest",
-      "label": "UpdateStatusRequest",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "updatestatusrequest",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_routes_admin_updatesystemsettingsrequest",
-      "label": "UpdateSystemSettingsRequest",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "admin.rs",
-      "file_type": "code",
-      "norm_label": "updatesystemsettingsrequest",
-      "source_file": "src/routes/admin.rs",
-      "source_location": "L248"
     },
     {
       "id": "android_app_src_main_java_com_splitter_sync_offlinequeuerepository",
@@ -5064,7 +5064,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L129",
+      "source_location": "L132",
       "weight": 1.0
     },
     {
@@ -5076,7 +5076,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L140",
+      "source_location": "L143",
       "weight": 1.0
     },
     {
@@ -5088,7 +5088,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L143",
+      "source_location": "L146",
       "weight": 1.0
     },
     {
@@ -5100,7 +5100,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L144",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -5112,12 +5112,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L146",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_oncreate",
-      "target": "ios_splitter_webview_webview",
+      "target": "webview",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5152,7 +5152,7 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onavailable",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onavailable",
       "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_triggersyncsafely",
       "relation": "calls",
       "_origin": "ast",
@@ -5160,11 +5160,11 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L365",
+      "source_location": "L368",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_handleuri",
       "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_getserverbaseurl",
       "relation": "calls",
       "_origin": "ast",
@@ -5172,19 +5172,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L269",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_shouldoverrideurlloading",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_shouldoverrideurlloading",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_handleuri",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L240",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -5196,7 +5196,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L163",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -5208,7 +5208,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L484",
+      "source_location": "L487",
       "weight": 1.0
     },
     {
@@ -5220,7 +5220,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L461",
+      "source_location": "L464",
       "weight": 1.0
     },
     {
@@ -6173,6 +6173,18 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "field",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
       "target": "progressbar",
       "relation": "references",
       "_origin": "ast",
@@ -6209,7 +6221,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7120,7 +7132,7 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onshowfilechooser",
       "target": "uri",
       "relation": "references",
       "_origin": "ast",
@@ -7128,7 +7140,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L211",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
@@ -9584,7 +9596,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9704,7 +9716,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9749,7 +9761,22 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
+      "target": "webview",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "metadata": {
+        "target_fqn": "android.webkit.WebView"
+      },
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -10138,7 +10165,7 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onavailable",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onavailable",
       "target": "network",
       "relation": "references",
       "_origin": "ast",
@@ -10146,11 +10173,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L362",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onlost",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onlost",
       "target": "network",
       "relation": "references",
       "_origin": "ast",
@@ -10158,11 +10185,23 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L369",
+      "source_location": "L372",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onprogresschanged",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onshowfilechooser",
       "target": "filechooserparams",
       "relation": "references",
       "_origin": "ast",
@@ -10170,11 +10209,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L211",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onshowfilechooser",
       "target": "valuecallback",
       "relation": "references",
       "_origin": "ast",
@@ -10182,11 +10221,23 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L211",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onshowfilechooser",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_handleuri",
       "target": "uri",
       "relation": "references",
       "_origin": "ast",
@@ -10194,11 +10245,23 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L249",
+      "source_location": "L252",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onpagefinished",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivederror",
       "target": "webresourceerror",
       "relation": "references",
       "_origin": "ast",
@@ -10206,11 +10269,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivederror",
       "target": "webresourcerequest",
       "relation": "references",
       "_origin": "ast",
@@ -10218,11 +10281,23 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivederror",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivedsslerror",
       "target": "sslerror",
       "relation": "references",
       "_origin": "ast",
@@ -10230,11 +10305,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L317",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivedsslerror",
       "target": "sslerrorhandler",
       "relation": "references",
       "_origin": "ast",
@@ -10242,11 +10317,23 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L317",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_shouldoverrideurlloading",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivedsslerror",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L320",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_shouldoverrideurlloading",
       "target": "webresourcerequest",
       "relation": "references",
       "_origin": "ast",
@@ -10254,7 +10341,19 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L235",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_shouldoverrideurlloading",
+      "target": "webview",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
@@ -12564,40 +12663,40 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L406",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L361",
+      "source_location": "L364",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L200",
+      "source_location": "L203",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L234",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -14647,36 +14746,36 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L361",
+      "source_location": "L364",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L200",
+      "source_location": "L203",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L234",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -14731,7 +14830,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L152",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -14742,7 +14841,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L161",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -14753,7 +14852,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L191",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -14764,7 +14863,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L199",
+      "source_location": "L202",
       "weight": 1.0
     },
     {
@@ -14775,7 +14874,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L355",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -14786,7 +14885,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L384",
+      "source_location": "L387",
       "weight": 1.0
     },
     {
@@ -14797,7 +14896,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L397",
+      "source_location": "L400",
       "weight": 1.0
     },
     {
@@ -14812,102 +14911,102 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onavailable",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onavailable",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L362",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l361_onlost",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l364_onlost",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L369",
+      "source_location": "L372",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onprogresschanged",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onprogresschanged",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L201",
+      "source_location": "L204",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l200_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l203_onshowfilechooser",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L211",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_shouldoverrideurlloading",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_shouldoverrideurlloading",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L243",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_handleuri",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L249",
+      "source_location": "L252",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivedsslerror",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L317",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onreceivederror",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l234_onpagefinished",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l237_onpagefinished",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L340",
+      "source_location": "L343",
       "weight": 1.0
     },
     {
@@ -14918,7 +15017,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L407",
+      "source_location": "L410",
       "weight": 1.0
     },
     {
@@ -14929,7 +15028,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L426",
+      "source_location": "L429",
       "weight": 1.0
     },
     {
@@ -14940,7 +15039,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L469",
+      "source_location": "L472",
       "weight": 1.0
     },
     {
@@ -14951,7 +15050,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L482",
+      "source_location": "L485",
       "weight": 1.0
     },
     {
@@ -15800,5 +15899,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "67e2dae3586e9aa30efd44265c5bc71e5380a05a"
+  "built_at_commit": "219330c9b7ba074321a69b5471c36280ba17aa7d"
 }
