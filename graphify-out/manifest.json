@@ -175,8 +175,8 @@
   },
   "migrations/0001_initial.sql": {
     "mtime": 1790772647.9753268,
-    "seen": 1792066506.9379213,
-    "ast_hash": "",
+    "seen": 1792067560.342861,
+    "ast_hash": "9ec65950bc11ac2d445d66238e6a6f15",
     "semantic_hash": ""
   },
   ".agents/rules/graphify.md": {
@@ -217,8 +217,8 @@
   },
   "migrations/0002_add_created_by_and_activity_logs.sql": {
     "mtime": 1790784643.9222388,
-    "seen": 1792066506.9379234,
-    "ast_hash": "",
+    "seen": 1792067560.3428624,
+    "ast_hash": "1b422266d01a245765d7ef5b537b5c4c",
     "semantic_hash": ""
   },
   "src/routes/attachments.rs": {
@@ -235,8 +235,8 @@
   },
   "migrations/0003_add_attachments.sql": {
     "mtime": 1790844785.8991847,
-    "seen": 1792066506.9379253,
-    "ast_hash": "",
+    "seen": 1792067560.3428638,
+    "ast_hash": "da5c8869fa195306a0c48863b4fe104d",
     "semantic_hash": ""
   },
   "static/manifest.json": {
@@ -337,8 +337,8 @@
   },
   "migrations/0004_add_system_settings_and_must_change_password.sql": {
     "mtime": 1792044320.5517702,
-    "seen": 1792066506.937927,
-    "ast_hash": "",
+    "seen": 1792067560.3428652,
+    "ast_hash": "66adde1f74f5f0194ed6af4c43b2088c",
     "semantic_hash": ""
   },
   "android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {

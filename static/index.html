@@ -2491,7 +2491,7 @@
         <span id="user-display-name">User</span>
         <span id="user-role-badge" class="role-tag">Member</span>
       </div>
-      <button id="server-nav-btn" class="btn btn-secondary btn-sm" onclick="openServerSettingsModal()" title="Server Settings">
+      <button id="server-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="openServerSettingsModal()" title="Server Settings">
         <span>🌐</span><span class="nav-btn-label"> Server</span>
       </button>
       <button id="admin-nav-btn" class="btn btn-secondary btn-sm hidden" onclick="navigateTo('admin')" title="Admin Dashboard">
@@ -3280,6 +3280,43 @@
           <div id="profile-pwd-msg" class="form-help" style="margin-bottom: 10px; display: none;"></div>
           <div style="display: flex; justify-content: flex-end;">
             <button type="submit" id="btn-change-pwd" class="btn btn-secondary btn-sm">Update Password</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Server Connection Section -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h4 style="font-size: 0.92rem; font-weight: 700; margin: 0; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+            <span>🌐</span> Server Connection
+          </h4>
+          <span class="role-tag" id="profile-server-tag" style="font-size: 0.72rem;">Configured</span>
+        </div>
+        <p style="font-size: 0.76rem; color: var(--text-dim); margin-bottom: 12px;">
+          Connect to any self-hosted Splitter instance or custom server.
+        </p>
+
+        <form onsubmit="handleSaveServerUrl(event, 'profile-input-server-url')">
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" for="profile-input-server-url" style="font-size: 0.8rem;">Server Base URL</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="url" id="profile-input-server-url" class="form-input" placeholder="https://splitter.algosculptor.com" required style="font-family: var(--font-mono); font-size: 0.82rem; flex: 1;" />
+              <button type="button" class="btn btn-secondary btn-sm" onclick="handleTestServerConnection(this, 'profile-input-server-url', 'profile-server-test-result')" style="white-space: nowrap; padding: 6px 12px;">
+                Test
+              </button>
+            </div>
+            <span class="form-help" style="font-size: 0.72rem; margin-top: 4px;">Enter the full HTTP/HTTPS URL (e.g. https://splitter.algosculptor.com)</span>
+          </div>
+
+          <div id="profile-server-test-result" class="hidden" style="margin-bottom: 12px; padding: 10px 12px; border-radius: 6px; font-size: 0.8rem;"></div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="handleResetServerUrl()">
+              Reset Default
+            </button>
+            <button type="submit" id="btn-save-server-profile" class="btn btn-primary btn-sm">
+              Save & Reconnect
+            </button>
           </div>
         </form>
       </div>
@@ -4489,13 +4526,16 @@
     }
 
     function renderUserHeader() {
+      const serverNavBtn = document.getElementById('server-nav-btn');
       if (!currentUser) {
         document.getElementById('user-header-info').classList.add('hidden');
         document.getElementById('admin-nav-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.add('hidden');
+        if (serverNavBtn) serverNavBtn.classList.remove('hidden');
         return;
       }
 
+      if (serverNavBtn) serverNavBtn.classList.add('hidden');
       document.getElementById('user-header-info').classList.remove('hidden');
       document.getElementById('logout-btn').classList.remove('hidden');
       document.getElementById('user-display-name').textContent = currentUser.display_name;
@@ -4544,6 +4584,16 @@
       const initials = (currentUser.display_name || currentUser.email || 'U').trim().substring(0, 2).toUpperCase();
       const avatar = document.getElementById('profile-avatar-circle');
       if (avatar) avatar.textContent = initials;
+
+      const profileServerInput = document.getElementById('profile-input-server-url');
+      if (profileServerInput) {
+        profileServerInput.value = getCustomServerUrl();
+      }
+      const profileTestBox = document.getElementById('profile-server-test-result');
+      if (profileTestBox) {
+        profileTestBox.className = 'hidden';
+        profileTestBox.textContent = '';
+      }
 
       const msgEl = document.getElementById('profile-pwd-msg');
       if (msgEl) {
@@ -7148,10 +7198,20 @@
       if (navBtn) {
         try {
           const u = new URL(cur);
-          navBtn.textContent = `🌐 ${u.hostname}`;
+          navBtn.innerHTML = `<span>🌐</span><span class="nav-btn-label"> ${u.hostname}</span>`;
           navBtn.title = `Connected Server: ${cur}`;
         } catch (e) {
-          navBtn.textContent = `🌐 Server`;
+          navBtn.innerHTML = `<span>🌐</span><span class="nav-btn-label"> Server</span>`;
+        }
+      }
+      const profileTag = document.getElementById('profile-server-tag');
+      if (profileTag) {
+        try {
+          const u = new URL(cur);
+          profileTag.textContent = u.host;
+          profileTag.title = cur;
+        } catch (e) {
+          profileTag.textContent = 'Configured';
         }
       }
     }
@@ -7167,14 +7227,15 @@
       openModal('modal-server-settings');
     }
 
-    async function handleTestServerConnection(btn) {
-      const input = document.getElementById('input-server-url');
-      let url = (input.value || '').trim().replace(/\/+$/, '');
+    async function handleTestServerConnection(btn, inputId = 'input-server-url', resultId = 'server-test-result') {
+      const input = document.getElementById(inputId);
+      let url = (input ? input.value : '').trim().replace(/\/+$/, '');
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         url = 'https://' + url;
-        input.value = url;
+        if (input) input.value = url;
       }
-      const testBox = document.getElementById('server-test-result');
+      const testBox = document.getElementById(resultId);
+      if (!testBox) return;
       testBox.className = '';
       testBox.style.background = 'var(--bg-surface)';
       testBox.style.color = 'var(--text-dim)';
@@ -7200,10 +7261,10 @@
       }
     }
 
-    function handleSaveServerUrl(e) {
-      e.preventDefault();
-      const input = document.getElementById('input-server-url');
-      let url = (input.value || '').trim().replace(/\/+$/, '');
+    function handleSaveServerUrl(e, inputId = 'input-server-url') {
+      if (e && e.preventDefault) e.preventDefault();
+      const input = document.getElementById(inputId);
+      let url = (input ? input.value : '').trim().replace(/\/+$/, '');
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         url = 'https://' + url;
       }
@@ -7222,6 +7283,7 @@
       currentUser = null;
 
       closeModal('modal-server-settings');
+      closeModal('modal-profile');
       showToast('Server URL configured! Reloading...');
       setTimeout(() => {
         window.location.reload();
@@ -7237,9 +7299,11 @@
         try { window.webkit.messageHandlers.setServerUrl.postMessage(''); } catch (e) {}
       }
       localStorage.removeItem('splitter_token');
+      localStorage.removeItem('splitter_cache_user');
       token = null;
       currentUser = null;
       closeModal('modal-server-settings');
+      closeModal('modal-profile');
       showToast('Reset to default server. Reloading...');
       setTimeout(() => {
         window.location.reload();
@@ -7308,6 +7372,7 @@
         localStorage.setItem('splitter_token', token);
         currentUser = res.user;
         cacheSet('user', currentUser);
+        renderUserHeader();
         closeModal('modal-first-password-change', true);
         showToast('Password updated successfully! Welcome to Splitter.');
         navigateTo('groups');
@@ -7356,15 +7421,16 @@
     // Init with Local Storage Cache
     async function init() {
       try {
+        const cachedUser = cacheGet('user');
+        if (cachedUser) {
+          currentUser = cachedUser;
+        }
+        renderUserHeader();
         updateServerIndicator();
         checkAuthConfig();
         updateSyncUI();
 
-        // Read cached user
-        const cachedUser = cacheGet('user');
         if (cachedUser) {
-          currentUser = cachedUser;
-          renderUserHeader();
           if (currentUser.must_change_password) {
             openFirstPasswordChangeModal();
           } else {
