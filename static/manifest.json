@@ -1,0 +1,28 @@
+{
+  "name": "Splitter - Expense Splitting & Debt Settlement",
+  "short_name": "Splitter",
+  "description": "Collaborative expense splitting and debt settlement ledger",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f141c",
+  "theme_color": "#1cc29f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
