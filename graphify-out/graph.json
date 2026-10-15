@@ -3314,7 +3314,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.34"
+      "version": "0.1.35"
     },
     {
       "id": "result",
@@ -15904,5 +15904,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b38a846e0f7f66ba61366032226d5b2055cfacce"
+  "built_at_commit": "e1bdca2791b8b8a3d95b5e572cbc6e3f07866e20"
 }

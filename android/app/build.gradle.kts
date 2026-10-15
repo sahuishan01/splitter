@@ -25,8 +25,9 @@ android {
         applicationId = "com.splitter.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 35
-        versionName = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.1.34"
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 36
+        versionName = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.1.35"
+        resourceConfigurations += listOf("en")
 
         buildConfigField("String", "API_BASE_URL", "\"https://splitter.algosculptor.com\"")
     }
@@ -60,7 +61,12 @@ android {
             isMinifyEnabled = false
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -83,7 +89,6 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // Room
     val roomVersion = "2.6.1"
