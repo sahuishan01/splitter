@@ -1,9 +1,9 @@
 {
   "Cargo.toml": {
-    "mtime": 1792036897.7188613,
-    "seen": 1792036970.0605392,
-    "ast_hash": "b8c40411e53623d3552916b5b872485a",
-    "semantic_hash": "b8c40411e53623d3552916b5b872485a"
+    "mtime": 1792046180.0121114,
+    "seen": 1792046265.991218,
+    "ast_hash": "95c71fe3d44564d219408b48885df649",
+    "semantic_hash": "95c71fe3d44564d219408b48885df649"
   },
   "android/app/src/main/java/com/splitter/sync/OfflineQueueRepository.kt": {
     "mtime": 1790772944.176564,
@@ -24,10 +24,10 @@
     "semantic_hash": "a9a4143b152f3b9ca835a452fe9b2d73"
   },
   "android/app/src/main/java/com/splitter/sync/SyncQueueWorker.kt": {
-    "mtime": 1790774120.0495713,
-    "seen": 1790779966.826663,
-    "ast_hash": "328530b42f0c5a4d4a34a50913cb3491",
-    "semantic_hash": "328530b42f0c5a4d4a34a50913cb3491"
+    "mtime": 1792044964.0146127,
+    "seen": 1792046265.9918382,
+    "ast_hash": "fa894754127ed93041e093e5a951a1b7",
+    "semantic_hash": "fa894754127ed93041e093e5a951a1b7"
   },
   "src/auth/jwt.rs": {
     "mtime": 1790772682.023469,
@@ -60,34 +60,34 @@
     "semantic_hash": "e24871f1727544785195ca4c8f6df2e4"
   },
   "src/lib.rs": {
-    "mtime": 1790865955.2690766,
-    "seen": 1790866432.3864899,
-    "ast_hash": "5a02069c23cb8c401f8e7325cb0b6242",
-    "semantic_hash": "5a02069c23cb8c401f8e7325cb0b6242"
+    "mtime": 1792044419.9962187,
+    "seen": 1792046265.992386,
+    "ast_hash": "39599e8cfd9118dde5a0248e9dde2dd4",
+    "semantic_hash": "39599e8cfd9118dde5a0248e9dde2dd4"
   },
   "src/main.rs": {
-    "mtime": 1790772878.076288,
-    "seen": 1790773104.097891,
-    "ast_hash": "384b8197d9b9e6971f5141bc298e80b5",
-    "semantic_hash": "384b8197d9b9e6971f5141bc298e80b5"
+    "mtime": 1792041162.113151,
+    "seen": 1792046265.9923878,
+    "ast_hash": "2b982c4f85d783e156769fd9074f5271",
+    "semantic_hash": "2b982c4f85d783e156769fd9074f5271"
   },
   "src/models.rs": {
-    "mtime": 1790962218.8562353,
-    "seen": 1790962572.898846,
-    "ast_hash": "5b1af8bfb47d720352a22e1609f76c77",
-    "semantic_hash": "5b1af8bfb47d720352a22e1609f76c77"
+    "mtime": 1792044331.6718202,
+    "seen": 1792046265.992389,
+    "ast_hash": "31edd7a51a6f2cd8f03ba5c7558c8835",
+    "semantic_hash": "31edd7a51a6f2cd8f03ba5c7558c8835"
   },
   "src/routes/admin.rs": {
-    "mtime": 1790865936.5609963,
-    "seen": 1790866432.3866153,
-    "ast_hash": "da5ba959c9ed1c597ee18950077996fd",
-    "semantic_hash": "da5ba959c9ed1c597ee18950077996fd"
+    "mtime": 1792044403.1441426,
+    "seen": 1792046265.9923902,
+    "ast_hash": "475d0135e2d35eb335ce603d94c1ff1c",
+    "semantic_hash": "475d0135e2d35eb335ce603d94c1ff1c"
   },
   "src/routes/auth.rs": {
-    "mtime": 1790865916.260909,
-    "seen": 1790866432.3866875,
-    "ast_hash": "25fd6be909793430294ef7109250a2f7",
-    "semantic_hash": "25fd6be909793430294ef7109250a2f7"
+    "mtime": 1792044370.8679972,
+    "seen": 1792046265.9923937,
+    "ast_hash": "b600420e751a32968ea60b062ff6fd87",
+    "semantic_hash": "b600420e751a32968ea60b062ff6fd87"
   },
   "src/routes/expenses.rs": {
     "mtime": 1790962256.6803997,
@@ -126,22 +126,22 @@
     "semantic_hash": "58c1aed9aaddb65204e89ab937917413"
   },
   "tests/api_tests.rs": {
-    "mtime": 1790962277.700491,
-    "seen": 1790962572.899477,
-    "ast_hash": "51233d9fce4f4b01a4db3e76fa774914",
-    "semantic_hash": "51233d9fce4f4b01a4db3e76fa774914"
+    "mtime": 1792044487.6965084,
+    "seen": 1792046265.9930682,
+    "ast_hash": "590412b2fe99caa6b877f1cff8dc4d34",
+    "semantic_hash": "590412b2fe99caa6b877f1cff8dc4d34"
   },
   "android/app/build.gradle.kts": {
-    "mtime": 1792036902.2668803,
-    "seen": 1792036970.060542,
-    "ast_hash": "ac0236466fe525dfe3d67ba3f565d9bb",
-    "semantic_hash": "ac0236466fe525dfe3d67ba3f565d9bb"
+    "mtime": 1792046195.744182,
+    "seen": 1792046265.9912217,
+    "ast_hash": "f4a1d48ba1716f53eaf456536d9eb3a9",
+    "semantic_hash": "f4a1d48ba1716f53eaf456536d9eb3a9"
   },
   "android/app/src/main/java/com/splitter/app/MainActivity.kt": {
-    "mtime": 1791088549.343752,
-    "seen": 1791088793.7127893,
-    "ast_hash": "3228c4a6b8c5a2a79c60b81fd3ff0472",
-    "semantic_hash": "3228c4a6b8c5a2a79c60b81fd3ff0472"
+    "mtime": 1792045016.9508626,
+    "seen": 1792046265.991224,
+    "ast_hash": "054729823fc0f39c3ea7d7d5ebf5544b",
+    "semantic_hash": "054729823fc0f39c3ea7d7d5ebf5544b"
   },
   "android/app/src/main/java/com/splitter/app/SplitterApplication.kt": {
     "mtime": 1790777578.8002164,
@@ -176,7 +176,7 @@
   "migrations/0001_initial.sql": {
     "mtime": 1790772647.9753268,
     "seen": 1792036978.6910782,
-    "ast_hash": "9ec65950bc11ac2d445d66238e6a6f15",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   ".agents/rules/graphify.md": {
@@ -191,16 +191,10 @@
     "ast_hash": "6d73634a678cf1e1c71930adf80bd1f0",
     "semantic_hash": ""
   },
-  ".github/workflows/release-apk.yml": {
-    "mtime": 1790781251.743516,
-    "seen": 1790781399.92085,
-    "ast_hash": "aa796973b8a7ba47b7d221b918d020e9",
-    "semantic_hash": ""
-  },
   "README.md": {
-    "mtime": 1790772985.8407423,
-    "seen": 1790774738.796847,
-    "ast_hash": "c7c2685ef5bb82b25288e0b6867ad5cd",
+    "mtime": 1792045304.396163,
+    "seen": 1792045952.040155,
+    "ast_hash": "2edc7443051c31c8227f7b1ae1b29665",
     "semantic_hash": ""
   },
   "android/README.md": {
@@ -210,9 +204,9 @@
     "semantic_hash": ""
   },
   "static/index.html": {
-    "mtime": 1792036853.4346764,
-    "seen": 1792036978.691119,
-    "ast_hash": "8faacecf5097c09435203763a2a001b5",
+    "mtime": 1792044944.986526,
+    "seen": 1792045952.040191,
+    "ast_hash": "ba2cdaea84a6ddd6ef80af9ba34a709f",
     "semantic_hash": ""
   },
   "src/services/activity.rs": {
@@ -224,14 +218,14 @@
   "migrations/0002_add_created_by_and_activity_logs.sql": {
     "mtime": 1790784643.9222388,
     "seen": 1792036978.6910799,
-    "ast_hash": "1b422266d01a245765d7ef5b537b5c4c",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "src/routes/attachments.rs": {
-    "mtime": 1790845172.5008273,
-    "seen": 1790845915.046217,
-    "ast_hash": "4f659ebc6f543eea5bbdfcd62afe38a6",
-    "semantic_hash": "4f659ebc6f543eea5bbdfcd62afe38a6"
+    "mtime": 1792041149.6250975,
+    "seen": 1792046265.9923918,
+    "ast_hash": "d36f0934b21abb25efd91ad818fcd133",
+    "semantic_hash": "d36f0934b21abb25efd91ad818fcd133"
   },
   "src/services/ocr.rs": {
     "mtime": 1790844878.9155712,
@@ -242,7 +236,7 @@
   "migrations/0003_add_attachments.sql": {
     "mtime": 1790844785.8991847,
     "seen": 1792036978.6910813,
-    "ast_hash": "da5c8869fa195306a0c48863b4fe104d",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "static/manifest.json": {
@@ -286,5 +280,59 @@
     "seen": 1792036978.6911263,
     "ast_hash": "921b4c00f58d96a946b67cb8ccb176a5",
     "semantic_hash": ""
+  },
+  "ios/Splitter/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1792045205.9317381,
+    "seen": 1792046265.9920347,
+    "ast_hash": "cc0fa974a2eb9d06669de8f7d07455fc",
+    "semantic_hash": "cc0fa974a2eb9d06669de8f7d07455fc"
+  },
+  "ios/Splitter/Assets.xcassets/Contents.json": {
+    "mtime": 1792045189.1356616,
+    "seen": 1792046265.9920363,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "ios/Splitter/ContentView.swift": {
+    "mtime": 1792045176.471604,
+    "seen": 1792046265.9920378,
+    "ast_hash": "ff6ae76ccf00f802b7684e48ac115418",
+    "semantic_hash": "ff6ae76ccf00f802b7684e48ac115418"
+  },
+  "ios/Splitter/SplitterApp.swift": {
+    "mtime": 1792045150.4794858,
+    "seen": 1792046265.9920397,
+    "ast_hash": "7c73ff4b0a9a70f43f7475abd4ab3e42",
+    "semantic_hash": "7c73ff4b0a9a70f43f7475abd4ab3e42"
+  },
+  "ios/Splitter/WebView.swift": {
+    "mtime": 1792045164.0595474,
+    "seen": 1792046265.992041,
+    "ast_hash": "e5e3420bb88ed3ffb639f00cd15625d3",
+    "semantic_hash": "e5e3420bb88ed3ffb639f00cd15625d3"
+  },
+  ".github/workflows/release-mobile.yml": {
+    "mtime": 1792045832.4305437,
+    "seen": 1792045952.040153,
+    "ast_hash": "3de102b80fd12e14223a59170b43c34b",
+    "semantic_hash": ""
+  },
+  "docs/RELEASES.md": {
+    "mtime": 1792045289.7081017,
+    "seen": 1792045952.0401895,
+    "ast_hash": "40263fb6690dc3633d12c50ffa1c2fff",
+    "semantic_hash": ""
+  },
+  "ios/Splitter/Assets.xcassets/AppIcon.appiconset/icon-1024.png": {
+    "mtime": 1792045200.4437132,
+    "seen": 1792045952.040192,
+    "ast_hash": "921b4c00f58d96a946b67cb8ccb176a5",
+    "semantic_hash": ""
+  },
+  "ios/Splitter/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1792046127.2118745,
+    "seen": 1792046265.9920328,
+    "ast_hash": "cff1bb4e32df8b80965e20d8d4af51ce",
+    "semantic_hash": "cff1bb4e32df8b80965e20d8d4af51ce"
   }
 }
