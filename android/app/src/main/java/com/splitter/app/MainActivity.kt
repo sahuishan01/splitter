@@ -80,14 +80,16 @@ class MainActivity : AppCompatActivity() {
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
+            setBackgroundColor(0xFF0F141C.toInt())
             settings.apply {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 cacheMode = WebSettings.LOAD_DEFAULT
-                useWideViewPort = false
-                loadWithOverviewMode = false
+                useWideViewPort = true
+                loadWithOverviewMode = true
                 mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
+            isVerticalScrollBarEnabled = false
             isHorizontalScrollBarEnabled = false
             overScrollMode = View.OVER_SCROLL_NEVER
             addJavascriptInterface(WebAppInterface(this@MainActivity), "AndroidNative")

@@ -25,8 +25,8 @@ struct WebView: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
-        webView.isOpaque = false
-        webView.backgroundColor = UIColor(red: 13/255.0, green: 17/255.0, blue: 23/255.0, alpha: 1.0)
+        webView.isOpaque = true
+        webView.backgroundColor = UIColor(red: 15/255.0, green: 20/255.0, blue: 28/255.0, alpha: 1.0)
         webView.scrollView.backgroundColor = webView.backgroundColor
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.alwaysBounceHorizontal = false
