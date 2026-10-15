@@ -29,14 +29,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.splitter.sync.SyncQueueWorker
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
-    private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var offlineBanner: TextView
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
@@ -119,22 +117,7 @@ class MainActivity : AppCompatActivity() {
             visibility = View.GONE
         }
 
-        swipeRefresh = SwipeRefreshLayout(this).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            addView(webView)
-            setOnChildScrollUpCallback { _, _ ->
-                webView.scrollY > 0 || webView.canScrollVertically(-1)
-            }
-            setOnRefreshListener {
-                triggerSyncSafely()
-                webView.reload()
-            }
-        }
-
-        rootLayout.addView(swipeRefresh)
+        rootLayout.addView(webView)
         rootLayout.addView(progressBar)
         rootLayout.addView(offlineBanner)
         setContentView(rootLayout)
@@ -207,7 +190,6 @@ class MainActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                 } else {
                     progressBar.visibility = View.GONE
-                    swipeRefresh.isRefreshing = false
                 }
             }
 
@@ -341,7 +323,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                swipeRefresh.isRefreshing = false
+                view?.invalidate()
+                view?.requestLayout()
                 view?.evaluateJavascript(
                     "(function() { return localStorage.getItem('splitter_token') || ''; })();"
                 ) { tokenResult ->
