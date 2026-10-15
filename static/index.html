@@ -1239,16 +1239,16 @@
       background: var(--bg-overlay);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 500;
       padding: 16px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
     }
     .modal-overlay.active {
+      display: flex !important;
       opacity: 1;
       pointer-events: auto;
     }
@@ -1516,6 +1516,11 @@
         background: var(--bg-surface) !important;
         -webkit-transform: translate3d(0, 0, 0);
         transform: translate3d(0, 0, 0);
+      }
+      .modal-overlay {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(15, 20, 28, 0.94) !important;
       }
       .brand-title {
         font-size: 0.92rem;
@@ -6753,20 +6758,28 @@
     async function loadAdminData() {
       renderAdminSkeleton();
       try {
-        const stats = await apiFetch('/admin/stats');
-        document.getElementById('admin-stat-users').textContent = stats.total_users;
-        document.getElementById('admin-stat-groups').textContent = stats.total_groups;
-        document.getElementById('admin-stat-expenses').textContent = stats.total_expenses;
-        document.getElementById('admin-stat-volume').textContent = formatMoney(stats.total_volume_cents, 'USD');
-        document.getElementById('admin-stat-settlements').textContent = stats.total_settlements;
+        const [statsRes, settingsRes, usersRes] = await Promise.allSettled([
+          apiFetch('/admin/stats'),
+          apiFetch('/admin/settings'),
+          apiFetch('/admin/users')
+        ]);
+
+        if (statsRes.status === 'fulfilled') {
+          const stats = statsRes.value;
+          document.getElementById('admin-stat-users').textContent = stats.total_users;
+          document.getElementById('admin-stat-groups').textContent = stats.total_groups;
+          document.getElementById('admin-stat-expenses').textContent = stats.total_expenses;
+          document.getElementById('admin-stat-volume').textContent = formatMoney(stats.total_volume_cents, 'USD');
+          document.getElementById('admin-stat-settlements').textContent = stats.total_settlements;
+        }
 
         const sessionIdentity = document.getElementById('admin-session-identity');
         if (sessionIdentity && currentUser) {
           sessionIdentity.textContent = `Admin: ${currentUser.email}`;
         }
 
-        try {
-          const settings = await apiFetch('/admin/settings');
+        if (settingsRes.status === 'fulfilled') {
+          const settings = settingsRes.value;
           const signupToggle = document.getElementById('admin-allow-signup-toggle');
           const toggleLabel = document.getElementById('admin-signup-toggle-label');
           if (signupToggle) {
@@ -6781,15 +6794,14 @@
               }
             }
           }
-        } catch (e) {
-          console.warn('Failed to load admin settings:', e);
         }
 
-        const users = await apiFetch('/admin/users');
-        allAdminUsers = users || [];
-        renderAdminUsers();
+        if (usersRes.status === 'fulfilled') {
+          allAdminUsers = usersRes.value || [];
+          renderAdminUsers();
+        }
 
-        // Flush layout and wake up compositor
+        // Flush layout and wake up compositor in a single pass
         requestAnimationFrame(() => {
           window.dispatchEvent(new Event('resize'));
         });

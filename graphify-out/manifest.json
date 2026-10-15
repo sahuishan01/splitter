@@ -1,9 +1,9 @@
 {
   "Cargo.toml": {
-    "mtime": 1792063256.8955548,
-    "seen": 1792063536.6656063,
-    "ast_hash": "03de04cccc8fba0cd2c95575b388aae5",
-    "semantic_hash": "03de04cccc8fba0cd2c95575b388aae5"
+    "mtime": 1792066302.0012152,
+    "seen": 1792066487.342206,
+    "ast_hash": "7a0e3a75bd31c995c0445b674ce35716",
+    "semantic_hash": "7a0e3a75bd31c995c0445b674ce35716"
   },
   "android/app/src/main/java/com/splitter/sync/OfflineQueueRepository.kt": {
     "mtime": 1790772944.176564,
@@ -132,10 +132,10 @@
     "semantic_hash": "590412b2fe99caa6b877f1cff8dc4d34"
   },
   "android/app/build.gradle.kts": {
-    "mtime": 1792063246.7835093,
-    "seen": 1792063536.6656106,
-    "ast_hash": "f1993c4bc137a3e78e43eec9c98fca6b",
-    "semantic_hash": "f1993c4bc137a3e78e43eec9c98fca6b"
+    "mtime": 1792066308.429244,
+    "seen": 1792066487.34221,
+    "ast_hash": "55be7c41bb4e3af828317a61c5342798",
+    "semantic_hash": "55be7c41bb4e3af828317a61c5342798"
   },
   "android/app/src/main/java/com/splitter/app/MainActivity.kt": {
     "mtime": 1792063187.1392395,
@@ -175,7 +175,7 @@
   },
   "migrations/0001_initial.sql": {
     "mtime": 1790772647.9753268,
-    "seen": 1792060880.5692022,
+    "seen": 1792063553.3670099,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -204,9 +204,9 @@
     "semantic_hash": ""
   },
   "static/index.html": {
-    "mtime": 1792060577.7394044,
-    "seen": 1792060880.5692534,
-    "ast_hash": "272e7f7bb31ac42b6565a7da48465410",
+    "mtime": 1792063233.6194496,
+    "seen": 1792063553.3670652,
+    "ast_hash": "247789427db664babe6ceb3be07de7f1",
     "semantic_hash": ""
   },
   "src/services/activity.rs": {
@@ -217,7 +217,7 @@
   },
   "migrations/0002_add_created_by_and_activity_logs.sql": {
     "mtime": 1790784643.9222388,
-    "seen": 1792060880.5692039,
+    "seen": 1792063553.3670115,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -235,7 +235,7 @@
   },
   "migrations/0003_add_attachments.sql": {
     "mtime": 1790844785.8991847,
-    "seen": 1792060880.5692058,
+    "seen": 1792063553.3670132,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -337,7 +337,7 @@
   },
   "migrations/0004_add_system_settings_and_must_change_password.sql": {
     "mtime": 1792044320.5517702,
-    "seen": 1792060880.5692072,
+    "seen": 1792063553.367015,
     "ast_hash": "",
     "semantic_hash": ""
   },

@@ -585,13 +585,13 @@
   },
   "gods": [
     {
-      "id": "src_routes_groups_check_group_membership",
-      "label": "check_group_membership()",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
+      "label": "MainActivity",
       "degree": 19
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
-      "label": "MainActivity",
+      "id": "src_routes_groups_check_group_membership",
+      "label": "check_group_membership()",
       "degree": 19
     },
     {
