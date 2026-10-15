@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         insetsController.isAppearanceLightNavigationBars = false
 
         webView = WebView(this).apply {
+            setLayerType(View.LAYER_TYPE_HARDWARE, null)
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
@@ -365,6 +366,16 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        webView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        webView.onPause()
     }
 
     override fun onDestroy() {
