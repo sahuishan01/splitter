@@ -66,7 +66,7 @@
       "source_location": "L34"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
       "label": "ConnectivityManager",
       "_callable": true,
       "_callable_class": true,
@@ -75,10 +75,10 @@
       "file_type": "code",
       "norm_label": "connectivitymanager",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L348"
+      "source_location": "L349"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
       "label": "WebChromeClient",
       "_callable": true,
       "_callable_class": true,
@@ -87,10 +87,10 @@
       "file_type": "code",
       "norm_label": "webchromeclient",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L187"
+      "source_location": "L188"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
       "label": "WebViewClient",
       "_callable": true,
       "_callable_class": true,
@@ -99,7 +99,7 @@
       "file_type": "code",
       "norm_label": "webviewclient",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L220"
+      "source_location": "L221"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface",
@@ -111,7 +111,7 @@
       "file_type": "code",
       "norm_label": "webappinterface",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L403"
+      "source_location": "L404"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_splitterapplication_splitterapplication",
@@ -336,7 +336,7 @@
       "file_type": "code",
       "norm_label": ".getserverbaseurl()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L139"
+      "source_location": "L140"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_onbackpressed",
@@ -347,7 +347,7 @@
       "file_type": "code",
       "norm_label": ".onbackpressed()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L394"
+      "source_location": "L395"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_oncreate",
@@ -369,7 +369,7 @@
       "file_type": "code",
       "norm_label": ".ondestroy()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L381"
+      "source_location": "L382"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_onpause",
@@ -380,7 +380,7 @@
       "file_type": "code",
       "norm_label": ".onpause()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L376"
+      "source_location": "L377"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_onresume",
@@ -391,7 +391,7 @@
       "file_type": "code",
       "norm_label": ".onresume()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L371"
+      "source_location": "L372"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring",
@@ -402,10 +402,10 @@
       "file_type": "code",
       "norm_label": ".setupnetworkmonitoring()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L342"
+      "source_location": "L343"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onavailable",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onavailable",
       "label": ".onAvailable()",
       "_callable": true,
       "_origin": "ast",
@@ -413,10 +413,10 @@
       "file_type": "code",
       "norm_label": ".onavailable()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L349"
+      "source_location": "L350"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onlost",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onlost",
       "label": ".onLost()",
       "_callable": true,
       "_origin": "ast",
@@ -424,7 +424,7 @@
       "file_type": "code",
       "norm_label": ".onlost()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L356"
+      "source_location": "L357"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
@@ -435,10 +435,10 @@
       "file_type": "code",
       "norm_label": ".setupwebviewclients()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L186"
+      "source_location": "L187"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onprogresschanged",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onprogresschanged",
       "label": ".onProgressChanged()",
       "_callable": true,
       "_origin": "ast",
@@ -446,10 +446,10 @@
       "file_type": "code",
       "norm_label": ".onprogresschanged()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L188"
+      "source_location": "L189"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onshowfilechooser",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onshowfilechooser",
       "label": ".onShowFileChooser()",
       "_callable": true,
       "_origin": "ast",
@@ -457,10 +457,10 @@
       "file_type": "code",
       "norm_label": ".onshowfilechooser()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L197"
+      "source_location": "L198"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_handleuri",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_handleuri",
       "label": ".handleUri()",
       "_callable": true,
       "_origin": "ast",
@@ -468,10 +468,10 @@
       "file_type": "code",
       "norm_label": ".handleuri()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L235"
+      "source_location": "L236"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onpagefinished",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onpagefinished",
       "label": ".onPageFinished()",
       "_callable": true,
       "_origin": "ast",
@@ -479,10 +479,10 @@
       "file_type": "code",
       "norm_label": ".onpagefinished()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326"
+      "source_location": "L327"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivederror",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivederror",
       "label": ".onReceivedError()",
       "_callable": true,
       "_origin": "ast",
@@ -490,10 +490,10 @@
       "file_type": "code",
       "norm_label": ".onreceivederror()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L312"
+      "source_location": "L313"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivedsslerror",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivedsslerror",
       "label": ".onReceivedSslError()",
       "_callable": true,
       "_origin": "ast",
@@ -501,10 +501,10 @@
       "file_type": "code",
       "norm_label": ".onreceivedsslerror()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L303"
+      "source_location": "L304"
     },
     {
-      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_shouldoverrideurlloading",
+      "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_shouldoverrideurlloading",
       "label": ".shouldOverrideUrlLoading()",
       "_callable": true,
       "_origin": "ast",
@@ -512,7 +512,7 @@
       "file_type": "code",
       "norm_label": ".shouldoverrideurlloading()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L221"
+      "source_location": "L222"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_showserverconfigdialog",
@@ -523,7 +523,7 @@
       "file_type": "code",
       "norm_label": ".showserverconfigdialog()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L148"
+      "source_location": "L149"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_triggersyncsafely",
@@ -534,7 +534,7 @@
       "file_type": "code",
       "norm_label": ".triggersyncsafely()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L178"
+      "source_location": "L179"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_getserverurl",
@@ -545,7 +545,7 @@
       "file_type": "code",
       "norm_label": ".getserverurl()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L479"
+      "source_location": "L480"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_setserverurl",
@@ -556,7 +556,7 @@
       "file_type": "code",
       "norm_label": ".setserverurl()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L466"
+      "source_location": "L467"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_sharetext",
@@ -567,7 +567,7 @@
       "file_type": "code",
       "norm_label": ".sharetext()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L404"
+      "source_location": "L405"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_mainactivity_webappinterface_sharewhatsapp",
@@ -578,7 +578,7 @@
       "file_type": "code",
       "norm_label": ".sharewhatsapp()",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L423"
+      "source_location": "L424"
     },
     {
       "id": "android_app_src_main_java_com_splitter_app_splitterapplication_splitterapplication_oncreate",
@@ -3314,7 +3314,7 @@
       "source_file": "Cargo.toml",
       "source_location": "L1",
       "type": "package",
-      "version": "0.1.32"
+      "version": "0.1.33"
     },
     {
       "id": "result",
@@ -5062,7 +5062,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L108",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -5074,7 +5074,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -5086,7 +5086,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L130",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -5098,7 +5098,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L131",
+      "source_location": "L132",
       "weight": 1.0
     },
     {
@@ -5110,7 +5110,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L133",
+      "source_location": "L134",
       "weight": 1.0
     },
     {
@@ -5122,7 +5122,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L136",
+      "source_location": "L137",
       "weight": 1.0
     },
     {
@@ -5146,7 +5146,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L94",
+      "source_location": "L95",
       "weight": 1.0
     },
     {
@@ -5158,11 +5158,11 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L98",
+      "source_location": "L99",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onavailable",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onavailable",
       "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_triggersyncsafely",
       "relation": "calls",
       "_origin": "ast",
@@ -5170,11 +5170,11 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L352",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_handleuri",
       "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_getserverbaseurl",
       "relation": "calls",
       "_origin": "ast",
@@ -5182,19 +5182,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L255",
+      "source_location": "L256",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_shouldoverrideurlloading",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_shouldoverrideurlloading",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_handleuri",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L226",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -5206,7 +5206,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L150",
+      "source_location": "L151",
       "weight": 1.0
     },
     {
@@ -5218,7 +5218,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L481",
+      "source_location": "L482",
       "weight": 1.0
     },
     {
@@ -5230,7 +5230,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L458",
+      "source_location": "L459",
       "weight": 1.0
     },
     {
@@ -6219,7 +6219,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7130,7 +7130,7 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onshowfilechooser",
       "target": "uri",
       "relation": "references",
       "_origin": "ast",
@@ -7138,7 +7138,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L197",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -9594,7 +9594,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9714,7 +9714,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9774,7 +9774,7 @@
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -10148,7 +10148,7 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onavailable",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onavailable",
       "target": "network",
       "relation": "references",
       "_origin": "ast",
@@ -10156,11 +10156,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L349",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onlost",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onlost",
       "target": "network",
       "relation": "references",
       "_origin": "ast",
@@ -10168,11 +10168,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L356",
+      "source_location": "L357",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onprogresschanged",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onprogresschanged",
       "target": "webview",
       "relation": "references",
       "_origin": "ast",
@@ -10180,11 +10180,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L188",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onshowfilechooser",
       "target": "filechooserparams",
       "relation": "references",
       "_origin": "ast",
@@ -10192,11 +10192,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L197",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onshowfilechooser",
       "target": "valuecallback",
       "relation": "references",
       "_origin": "ast",
@@ -10204,11 +10204,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L197",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onshowfilechooser",
       "target": "webview",
       "relation": "references",
       "_origin": "ast",
@@ -10216,11 +10216,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L197",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_handleuri",
       "target": "uri",
       "relation": "references",
       "_origin": "ast",
@@ -10228,11 +10228,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L235",
+      "source_location": "L236",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onpagefinished",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onpagefinished",
       "target": "webview",
       "relation": "references",
       "_origin": "ast",
@@ -10240,11 +10240,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivederror",
       "target": "webresourceerror",
       "relation": "references",
       "_origin": "ast",
@@ -10252,11 +10252,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L312",
+      "source_location": "L313",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivederror",
       "target": "webresourcerequest",
       "relation": "references",
       "_origin": "ast",
@@ -10264,11 +10264,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L312",
+      "source_location": "L313",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivederror",
       "target": "webview",
       "relation": "references",
       "_origin": "ast",
@@ -10276,11 +10276,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L312",
+      "source_location": "L313",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivedsslerror",
       "target": "sslerror",
       "relation": "references",
       "_origin": "ast",
@@ -10288,11 +10288,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L303",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivedsslerror",
       "target": "sslerrorhandler",
       "relation": "references",
       "_origin": "ast",
@@ -10300,11 +10300,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L303",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivedsslerror",
       "target": "webview",
       "relation": "references",
       "_origin": "ast",
@@ -10312,11 +10312,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L303",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_shouldoverrideurlloading",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_shouldoverrideurlloading",
       "target": "webresourcerequest",
       "relation": "references",
       "_origin": "ast",
@@ -10324,11 +10324,11 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L221",
+      "source_location": "L222",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_shouldoverrideurlloading",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_shouldoverrideurlloading",
       "target": "webview",
       "relation": "references",
       "_origin": "ast",
@@ -10336,7 +10336,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L229",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -12646,40 +12646,40 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L403",
+      "source_location": "L404",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L348",
+      "source_location": "L349",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L187",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
       "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L220",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -14729,36 +14729,36 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L348",
+      "source_location": "L349",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L187",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L220",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -14813,7 +14813,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L139",
+      "source_location": "L140",
       "weight": 1.0
     },
     {
@@ -14824,7 +14824,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L148",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -14835,7 +14835,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L178",
+      "source_location": "L179",
       "weight": 1.0
     },
     {
@@ -14846,7 +14846,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L186",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -14857,7 +14857,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L342",
+      "source_location": "L343",
       "weight": 1.0
     },
     {
@@ -14868,7 +14868,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L371",
+      "source_location": "L372",
       "weight": 1.0
     },
     {
@@ -14879,7 +14879,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L376",
+      "source_location": "L377",
       "weight": 1.0
     },
     {
@@ -14890,7 +14890,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L381",
+      "source_location": "L382",
       "weight": 1.0
     },
     {
@@ -14901,7 +14901,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L394",
+      "source_location": "L395",
       "weight": 1.0
     },
     {
@@ -14916,102 +14916,102 @@
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onavailable",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onavailable",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L349",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l348_onlost",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupnetworkmonitoring_object_connectivitymanager_l349_onlost",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L356",
+      "source_location": "L357",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onprogresschanged",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onprogresschanged",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L188",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l187_onshowfilechooser",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webchromeclient_l188_onshowfilechooser",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L197",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_shouldoverrideurlloading",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_shouldoverrideurlloading",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L229",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_handleuri",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_handleuri",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L235",
+      "source_location": "L236",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivedsslerror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivedsslerror",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L303",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onreceivederror",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onreceivederror",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L312",
+      "source_location": "L313",
       "weight": 1.0
     },
     {
-      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220",
-      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l220_onpagefinished",
+      "source": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221",
+      "target": "android_app_src_main_java_com_splitter_app_mainactivity_mainactivity_setupwebviewclients_object_webviewclient_l221_onpagefinished",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L326",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
@@ -15022,7 +15022,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L404",
+      "source_location": "L405",
       "weight": 1.0
     },
     {
@@ -15033,7 +15033,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L423",
+      "source_location": "L424",
       "weight": 1.0
     },
     {
@@ -15044,7 +15044,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L466",
+      "source_location": "L467",
       "weight": 1.0
     },
     {
@@ -15055,7 +15055,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "android/app/src/main/java/com/splitter/app/MainActivity.kt",
-      "source_location": "L479",
+      "source_location": "L480",
       "weight": 1.0
     },
     {
@@ -15904,5 +15904,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8ffba0fbe46b679aad782fdc96ffe2beadfe6e8e"
+  "built_at_commit": "90a67089f36fc1267e40c93fb3c86866bbc4765b"
 }

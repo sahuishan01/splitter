@@ -1,9 +1,9 @@
 {
   "Cargo.toml": {
-    "mtime": 1792060822.6285024,
-    "seen": 1792060860.1067877,
-    "ast_hash": "f0d1a6ef2d56c4563c6783b9390228a3",
-    "semantic_hash": "f0d1a6ef2d56c4563c6783b9390228a3"
+    "mtime": 1792063256.8955548,
+    "seen": 1792063536.6656063,
+    "ast_hash": "03de04cccc8fba0cd2c95575b388aae5",
+    "semantic_hash": "03de04cccc8fba0cd2c95575b388aae5"
   },
   "android/app/src/main/java/com/splitter/sync/OfflineQueueRepository.kt": {
     "mtime": 1790772944.176564,
@@ -132,16 +132,16 @@
     "semantic_hash": "590412b2fe99caa6b877f1cff8dc4d34"
   },
   "android/app/build.gradle.kts": {
-    "mtime": 1792060835.3445592,
-    "seen": 1792060860.1067917,
-    "ast_hash": "66a4757d147db17ba1948ea611d3e440",
-    "semantic_hash": "66a4757d147db17ba1948ea611d3e440"
+    "mtime": 1792063246.7835093,
+    "seen": 1792063536.6656106,
+    "ast_hash": "f1993c4bc137a3e78e43eec9c98fca6b",
+    "semantic_hash": "f1993c4bc137a3e78e43eec9c98fca6b"
   },
   "android/app/src/main/java/com/splitter/app/MainActivity.kt": {
-    "mtime": 1792060623.2676086,
-    "seen": 1792060860.1067934,
-    "ast_hash": "11bdb0e437308cc352c85bb0c1686688",
-    "semantic_hash": "11bdb0e437308cc352c85bb0c1686688"
+    "mtime": 1792063187.1392395,
+    "seen": 1792063536.6656125,
+    "ast_hash": "b6b96b9803a255b86ecb1a7884d1ff8a",
+    "semantic_hash": "b6b96b9803a255b86ecb1a7884d1ff8a"
   },
   "android/app/src/main/java/com/splitter/app/SplitterApplication.kt": {
     "mtime": 1790777578.8002164,
@@ -175,7 +175,7 @@
   },
   "migrations/0001_initial.sql": {
     "mtime": 1790772647.9753268,
-    "seen": 1792059272.080694,
+    "seen": 1792060880.5692022,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -204,9 +204,9 @@
     "semantic_hash": ""
   },
   "static/index.html": {
-    "mtime": 1792058905.443911,
-    "seen": 1792059272.080745,
-    "ast_hash": "8b833b10ffd4ae7d2256f812fd505691",
+    "mtime": 1792060577.7394044,
+    "seen": 1792060880.5692534,
+    "ast_hash": "272e7f7bb31ac42b6565a7da48465410",
     "semantic_hash": ""
   },
   "src/services/activity.rs": {
@@ -217,7 +217,7 @@
   },
   "migrations/0002_add_created_by_and_activity_logs.sql": {
     "mtime": 1790784643.9222388,
-    "seen": 1792059272.0806959,
+    "seen": 1792060880.5692039,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -235,7 +235,7 @@
   },
   "migrations/0003_add_attachments.sql": {
     "mtime": 1790844785.8991847,
-    "seen": 1792059272.0806978,
+    "seen": 1792060880.5692058,
     "ast_hash": "",
     "semantic_hash": ""
   },
@@ -337,7 +337,7 @@
   },
   "migrations/0004_add_system_settings_and_must_change_password.sql": {
     "mtime": 1792044320.5517702,
-    "seen": 1792059272.0806994,
+    "seen": 1792060880.5692072,
     "ast_hash": "",
     "semantic_hash": ""
   },

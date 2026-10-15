@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         insetsController.isAppearanceLightNavigationBars = false
 
         webView = WebView(this).apply {
-            setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            setLayerType(View.LAYER_TYPE_NONE, null)
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
@@ -84,13 +84,14 @@ class MainActivity : AppCompatActivity() {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 cacheMode = WebSettings.LOAD_DEFAULT
-                useWideViewPort = false
-                loadWithOverviewMode = false
+                useWideViewPort = true
+                loadWithOverviewMode = true
+                offscreenPreRaster = true
                 mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
             isVerticalScrollBarEnabled = false
             isHorizontalScrollBarEnabled = false
-            overScrollMode = View.OVER_SCROLL_NEVER
+            overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS
             addJavascriptInterface(WebAppInterface(this@MainActivity), "AndroidNative")
         }
 
