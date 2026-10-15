@@ -283,6 +283,7 @@ pub async fn get_attachment_info(
 
 /// Standalone OCR scanner endpoint for instant bill analysis.
 pub async fn scan_ocr_direct(
+    _auth: AuthUser,
     mut multipart: Multipart,
 ) -> Result<Json<OcrResult>, AppError> {
     let mut file_bytes: Vec<u8> = Vec::new();
@@ -310,11 +311,24 @@ pub async fn scan_ocr_direct(
         return Err(AppError::BadRequest("No image file provided for OCR".to_string()));
     }
 
-    let temp_id = Uuid::new_v4().to_string();
+    if file_bytes.len() > MAX_UPLOAD_SIZE {
+        return Err(AppError::BadRequest("File exceeds 20MB maximum size limit".to_string()));
+    }
+
     let ext = FsPath::new(&file_name)
         .extension()
         .and_then(|e| e.to_str())
-        .unwrap_or("jpg");
+        .map(|s| s.to_lowercase())
+        .unwrap_or_else(|| "jpg".into());
+
+    const ALLOWED_OCR_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png", "webp", "bmp", "tiff"];
+    if !ALLOWED_OCR_EXTENSIONS.contains(&ext.as_str()) {
+        return Err(AppError::BadRequest(
+            "Unsupported file format for OCR. Only JPEG, PNG, WEBP, BMP, and TIFF files are allowed.".to_string(),
+        ));
+    }
+
+    let temp_id = Uuid::new_v4().to_string();
     let temp_path = format!("/tmp/ocr_scan_{}.{}", temp_id, ext);
 
     tokio::fs::write(&temp_path, &file_bytes)

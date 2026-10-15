@@ -164,6 +164,21 @@ class MainActivity : AppCompatActivity() {
         return BuildConfig.API_BASE_URL.removeSuffix("/")
     }
 
+    private fun isValidServerUrl(urlString: String): Boolean {
+        return try {
+            val uri = Uri.parse(urlString)
+            val scheme = uri.scheme?.lowercase() ?: return false
+            val host = uri.host?.lowercase() ?: return false
+            when (scheme) {
+                "https" -> true
+                "http" -> host == "127.0.0.1" || host == "localhost"
+                else -> false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private fun showServerConfigDialog() {
         val input = android.widget.EditText(this).apply {
             setText(getServerBaseUrl())
@@ -180,9 +195,13 @@ class MainActivity : AppCompatActivity() {
                     if (!newUrl.startsWith("http://") && !newUrl.startsWith("https://")) {
                         newUrl = "https://$newUrl"
                     }
-                    val prefs = getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
-                    prefs.edit().putString("server_url", newUrl).apply()
-                    webView.loadUrl(newUrl)
+                    if (isValidServerUrl(newUrl)) {
+                        val prefs = getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
+                        prefs.edit().putString("server_url", newUrl).apply()
+                        webView.loadUrl(newUrl)
+                    } else {
+                        android.widget.Toast.makeText(this, "Invalid server URL. HTTPS required.", android.widget.Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             .setNegativeButton("Reset Default") { _, _ ->
@@ -490,11 +509,14 @@ class MainActivity : AppCompatActivity() {
         @JavascriptInterface
         fun setServerUrl(url: String) {
             val clean = url.trim().removeSuffix("/")
+            if (clean.isEmpty() || !isValidServerUrl(clean)) {
+                return
+            }
             val prefs = context.getSharedPreferences("splitter_prefs", Context.MODE_PRIVATE)
             prefs.edit().putString("server_url", clean).apply()
             runOnUiThread {
                 val currentUrl = webView.url ?: ""
-                if (clean.isNotEmpty() && !currentUrl.startsWith(clean)) {
+                if (!currentUrl.startsWith(clean)) {
                     webView.loadUrl(clean)
                 }
             }

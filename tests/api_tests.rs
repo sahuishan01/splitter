@@ -972,4 +972,60 @@ async fn test_disable_signup_admin_onboarding_and_first_login_password_reset() {
     assert_eq!(res.status(), 200);
 }
 
+#[tokio::test]
+async fn test_ocr_scan_security_controls() {
+    let ctx = setup_test_app().await;
+
+    // 1. Unauthenticated request to /api/ocr/scan must be rejected with 401 Unauthorized
+    let part = reqwest::multipart::Part::bytes(b"dummy image bytes".to_vec())
+        .file_name("receipt.jpg")
+        .mime_str("image/jpeg")
+        .unwrap();
+    let form = reqwest::multipart::Form::new().part("file", part);
+
+    let res = ctx
+        .client
+        .post(format!("{}/api/ocr/scan", ctx.base_url))
+        .multipart(form)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 401);
+
+    // Register user to obtain valid auth token
+    let reg_res = ctx
+        .client
+        .post(format!("{}/api/auth/register", ctx.base_url))
+        .json(&json!({
+            "email": "ocr-tester@example.com",
+            "password": "password123",
+            "display_name": "OCR Tester"
+        }))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(reg_res.status(), 200);
+    let user_body: Value = reg_res.json().await.unwrap();
+    let token = user_body["token"].as_str().unwrap().to_string();
+
+    // 2. Authenticated request with forbidden file extension (.sh) must be rejected with 400
+    let sh_part = reqwest::multipart::Part::bytes(b"#!/bin/bash\necho 123".to_vec())
+        .file_name("script.sh")
+        .mime_str("text/x-shellscript")
+        .unwrap();
+    let form_sh = reqwest::multipart::Form::new().part("file", sh_part);
+
+    let res = ctx
+        .client
+        .post(format!("{}/api/ocr/scan", ctx.base_url))
+        .bearer_auth(&token)
+        .multipart(form_sh)
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(res.status(), 400);
+    let err_body: Value = res.json().await.unwrap();
+    assert!(err_body["error"].as_str().unwrap().contains("Unsupported file format for OCR"));
+}
+
 

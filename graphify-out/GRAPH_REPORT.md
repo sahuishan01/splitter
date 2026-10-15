@@ -1,16 +1,16 @@
 # Graph Report - splitter  (2026-10-15)
 
 ## Corpus Check
-- 48 files · ~59,879 words
+- 48 files · ~60,247 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 451 nodes · 919 edges · 43 communities (24 shown, 19 thin omitted)
+- 453 nodes · 924 edges · 43 communities (24 shown, 19 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 41 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `01c96220`
+- Built from commit: `2b6fecd3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -89,11 +89,11 @@ Nodes (34): Any, App, Bool, Context, ContentView, .body, .serverConfigSheet, URL
 
 ### Community 1 - "MainActivity.kt"
 Cohesion: 0.10
-Nodes (18): MainActivity, ConnectivityManager, WebChromeClient, WebViewClient, WebAppInterface, AppCompatActivity, Bundle, FileChooserParams (+10 more)
+Nodes (19): MainActivity, OnBackPressedCallback, ConnectivityManager, WebChromeClient, WebViewClient, WebAppInterface, AppCompatActivity, Bundle (+11 more)
 
 ### Community 2 - "models.rs"
 Cohesion: 0.13
-Nodes (31): HashMap, Self, ActivityLog, ActivityLogDetail, Attachment, AttachmentResponse, Expense, ExpenseDetail (+23 more)
+Nodes (32): HashMap, Self, ActivityLog, ActivityLogDetail, Attachment, AttachmentResponse, Expense, ExpenseDetail (+24 more)
 
 ### Community 3 - "expenses.rs"
 Cohesion: 0.24
@@ -128,8 +128,8 @@ Cohesion: 0.23
 Nodes (19): HeaderMap, Multipart, OcrResult, AttachmentQuery, check_attachment_access(), get_attachment_file(), get_attachment_info(), AppError (+11 more)
 
 ### Community 11 - "get_changes"
-Cohesion: 0.21
-Nodes (19): Query, batch_sync(), BatchSyncRequest, BatchSyncResponse, get_changes(), GroupChangesResponse, MutationResult, QueuedMutation (+11 more)
+Cohesion: 0.20
+Nodes (18): Query, batch_sync(), BatchSyncRequest, BatchSyncResponse, get_changes(), MutationResult, QueuedMutation, AppError (+10 more)
 
 ### Community 12 - "setup_test_app"
 Cohesion: 0.15
@@ -168,11 +168,11 @@ Nodes (3): gradlew script, die(), warn()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `log_activity()` connect `expenses.rs` to `jwt.rs`, `check_group_membership`?**
-  _High betweenness centrality (0.177) - this node is a cross-community bridge._
+  _High betweenness centrality (0.178) - this node is a cross-community bridge._
 - **Why does `UserResponse` connect `admin.rs` to `models.rs`, `auth.rs`?**
-  _High betweenness centrality (0.119) - this node is a cross-community bridge._
+  _High betweenness centrality (0.118) - this node is a cross-community bridge._
 - **Why does `AppError` connect `jwt.rs` to `auth.rs`?**
-  _High betweenness centrality (0.117) - this node is a cross-community bridge._
+  _High betweenness centrality (0.118) - this node is a cross-community bridge._
 - **Are the 11 inferred relationships involving `check_group_membership()` (e.g. with `check_attachment_access()` and `compute_splits()`) actually correct?**
   _`check_group_membership()` has 11 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 3 inferred relationships involving `create_expense()` (e.g. with `check_group_membership()` and `log_activity()`) actually correct?**

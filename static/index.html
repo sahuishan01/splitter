@@ -5251,12 +5251,20 @@
           </div>
           <div>
             ${(isPayerMe || isPayeeMe) ? `
-              <button class="btn btn-secondary btn-sm" onclick="openSettleModal('${d.from_user_id}', '${escapeHtml(d.from_user_name)}', '${d.to_user_id}', '${escapeHtml(d.to_user_name)}', ${d.amount_cents})">
+              <button class="btn btn-secondary btn-sm btn-settle-action">
                 Settle Up
               </button>
             ` : ''}
           </div>
         `;
+        if (isPayerMe || isPayeeMe) {
+          const settleBtn = item.querySelector('.btn-settle-action');
+          if (settleBtn) {
+            settleBtn.addEventListener('click', () => {
+              openSettleModal(d.from_user_id, d.from_user_name, d.to_user_id, d.to_user_name, d.amount_cents);
+            });
+          }
+        }
         dContainer.appendChild(item);
       });
     }
@@ -6957,7 +6965,7 @@
               <button class="btn btn-secondary btn-sm" onclick="toggleUserRole('${u.id}', ${!u.is_admin}, this)" title="${u.is_admin ? 'Demote to regular member' : 'Promote to administrator'}">
                 ${u.is_admin ? 'Demote' : 'Promote'}
               </button>
-              <button class="btn btn-secondary btn-sm" onclick="openAdminResetPasswordModal('${u.id}', '${escapeHtml(u.display_name).replace(/'/g, "\\'")}', '${escapeHtml(u.email).replace(/'/g, "\\'")}')" title="Reset this user's password">
+              <button class="btn btn-secondary btn-sm btn-reset-user-pwd" title="Reset this user's password">
                 🔑 Reset
               </button>
               ${!isSelf ? `
@@ -6970,6 +6978,12 @@
             </div>
           </td>
         `;
+        const trResetBtn = tr.querySelector('.btn-reset-user-pwd');
+        if (trResetBtn) {
+          trResetBtn.addEventListener('click', () => {
+            openAdminResetPasswordModal(u.id, u.display_name, u.email);
+          });
+        }
         tbody.appendChild(tr);
       });
 
@@ -7006,7 +7020,7 @@
             <button class="btn btn-secondary btn-sm" onclick="toggleUserRole('${u.id}', ${!u.is_admin}, this)">
               ${u.is_admin ? 'Demote' : 'Promote'}
             </button>
-            <button class="btn btn-secondary btn-sm" onclick="openAdminResetPasswordModal('${u.id}', '${escapeHtml(u.display_name).replace(/'/g, "\\'")}', '${escapeHtml(u.email).replace(/'/g, "\\'")}')">
+            <button class="btn btn-secondary btn-sm btn-card-reset-user-pwd">
               🔑 Reset
             </button>
             ${!isSelf ? `
@@ -7018,6 +7032,12 @@
             `}
           </div>
         `;
+        const cardResetBtn = card.querySelector('.btn-card-reset-user-pwd');
+        if (cardResetBtn) {
+          cardResetBtn.addEventListener('click', () => {
+            openAdminResetPasswordModal(u.id, u.display_name, u.email);
+          });
+        }
         cards.appendChild(card);
       });
     }

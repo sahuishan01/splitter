@@ -66,11 +66,17 @@ struct WebView: UIViewRepresentable {
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             switch message.name {
             case "setServerUrl":
-                if let urlString = message.body as? String, let cleanUrl = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)) {
-                    UserDefaults.standard.set(cleanUrl.absoluteString, forKey: "server_url")
-                    DispatchQueue.main.async {
-                        self.parent.currentUrl = cleanUrl
-                        self.webView?.load(URLRequest(url: cleanUrl))
+                if let urlString = message.body as? String {
+                    let trimmed = urlString.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if let cleanUrl = URL(string: trimmed),
+                       let scheme = cleanUrl.scheme?.lowercased(),
+                       let host = cleanUrl.host?.lowercased(),
+                       (scheme == "https" || (scheme == "http" && (host == "127.0.0.1" || host == "localhost"))) {
+                        UserDefaults.standard.set(cleanUrl.absoluteString, forKey: "server_url")
+                        DispatchQueue.main.async {
+                            self.parent.currentUrl = cleanUrl
+                            self.webView?.load(URLRequest(url: cleanUrl))
+                        }
                     }
                 }
             case "shareText":
