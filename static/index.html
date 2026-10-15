@@ -2647,7 +2647,7 @@
       <!-- Header & Quick Actions -->
       <div style="margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div style="max-width: 100%;">
-          <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')" style="margin-bottom: 8px;">
+          <button class="btn btn-secondary btn-sm" onclick="handleBackNavigation()" style="margin-bottom: 8px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back to Groups
           </button>
           <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
@@ -2820,7 +2820,7 @@
           </p>
         </div>
         <div class="admin-header-actions">
-          <button class="btn btn-secondary btn-sm" onclick="navigateTo('groups')" title="Return to user groups">
+          <button class="btn btn-secondary btn-sm" onclick="handleBackNavigation()" title="Return to user groups">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             <span>Exit Admin</span>
           </button>
@@ -3670,7 +3670,7 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         document.querySelectorAll('.modal-overlay.active').forEach(m => {
-          if (m.id !== 'modal-first-password-change') m.classList.remove('active');
+          if (m.id !== 'modal-first-password-change') closeModal(m.id);
         });
         const menu = document.getElementById('theme-dropdown-menu');
         if (menu) menu.classList.add('hidden');
@@ -4427,7 +4427,7 @@
     }
 
     // Navigation
-    function navigateTo(view) {
+    function navigateTo(view, push = true) {
       document.getElementById('view-auth').classList.add('hidden');
       document.getElementById('view-groups').classList.add('hidden');
       document.getElementById('view-group-detail').classList.add('hidden');
@@ -4443,15 +4443,20 @@
         currentGroupId = null;
         try {
           localStorage.removeItem('splitter_active_group_id');
-          if (window.location.hash.startsWith('#group=')) {
-            history.replaceState(null, '', window.location.pathname);
-          }
         } catch (e) {}
+        if (push && (window.location.hash.startsWith('#group=') || window.location.hash === '#admin')) {
+          history.pushState({ view: 'groups' }, '', '#groups');
+        } else if (!window.location.hash || window.location.hash === '#groups') {
+          history.replaceState({ view: 'groups' }, '', '#groups');
+        }
         document.getElementById('view-groups').classList.remove('hidden');
         loadGroups();
       } else if (view === 'group-detail') {
         document.getElementById('view-group-detail').classList.remove('hidden');
       } else if (view === 'admin') {
+        if (push && window.location.hash !== '#admin') {
+          history.pushState({ view: 'admin' }, '', '#admin');
+        }
         document.getElementById('view-admin').classList.remove('hidden');
         loadAdminData();
       }
@@ -4472,6 +4477,21 @@
           window.dispatchEvent(new Event('resize'));
         });
       });
+    }
+
+    function handleBackNavigation() {
+      const activeModals = Array.from(document.querySelectorAll('.modal-overlay.active:not(#modal-first-password-change)'));
+      if (activeModals.length > 0) {
+        closeModal(activeModals[activeModals.length - 1].id);
+        return;
+      }
+      if (currentGroupId || !document.getElementById('view-admin').classList.contains('hidden')) {
+        if (window.history.length > 1) {
+          history.back();
+        } else {
+          navigateTo('groups');
+        }
+      }
     }
 
     function switchAuthTab(tab) {
@@ -4838,7 +4858,7 @@
     }
 
     // Group Details Logic (with Local Storage Cache & Auto-Adjust Statements)
-    async function openGroup(groupId) {
+    async function openGroup(groupId, push = true) {
       currentGroupId = groupId;
       activeExpenseFilterPill = 'all';
       document.querySelectorAll('.expense-filter-pill').forEach(btn => {
@@ -4855,11 +4875,13 @@
 
       try {
         localStorage.setItem('splitter_active_group_id', groupId);
-        if (window.location.hash !== '#group=' + groupId) {
-          window.location.hash = 'group=' + groupId;
+        if (push && window.location.hash !== '#group=' + groupId) {
+          history.pushState({ view: 'group-detail', groupId }, '', '#group=' + groupId);
+        } else if (!push && window.location.hash !== '#group=' + groupId) {
+          history.replaceState({ view: 'group-detail', groupId }, '', '#group=' + groupId);
         }
       } catch (e) {}
-      navigateTo('group-detail');
+      navigateTo('group-detail', false);
       await loadGroupDetails(groupId, true);
     }
 
@@ -7383,17 +7405,30 @@
       }
     }
 
+    let isProgrammaticHistoryBack = false;
+
     // Modal Helpers
     function openModal(id) {
       const el = document.getElementById(id);
-      if (el) el.classList.add('active');
+      if (!el) return;
+      el.classList.add('active');
+      if (id !== 'modal-first-password-change') {
+        history.pushState({ modal: id }, '', window.location.hash || '#groups');
+      }
     }
+
     function closeModal(id, force = false) {
       if (id === 'modal-first-password-change' && !force && currentUser && currentUser.must_change_password) {
         return;
       }
       const el = document.getElementById(id);
-      if (el) el.classList.remove('active');
+      if (el && el.classList.contains('active')) {
+        el.classList.remove('active');
+        if (history.state && history.state.modal === id) {
+          isProgrammaticHistoryBack = true;
+          history.back();
+        }
+      }
     }
 
     function escapeHtml(str) {
@@ -7406,15 +7441,52 @@
         .replace(/'/g, '&#039;');
     }
 
-    function getTargetGroupId() {
+    function getTargetGroupId(includeStored = false) {
       try {
         const hash = window.location.hash;
         if (hash && hash.startsWith('#group=')) {
           return hash.replace('#group=', '').trim();
         }
-        return localStorage.getItem('splitter_active_group_id');
+        if (includeStored) {
+          return localStorage.getItem('splitter_active_group_id');
+        }
+        return null;
       } catch (e) {
         return null;
+      }
+    }
+
+    function restoreInitialNavigation() {
+      if (!currentUser) {
+        navigateTo('auth', false);
+        return;
+      }
+      if (currentUser.must_change_password) {
+        openFirstPasswordChangeModal();
+        return;
+      }
+
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#group=')) {
+        const targetId = hash.replace('#group=', '').trim();
+        if (targetId) {
+          history.replaceState({ view: 'groups' }, '', '#groups');
+          openGroup(targetId, true);
+          return;
+        }
+      } else if (hash === '#admin' && currentUser.is_admin) {
+        history.replaceState({ view: 'groups' }, '', '#groups');
+        navigateTo('admin', true);
+        return;
+      }
+
+      const storedGroupId = localStorage.getItem('splitter_active_group_id');
+      if (storedGroupId) {
+        history.replaceState({ view: 'groups' }, '', '#groups');
+        openGroup(storedGroupId, true);
+      } else {
+        history.replaceState({ view: 'groups' }, '', '#groups');
+        navigateTo('groups', false);
       }
     }
 
@@ -7431,16 +7503,7 @@
         updateSyncUI();
 
         if (cachedUser) {
-          if (currentUser.must_change_password) {
-            openFirstPasswordChangeModal();
-          } else {
-            const targetGroupId = getTargetGroupId();
-            if (targetGroupId) {
-              openGroup(targetGroupId);
-            } else {
-              navigateTo('groups');
-            }
-          }
+          restoreInitialNavigation();
         }
 
         if (token) {
@@ -7448,15 +7511,8 @@
             currentUser = await apiFetch('/auth/me');
             cacheSet('user', currentUser);
             renderUserHeader();
-            if (currentUser.must_change_password) {
-              openFirstPasswordChangeModal();
-            } else if (!cachedUser) {
-              const targetGroupId = getTargetGroupId();
-              if (targetGroupId) {
-                openGroup(targetGroupId);
-              } else {
-                navigateTo('groups');
-              }
+            if (!cachedUser) {
+              restoreInitialNavigation();
             } else if (currentGroupId && currentBalancesSummary) {
               renderBalancesUI(currentBalancesSummary);
             }
@@ -7464,7 +7520,7 @@
             if (!cachedUser) logout();
           }
         } else {
-          navigateTo('auth');
+          navigateTo('auth', false);
         }
       } finally {
         // Smoothly dismiss boot splash
@@ -7476,12 +7532,43 @@
       }
     }
 
-    window.addEventListener('hashchange', () => {
-      const target = getTargetGroupId();
-      if (target && target !== currentGroupId && currentUser) {
-        openGroup(target);
-      } else if (!target && currentGroupId && currentUser) {
-        navigateTo('groups');
+    // Comprehensive SPA Navigation & Back Button Listener
+    window.addEventListener('popstate', (e) => {
+      if (isProgrammaticHistoryBack) {
+        isProgrammaticHistoryBack = false;
+        return;
+      }
+
+      // 1. If any non-mandatory modal is open, dismiss it first
+      const activeModals = Array.from(document.querySelectorAll('.modal-overlay.active:not(#modal-first-password-change)'));
+      if (activeModals.length > 0) {
+        const topModal = activeModals[activeModals.length - 1];
+        topModal.classList.remove('active');
+        return;
+      }
+
+      // 2. Otherwise navigate to the appropriate view based on hash / state
+      if (!currentUser) {
+        navigateTo('auth', false);
+        return;
+      }
+
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#group=')) {
+        const target = hash.replace('#group=', '').trim();
+        if (target && target !== currentGroupId) {
+          openGroup(target, false);
+        } else if (target && document.getElementById('view-group-detail').classList.contains('hidden')) {
+          navigateTo('group-detail', false);
+        }
+      } else if (hash === '#admin') {
+        if (currentUser.is_admin) {
+          navigateTo('admin', false);
+        } else {
+          navigateTo('groups', false);
+        }
+      } else {
+        navigateTo('groups', false);
       }
     });
 

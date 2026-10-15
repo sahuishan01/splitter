@@ -24,6 +24,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var offlineBanner: TextView
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
+    private var backPressedTime: Long = 0
 
     private val fileChooserLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -130,6 +132,22 @@ class MainActivity : AppCompatActivity() {
 
         setupWebViewClients()
         setupNetworkMonitoring()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (webView.canGoBack()) {
+                    webView.goBack()
+                    return
+                }
+                if (System.currentTimeMillis() - backPressedTime < 2000) {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                } else {
+                    backPressedTime = System.currentTimeMillis()
+                    android.widget.Toast.makeText(this@MainActivity, "Press back again to exit", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
 
         val targetUrl = getServerBaseUrl()
         webView.loadUrl(targetUrl)
@@ -396,8 +414,13 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (webView.canGoBack()) {
             webView.goBack()
-        } else {
+            return
+        }
+        if (System.currentTimeMillis() - backPressedTime < 2000) {
             super.onBackPressed()
+        } else {
+            backPressedTime = System.currentTimeMillis()
+            android.widget.Toast.makeText(this, "Press back again to exit", android.widget.Toast.LENGTH_SHORT).show()
         }
     }
 
